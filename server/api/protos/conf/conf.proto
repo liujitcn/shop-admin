@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package conf;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+
+message ShopAdminServerConfigWrapper {
+  ShopAdminServerConfig shop_admin_server = 1;
+}
+
+// ShopAdminServerConfig
+message ShopAdminServerConfig {
+  Jwt jwt = 1; // jwt 扩展配置
+  WxPay wxPay = 2; // 微信支付参数
+}
+
+// JWT白名单列表
+message WhiteList {
+  repeated string prefix = 1;
+  repeated string regex = 2;
+  repeated string path = 3;
+  repeated string match = 4;
+}
+// JWT
+message Jwt {
+  google.protobuf.Duration accessTokenExpires = 1; // token 过期时间
+  google.protobuf.Duration refreshTokenExpires = 2; // 刷新token 时间
+  WhiteList whiteList = 3;
+}
+
+message WxPay {
+  string appid = 1;
+  string mchId = 2; // 商户id
+  string notifyUrl = 3; // 通知地址
+
+  string mchCertSn = 80; // 商户证书序列号
+  string mchCertPath = 81; // 商户证书路径
+  string mchAPIv3Key = 82; // api 密钥
+}

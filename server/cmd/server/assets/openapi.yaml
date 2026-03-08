@@ -1,0 +1,40 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ChatService API
+    version: 0.0.1
+paths:
+    /api/v1/chat/tools:
+        get:
+            tags:
+                - ChatService
+            operationId: ChatService_ListTools
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListToolsReply'
+components:
+    schemas:
+        ListToolsReply:
+            type: object
+            properties:
+                tools:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ToolInfo'
+        ToolInfo:
+            type: object
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                inputSchema:
+                    type: string
+tags:
+    - name: ChatService
