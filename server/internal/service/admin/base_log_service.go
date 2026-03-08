@@ -12,8 +12,9 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
+	_const "github.com/liujitcn/shop-admin/server/internal/const"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -23,17 +24,22 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseLogService is the server API for BaseLogService service implement.
 type BaseLogService struct {
 	admin.UnimplementedBaseLogServiceServer
+	*core.ShopCore
 	baseLogCase *biz.BaseLogCase
 }
 
 // NewBaseLogService create a service implement.
 // Admin日志服务
 func NewBaseLogService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	logCase *biz.BaseLogCase,
 ) *BaseLogService {
-	var ss = BaseLogService{baseLogCase: logCase}
+	var ss = BaseLogService{
+		ShopCore:    sc,
+		baseLogCase: logCase}
 	// 注册日志队列
+	// 注册定时任务日志队列
+	ss.Queue.Register(_const.Log, ss.baseLogCase.SaveLog)
 	log.Debug("NewBaseLogService.")
 	return &ss
 }

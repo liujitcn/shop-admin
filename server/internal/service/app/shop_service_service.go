@@ -15,7 +15,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/app/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -25,16 +25,19 @@ const _ = grpc.SupportPackageIsVersion7
 // ShopServiceService is the server API for ShopServiceService service implement.
 type ShopServiceService struct {
 	app.UnimplementedShopServiceServiceServer
+	*core.ShopCore
 	serviceCase *biz.ShopServiceCase
 }
 
 // NewShopServiceService create a service implement.
 // App商城服务
 func NewShopServiceService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	serviceCase *biz.ShopServiceCase,
 ) *ShopServiceService {
-	var ss = ShopServiceService{serviceCase: serviceCase}
+	var ss = ShopServiceService{
+		ShopCore: sc,
+		serviceCase: serviceCase}
 	log.Debug("NewShopServiceService.")
 	return &ss
 }

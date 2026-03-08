@@ -16,9 +16,10 @@ import (
 	"github.com/liujitcn/go-utils/str"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	_const "github.com/liujitcn/shop-admin/server/internal/const"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,6 +30,7 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseJobService is the server API for BaseJobService service implement.
 type BaseJobService struct {
 	admin.UnimplementedBaseJobServiceServer
+	*core.ShopCore
 	baseJobCase    *biz.BaseJobCase
 	baseJobLogCase *biz.BaseJobLogCase
 }
@@ -36,15 +38,25 @@ type BaseJobService struct {
 // NewBaseJobService create a service implement.
 // Admin定时任务服务
 func NewBaseJobService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	baseJobCase *biz.BaseJobCase,
 	baseJobLogCase *biz.BaseJobLogCase,
 ) *BaseJobService {
-	var ss = BaseJobService{baseJobCase: baseJobCase,
+	var ss = BaseJobService{
+		ShopCore:       sc,
+		baseJobCase:    baseJobCase,
 		baseJobLogCase: baseJobLogCase,
 	}
 
 	// 注册定时任务日志队列
+	ss.Queue.Register(_const.JobLog, ss.baseJobLogCase.SaveJobLog)
+	
+	// 启动定时任务
+	err := baseJobCase.Init(ss.Ctx.Context())
+	if err != nil {
+		log.Errorf("Init jobCase error: %s", err.Error())
+	}
+
 	log.Debug("NewBaseJobService.")
 	return &ss
 }

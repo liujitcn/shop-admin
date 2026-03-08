@@ -18,7 +18,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,16 +29,19 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseRoleService is the server API for BaseRoleService service implement.
 type BaseRoleService struct {
 	admin.UnimplementedBaseRoleServiceServer
+	*core.ShopCore
 	baseRoleCase *biz.BaseRoleCase
 }
 
 // NewBaseRoleService create a service implement.
 // Admin角色管理服务
 func NewBaseRoleService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	roleCase *biz.BaseRoleCase,
 ) *BaseRoleService {
-	var ss = BaseRoleService{baseRoleCase: roleCase}
+	var ss = BaseRoleService{
+		ShopCore: sc,
+		baseRoleCase: roleCase}
 	log.Debug("NewBaseRoleService.")
 	return &ss
 }

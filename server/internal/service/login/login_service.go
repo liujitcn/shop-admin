@@ -12,13 +12,11 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/go-sdk/auth"
-	authData "github.com/liujitcn/go-sdk/auth/data"
-	"github.com/liujitcn/go-sdk/cache"
 	"github.com/liujitcn/go-sdk/captcha"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/tx7do/kratos-authn/engine"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -28,18 +26,17 @@ const _ = grpc.SupportPackageIsVersion7
 // LoginService is the server API for LoginService service implement.
 type LoginService struct {
 	login.UnimplementedLoginServiceServer
-	c         cache.Cache
-	userToken *authData.UserToken
+	*core.ShopCore
 }
 
 // NewLoginService create a service implement.
 // 登录公共服务
 func NewLoginService(
-	ctx *bootstrap.Context,
-	c cache.Cache,
-	userToken *authData.UserToken,
+	sc *core.ShopCore,
 ) *LoginService {
-	var ss = LoginService{c: c}
+	var ss = LoginService{
+		ShopCore: sc,
+	}
 	log.Debug("NewLoginService.")
 	return &ss
 }
@@ -65,7 +62,7 @@ func (s *LoginService) Logout(ctx context.Context, req *emptypb.Empty) (*emptypb
 		log.Errorf("用户认证失败[%s]", err.Error())
 		return nil, common.ErrorAccessForbidden("用户认证失败")
 	}
-	err = s.userToken.RemoveToken(authInfo.UserId)
+	err = s.UserToken.RemoveToken(authInfo.UserId)
 	if err != nil {
 		return nil, errors.New("退出登录失败")
 	}
@@ -82,19 +79,19 @@ func (s *LoginService) RefreshToken(ctx context.Context, req *login.RefreshToken
 	}
 
 	// 校验刷新令牌
-	refreshToken := s.userToken.GetRefreshToken(authInfo.UserId)
+	refreshToken := s.UserToken.GetRefreshToken(authInfo.UserId)
 	if refreshToken != req.GetRefreshToken() {
 		return nil, common.ErrorIncorrectRefreshToken("invalid refresh token")
 	}
 
 	// 生成新的访问令牌
 	var accessToken string
-	accessToken, err = s.userToken.GenerateAccessToken(authInfo)
+	accessToken, err = s.UserToken.GenerateAccessToken(authInfo)
 	if err != nil {
 		return nil, common.ErrorIncorrectRefreshToken("invalid refresh token")
 	}
 	// Token 有效期
-	expiresIn := s.userToken.GetAccessTokenExpires()
+	expiresIn := s.UserToken.GetAccessTokenExpires()
 
 	return &login.LoginResponse{
 		TokenType:    engine.BearerWord,

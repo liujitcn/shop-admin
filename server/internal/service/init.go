@@ -19,6 +19,7 @@ import (
 
 // ProviderSet is server providers.
 var ProviderSet = wire.NewSet(
+
 	adminBiz.NewBaseApiCase,
 	adminBiz.NewBaseAreaCase,
 	adminBiz.NewBaseConfigCase,

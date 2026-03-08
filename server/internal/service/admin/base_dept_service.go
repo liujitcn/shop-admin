@@ -18,7 +18,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,16 +29,19 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseDeptService is the server API for BaseDeptService service implement.
 type BaseDeptService struct {
 	admin.UnimplementedBaseDeptServiceServer
+	*core.ShopCore
 	baseDeptCase *biz.BaseDeptCase
 }
 
 // NewBaseDeptService create a service implement.
 // Admin部门服务
 func NewBaseDeptService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	deptCase *biz.BaseDeptCase,
 ) *BaseDeptService {
-	var ss = BaseDeptService{baseDeptCase: deptCase}
+	var ss = BaseDeptService{
+		ShopCore: sc,
+		baseDeptCase: deptCase}
 	log.Debug("NewBaseDeptService.")
 	return &ss
 }

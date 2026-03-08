@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/config"
 	"github.com/liujitcn/shop-admin/server/internal/service/config/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 )
 
@@ -22,16 +22,19 @@ const _ = grpc.SupportPackageIsVersion7
 // ConfigService is the server API for ConfigService service implement.
 type ConfigService struct {
 	config.UnimplementedConfigServiceServer
+	*core.ShopCore
 	configCase *biz.ConfigCase
 }
 
 // NewConfigService create a service implement.
 // 系统配置公共服务
 func NewConfigService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	configCase *biz.ConfigCase,
 ) *ConfigService {
-	var ss = ConfigService{configCase: configCase}
+	var ss = ConfigService{
+		ShopCore: sc,
+		configCase: configCase}
 	log.Debug("NewConfigService.")
 	return &ss
 }

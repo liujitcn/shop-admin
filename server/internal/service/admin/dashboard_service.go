@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 )
 
@@ -22,16 +22,19 @@ const _ = grpc.SupportPackageIsVersion7
 // DashboardService is the server API for DashboardService service implement.
 type DashboardService struct {
 	admin.UnimplementedDashboardServiceServer
+	*core.ShopCore
 	dashboardCase *biz.DashboardCase
 }
 
 // NewDashboardService create a service implement.
 // Admin首页服务
 func NewDashboardService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	dashboardCase *biz.DashboardCase,
 ) *DashboardService {
-	var ss = DashboardService{dashboardCase: dashboardCase}
+	var ss = DashboardService{
+		ShopCore: sc,
+		dashboardCase: dashboardCase}
 	log.Debug("NewDashboardService.")
 	return &ss
 }

@@ -4,12 +4,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk"
-	queueData "github.com/liujitcn/go-sdk/queue/data"
 	"github.com/liujitcn/go-utils/str"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
+	"github.com/liujitcn/shop-admin/server/internal/sdk"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
 	"github.com/liujitcn/shop-gorm-gen/models"
 )
@@ -45,21 +43,6 @@ func (e *ExecJob) Run() {
 	// 执行时间
 	baseJobLog.ProcessTime = int32(time.Now().Sub(baseJobLog.ExecuteTime).Milliseconds())
 	// 加入日志队列
-	q := sdk.Runtime.GetQueue()
-	if q != nil {
-		m := make(map[string]interface{})
-		m["data"] = baseJobLog
-		var message queueData.Message
-		message, err = sdk.Runtime.GetStreamMessage(_const.JobLog, m)
-		if err != nil {
-			log.Errorf("GetStreamMessage error, %s", err.Error())
-			//日志报错错误，不中断请求
-		} else {
-			err = q.Append(_const.JobLog, message)
-			if err != nil {
-				log.Errorf("Append message error, %s", err.Error())
-			}
-		}
-	}
+	sdk.AddQueue(_const.JobLog, baseJobLog)
 	return
 }

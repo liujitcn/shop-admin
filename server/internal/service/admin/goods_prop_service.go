@@ -15,7 +15,7 @@ import (
 	"github.com/liujitcn/go-utils/str"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -26,16 +26,19 @@ const _ = grpc.SupportPackageIsVersion7
 // GoodsPropService is the server API for GoodsPropService service implement.
 type GoodsPropService struct {
 	admin.UnimplementedGoodsPropServiceServer
+	*core.ShopCore
 	goodsPropCase *biz.GoodsPropCase
 }
 
 // NewGoodsPropService create a service implement.
 // Admin商品属性服务
 func NewGoodsPropService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	goodsPropCase *biz.GoodsPropCase,
 ) *GoodsPropService {
-	var ss = GoodsPropService{goodsPropCase: goodsPropCase}
+	var ss = GoodsPropService{
+		ShopCore: sc,
+		goodsPropCase: goodsPropCase}
 	log.Debug("NewGoodsPropService.")
 	return &ss
 }

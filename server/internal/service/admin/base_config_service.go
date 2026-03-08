@@ -21,7 +21,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -32,16 +32,19 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseConfigService is the server API for BaseConfigService service implement.
 type BaseConfigService struct {
 	admin.UnimplementedBaseConfigServiceServer
+	*core.ShopCore
 	baseConfigCase *biz.BaseConfigCase
 }
 
 // NewBaseConfigService create a service implement.
 // Admin系统配置服务
 func NewBaseConfigService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	configCase *biz.BaseConfigCase,
 ) (*BaseConfigService, error) {
-	var ss = BaseConfigService{baseConfigCase: configCase}
+	var ss = BaseConfigService{
+		ShopCore: sc,
+		baseConfigCase: configCase}
 	// 服务启动，刷新缓存
 	_, err := ss.RefreshBaseConfig(context.Background(), &emptypb.Empty{})
 	if err != nil {

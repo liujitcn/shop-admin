@@ -22,6 +22,9 @@ shop-admin/
 │   │       └── web/               # 前端打包产物（嵌入后端）
 │   ├── internal/
 │   │   ├── configs/               # 配置解析与 ProviderSet
+│   │   ├── const/                 # 常量定义
+│   │   ├── core/                  # 核心运行时（ShopCore）
+│   │   ├── middleware/            # 中间件实现（含 logging）
 │   │   ├── sdk/                   # SDK ProviderSet（auth/cache/gorm/queue）
 │   │   ├── data/                  # Repo 层
 │   │   ├── service/               # Biz + gRPC/HTTP Service
@@ -39,6 +42,7 @@ shop-admin/
 - Node.js `>= 18`
 - pnpm（前端包管理）
 - 常用生成工具（通过 `make init` 安装）
+- `protoc-gen-ts_proto`（执行 `make ts` 需要，需额外安装并加入 PATH）
 
 ## 快速开始
 
@@ -59,6 +63,8 @@ make wire
 go run ./cmd/server -conf ./configs
 ```
 
+启动成功后，管理端默认访问地址为：`http://localhost:8091/`  
+
 ### 3) 前端打包并嵌入后端
 
 当前已配置为：前端构建产物直接输出到后端资源目录  
@@ -70,6 +76,7 @@ pnpm build-only
 ```
 
 构建成功后，后端通过 `embed` 自动加载该目录资源（见 `server/cmd/server/assets/assets.go`）。
+为避免以下划线开头的静态资源（如 `_initCloneObject.*.js`）在运行时 404，嵌入规则使用 `all:web/*`。
 
 ## 常用命令
 
@@ -81,13 +88,15 @@ pnpm build-only
 - `make ts`：生成 TS proto（输出到 `web/src/rpc`）
 - `make wire`：生成 `cmd/server/wire_gen.go`
 - `make test`：运行单测
+- `make compose-up`：启动依赖服务（docker compose）
+- `make compose-down`：停止依赖服务
 - `make run`：生成 API + OpenAPI 后启动服务
 
 ### web/package.json
 
 - `pnpm dev`：本地开发
 - `pnpm build`：类型检查 + 打包
-- `pnpm build-only`：仅打包（用于后端静态资源）
+- `pnpm build-only`：仅打包（产物输出到 `server/cmd/server/assets/web`）
 
 ## 代码生成与改动联动
 
@@ -100,6 +109,9 @@ pnpm build-only
    - 运行 `make wire`
 3. 前端路由/静态页面需要由后端统一承载：
    - 运行 `pnpm build-only`，确认产物在 `server/cmd/server/assets/web`
+4. 修改 `server/internal/service/**` 下的服务构造函数：
+   - 统一移除 `ctx *bootstrap.Context` 入参，改为注入 `sc *core.ShopCore`
+   - 服务结构体统一嵌入 `*core.ShopCore`
 
 ## Codex Rules（继承 go-sdk + 本项目追加）
 

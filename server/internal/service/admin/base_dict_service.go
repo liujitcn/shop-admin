@@ -20,7 +20,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -31,6 +31,7 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseDictService is the server API for BaseDictService service implement.
 type BaseDictService struct {
 	admin.UnimplementedBaseDictServiceServer
+	*core.ShopCore
 	baseDictCase     *biz.BaseDictCase
 	baseDictItemCase *biz.BaseDictItemCase
 }
@@ -38,11 +39,13 @@ type BaseDictService struct {
 // NewBaseDictService create a service implement.
 // Admin字典服务
 func NewBaseDictService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	dictCase *biz.BaseDictCase,
 	dictItemCase *biz.BaseDictItemCase,
 ) *BaseDictService {
-	var ss = BaseDictService{baseDictCase: dictCase,
+	var ss = BaseDictService{
+		ShopCore: sc,
+		baseDictCase: dictCase,
 		baseDictItemCase: dictItemCase,
 	}
 	log.Debug("NewBaseDictService.")

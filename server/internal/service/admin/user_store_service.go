@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // UserStoreService is the server API for UserStoreService service implement.
 type UserStoreService struct {
 	admin.UnimplementedUserStoreServiceServer
+	*core.ShopCore
 	log           *log.Helper
 	userStoreCase *biz.UserStoreCase
 }
@@ -31,10 +32,12 @@ type UserStoreService struct {
 // NewUserStoreService create a service implement.
 // Admin用户门店管理服务
 func NewUserStoreService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	userStoreCase *biz.UserStoreCase,
 ) *UserStoreService {
-	var ss = UserStoreService{userStoreCase: userStoreCase}
+	var ss = UserStoreService{
+		ShopCore: sc,
+		userStoreCase: userStoreCase}
 	log.Debug("NewUserStoreService.")
 	return &ss
 }

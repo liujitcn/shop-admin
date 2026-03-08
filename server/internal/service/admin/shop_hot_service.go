@@ -19,7 +19,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -30,6 +30,7 @@ const _ = grpc.SupportPackageIsVersion7
 // ShopHotService is the server API for ShopHotService service implement.
 type ShopHotService struct {
 	admin.UnimplementedShopHotServiceServer
+	*core.ShopCore
 	hotCase     *biz.ShopHotCase
 	hotItemCase *biz.ShopHotItemCase
 }
@@ -37,11 +38,13 @@ type ShopHotService struct {
 // NewShopHotService create a service implement.
 // Admin商城热门推荐服务
 func NewShopHotService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	hotCase *biz.ShopHotCase,
 	hotItemCase *biz.ShopHotItemCase,
 ) *ShopHotService {
-	var ss = ShopHotService{hotCase: hotCase,
+	var ss = ShopHotService{
+		ShopCore: sc,
+		hotCase: hotCase,
 		hotItemCase: hotItemCase,
 	}
 	log.Debug("NewShopHotService.")

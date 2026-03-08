@@ -18,7 +18,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,16 +29,19 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseUserService is the server API for BaseUserService service implement.
 type BaseUserService struct {
 	admin.UnimplementedBaseUserServiceServer
+	*core.ShopCore
 	baseUserCase *biz.BaseUserCase
 }
 
 // NewBaseUserService create a service implement.
 // Admin用户管理服务
 func NewBaseUserService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	userCase *biz.BaseUserCase,
 ) *BaseUserService {
-	var ss = BaseUserService{baseUserCase: userCase}
+	var ss = BaseUserService{
+		ShopCore: sc,
+		baseUserCase: userCase}
 	log.Debug("NewBaseUserService.")
 	return &ss
 }

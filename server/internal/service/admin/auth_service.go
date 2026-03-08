@@ -24,11 +24,11 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"github.com/tx7do/kratos-authn/engine"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -38,28 +38,28 @@ const _ = grpc.SupportPackageIsVersion7
 // AuthService is the server API for AuthService service implement.
 type AuthService struct {
 	admin.UnimplementedAuthServiceServer
+	*core.ShopCore
 	baseUserCase *biz.BaseUserCase
 	baseRoleCase *biz.BaseRoleCase
 	baseDeptCase *biz.BaseDeptCase
 	baseMenuCase *biz.BaseMenuCase
-	userToken    *authData.UserToken
 }
 
 // NewAuthService create a service implement.
 // Admin用户登录认证服务
 func NewAuthService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	userCase *biz.BaseUserCase,
 	roleCase *biz.BaseRoleCase,
 	deptCase *biz.BaseDeptCase,
 	menuCase *biz.BaseMenuCase,
-	userToken *authData.UserToken,
 ) *AuthService {
-	var ss = AuthService{baseUserCase: userCase,
+	var ss = AuthService{
+		ShopCore:     sc,
+		baseUserCase: userCase,
 		baseRoleCase: roleCase,
 		baseDeptCase: deptCase,
 		baseMenuCase: menuCase,
-		userToken:    userToken,
 	}
 	log.Debug("NewAuthService.")
 	return &ss
@@ -103,7 +103,7 @@ func (s *AuthService) Login(ctx context.Context, req *login.LoginRequest) (*logi
 
 	// 生成访问令牌
 	var accessToken, refreshToken string
-	accessToken, refreshToken, err = s.userToken.GenerateToken(&authData.UserTokenPayload{
+	accessToken, refreshToken, err = s.UserToken.GenerateToken(&authData.UserTokenPayload{
 		UserId:   user.ID,
 		UserName: user.UserName,
 		RoleId:   user.RoleID,
@@ -117,7 +117,7 @@ func (s *AuthService) Login(ctx context.Context, req *login.LoginRequest) (*logi
 	}
 
 	// Token 有效期
-	expiresIn := s.userToken.GetAccessTokenExpires()
+	expiresIn := s.UserToken.GetAccessTokenExpires()
 
 	return &login.LoginResponse{
 		TokenType:    engine.BearerWord,

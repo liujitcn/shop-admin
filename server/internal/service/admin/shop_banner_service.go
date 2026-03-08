@@ -18,7 +18,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,16 +29,19 @@ const _ = grpc.SupportPackageIsVersion7
 // ShopBannerService is the server API for ShopBannerService service implement.
 type ShopBannerService struct {
 	admin.UnimplementedShopBannerServiceServer
+	*core.ShopCore
 	bannerCase *biz.ShopBannerCase
 }
 
 // NewShopBannerService create a service implement.
 // Admin轮播图服务
 func NewShopBannerService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	bannerCase *biz.ShopBannerCase,
 ) *ShopBannerService {
-	var ss = ShopBannerService{bannerCase: bannerCase}
+	var ss = ShopBannerService{
+		ShopCore: sc,
+		bannerCase: bannerCase}
 	log.Debug("NewShopBannerService.")
 	return &ss
 }

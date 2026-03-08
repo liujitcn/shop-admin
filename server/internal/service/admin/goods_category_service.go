@@ -18,7 +18,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -29,16 +29,19 @@ const _ = grpc.SupportPackageIsVersion7
 // GoodsCategoryService is the server API for GoodsCategoryService service implement.
 type GoodsCategoryService struct {
 	admin.UnimplementedGoodsCategoryServiceServer
+	*core.ShopCore
 	goodsCategoryCase *biz.GoodsCategoryCase
 }
 
 // NewGoodsCategoryService create a service implement.
 // Admin分类服务
 func NewGoodsCategoryService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	categoryCase *biz.GoodsCategoryCase,
 ) *GoodsCategoryService {
-	var ss = GoodsCategoryService{goodsCategoryCase: categoryCase}
+	var ss = GoodsCategoryService{
+		ShopCore: sc,
+		goodsCategoryCase: categoryCase}
 	log.Debug("NewGoodsCategoryService.")
 	return &ss
 }

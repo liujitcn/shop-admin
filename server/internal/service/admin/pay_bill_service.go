@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 )
 
@@ -22,16 +22,19 @@ const _ = grpc.SupportPackageIsVersion7
 // PayBillService is the server API for PayBillService service implement.
 type PayBillService struct {
 	admin.UnimplementedPayBillServiceServer
+	*core.ShopCore
 	payBillCase *biz.PayBillCase
 }
 
 // NewPayBillService create a service implement.
 // Admin支付账单服务
 func NewPayBillService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	payBillCase *biz.PayBillCase,
 ) *PayBillService {
-	var ss = PayBillService{payBillCase: payBillCase}
+	var ss = PayBillService{
+		ShopCore: sc,
+		payBillCase: payBillCase}
 	log.Debug("NewPayBillService.")
 	return &ss
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/file"
 	"github.com/liujitcn/shop-admin/server/internal/service/file/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -23,16 +23,19 @@ const _ = grpc.SupportPackageIsVersion7
 // FileService is the server API for FileService service implement.
 type FileService struct {
 	file.UnimplementedFileServiceServer
+	*core.ShopCore
 	fileCase *biz.FileCase
 }
 
 // NewFileService create a service implement.
 // 文件服务
 func NewFileService(
-	ctx *bootstrap.Context,
+	sc *core.ShopCore,
 	fileCase *biz.FileCase,
 ) *FileService {
-	var ss = FileService{fileCase: fileCase}
+	var ss = FileService{
+		ShopCore: sc,
+		fileCase: fileCase}
 	log.Debug("NewFileService.")
 	return &ss
 }

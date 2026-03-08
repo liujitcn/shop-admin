@@ -5,6 +5,7 @@ package main
 
 import (
 	"github.com/google/wire"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/sdk"
 
@@ -17,5 +18,5 @@ import (
 
 // initApp init kratos application.
 func initApp(*bootstrap.Context) (*kratos.App, func(), error) {
-	panic(wire.Build(configs.ProviderSet, data.ProviderSet, sdk.ProviderSet, server.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(configs.ProviderSet, core.ProviderSet, data.ProviderSet, sdk.ProviderSet, server.ProviderSet, service.ProviderSet, newApp))
 }
