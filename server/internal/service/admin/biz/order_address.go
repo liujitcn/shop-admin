@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 )
@@ -30,7 +30,7 @@ func (c *OrderAddressCase) GetFromByOrderId(ctx context.Context, orderId int64) 
 	return &admin.OrderAddress{
 		Receiver: orderAddress.Receiver,
 		Contact:  orderAddress.Contact,
-		Address:  str.ConvertJsonStringToStringArray(orderAddress.Address),
+		Address:  _string.ConvertJsonStringToStringArray(orderAddress.Address),
 		Detail:   orderAddress.Detail,
 	}, nil
 }

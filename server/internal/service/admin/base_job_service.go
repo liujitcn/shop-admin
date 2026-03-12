@@ -13,7 +13,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
@@ -49,8 +49,8 @@ func NewBaseJobService(
 	}
 
 	// 注册定时任务日志队列
-	ss.Queue.Register(_const.JobLog, ss.baseJobLogCase.SaveJobLog)
-	
+	ss.Queue.Register(string(_const.JobLog), ss.baseJobLogCase.SaveJobLog)
+
 	// 启动定时任务
 	err := baseJobCase.Init(ss.Ctx.Context())
 	if err != nil {
@@ -122,7 +122,7 @@ func (s *BaseJobService) UpdateBaseJob(ctx context.Context, req *admin.BaseJobFo
 // DeleteBaseJob
 // 删除定时任务
 func (s *BaseJobService) DeleteBaseJob(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	err := s.baseJobCase.Delete(ctx, ids)
 	if err != nil {
 		log.Error("Delete err:", err.Error())

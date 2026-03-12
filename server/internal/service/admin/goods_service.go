@@ -14,13 +14,13 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -44,8 +44,8 @@ func NewGoodsService(
 	categoryCase *biz.GoodsCategoryCase,
 ) *GoodsService {
 	var ss = GoodsService{
-		ShopCore: sc,
-		goodsCase: infoCase,
+		ShopCore:          sc,
+		goodsCase:         infoCase,
 		goodsCategoryCase: categoryCase,
 	}
 	log.Debug("NewGoodsService.")
@@ -161,7 +161,7 @@ func (s *GoodsService) UpdateGoods(ctx context.Context, req *admin.GoodsForm) (*
 // DeleteGoods
 // 删除商品
 func (s *GoodsService) DeleteGoods(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	oldGoodsList, err := s.goodsCase.FindAll(ctx, &data.GoodsCondition{
 		Ids: ids,
 	})
@@ -173,9 +173,9 @@ func (s *GoodsService) DeleteGoods(ctx context.Context, req *wrapperspb.StringVa
 	// 删除图片
 	oldFile := make([]string, 0)
 	for _, item := range oldGoodsList {
-		banner := str.ConvertJsonStringToStringArray(item.Banner)
+		banner := _string.ConvertJsonStringToStringArray(item.Banner)
 		oldFile = append(oldFile, banner...)
-		detail := str.ConvertJsonStringToStringArray(item.Detail)
+		detail := _string.ConvertJsonStringToStringArray(item.Detail)
 		oldFile = append(oldFile, detail...)
 	}
 	return &emptypb.Empty{}, nil

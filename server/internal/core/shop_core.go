@@ -3,19 +3,22 @@ package core
 import (
 	"sync"
 	"time"
-	
-	"github.com/liujitcn/go-sdk"
-	authData "github.com/liujitcn/go-sdk/auth/data"
-	"github.com/liujitcn/go-sdk/cache"
-	"github.com/liujitcn/go-sdk/queue"
+
+	authData "github.com/liujitcn/kratos-kit/auth/data"
+	"github.com/liujitcn/kratos-kit/bootstrap"
+	"github.com/liujitcn/kratos-kit/cache"
+	"github.com/liujitcn/kratos-kit/database/gorm"
+	"github.com/liujitcn/kratos-kit/pprof"
+	"github.com/liujitcn/kratos-kit/queue"
+	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/internal/service/file/biz"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 )
 
 type ShopCore struct {
 	Ctx       *bootstrap.Context
 	Cache     cache.Cache
 	Queue     queue.Queue
+	Gorm      *gorm.Client
 	FileCase  *biz.FileCase
 	UserToken *authData.UserToken
 	quitChan  chan struct{} //退出Chan
@@ -29,15 +32,24 @@ func NewShopCore(
 	ctx *bootstrap.Context,
 	cache cache.Cache,
 	queue queue.Queue,
+	gorm *gorm.Client,
+	pprof pprof.Pprof,
 	userToken *authData.UserToken,
 ) (*ShopCore, func(), error) {
 
 	// 设置全局变量
+	sdk.Runtime.SetGormClient(gorm)
 	sdk.Runtime.SetCache(cache)
 	sdk.Runtime.SetQueue(queue)
 
+	// 启动服务监控
+	if pprof != nil {
+		pprof.Start()
+	}
+
 	usc := ShopCore{
 		Ctx:       ctx,
+		Gorm:      gorm,
 		Cache:     cache,
 		Queue:     queue,
 		UserToken: userToken,

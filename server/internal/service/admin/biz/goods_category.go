@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -86,8 +86,8 @@ func (c *GoodsCategoryCase) buildTree(categoryList []*models.GoodsCategory, pare
 				Picture:   item.Picture,
 				Sort:      item.Sort,
 				Status:    common.Status(item.Status),
-				CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-				UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+				CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+				UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 			}
 			category.Children = c.buildTree(categoryList, item.ID)
 			res = append(res, category)

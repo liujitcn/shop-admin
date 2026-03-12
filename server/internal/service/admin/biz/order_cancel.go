@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
@@ -35,6 +35,6 @@ func (c *OrderCancelCase) GetFromByOrderId(ctx context.Context, orderId int64) (
 	}
 	return &admin.OrderCancel{
 		Reason:    common.OrderCancelReason(orderCancel.Reason),
-		CreatedAt: timeutil.TimeToTimeString(orderCancel.CreatedAt),
+		CreatedAt: _time.TimeToTimeString(orderCancel.CreatedAt),
 	}, nil
 }

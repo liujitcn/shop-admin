@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -60,8 +60,8 @@ func (c *BaseDeptCase) buildTree(deptList []*models.BaseDept, parentId int64) []
 				Sort:      item.Sort,
 				Status:    common.Status(item.Status),
 				Remark:    item.Remark,
-				CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-				UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+				CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+				UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 			}
 			dept.Children = c.buildTree(deptList, item.ID)
 			res = append(res, dept)

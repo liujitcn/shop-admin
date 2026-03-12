@@ -8,4 +8,6 @@ import (
 var ProviderSet = wire.NewSet(
 	NewHttpMiddleware,
 	NewHttpServer,
+	NewGrpcMiddleware,
+	NewGRPCServer,
 )

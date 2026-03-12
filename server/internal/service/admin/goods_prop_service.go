@@ -12,10 +12,10 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/core"
+	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -37,7 +37,7 @@ func NewGoodsPropService(
 	goodsPropCase *biz.GoodsPropCase,
 ) *GoodsPropService {
 	var ss = GoodsPropService{
-		ShopCore: sc,
+		ShopCore:      sc,
 		goodsPropCase: goodsPropCase}
 	log.Debug("NewGoodsPropService.")
 	return &ss
@@ -106,7 +106,7 @@ func (s *GoodsPropService) UpdateGoodsProp(ctx context.Context, req *admin.Goods
 // DeleteGoodsProp
 // 删除商品属性
 func (s *GoodsPropService) DeleteGoodsProp(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	err := s.goodsPropCase.Delete(ctx, ids)
 	if err != nil {
 		log.Error("DeleteGoodsProp err:", err.Error())

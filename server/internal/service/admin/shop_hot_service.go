@@ -13,13 +13,13 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -43,8 +43,8 @@ func NewShopHotService(
 	hotItemCase *biz.ShopHotItemCase,
 ) *ShopHotService {
 	var ss = ShopHotService{
-		ShopCore: sc,
-		hotCase: hotCase,
+		ShopCore:    sc,
+		hotCase:     hotCase,
 		hotItemCase: hotItemCase,
 	}
 	log.Debug("NewShopHotService.")
@@ -115,7 +115,7 @@ func (s *ShopHotService) UpdateShopHot(ctx context.Context, req *admin.ShopHotFo
 // DeleteShopHot
 // 删除商城热门推荐
 func (s *ShopHotService) DeleteShopHot(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	oldShopHotList, err := s.hotCase.FindAll(ctx, &data.ShopHotCondition{
 		Ids: ids,
 	})
@@ -152,7 +152,7 @@ func (s *ShopHotService) DeleteShopHot(ctx context.Context, req *wrapperspb.Stri
 	// 删除图片
 	oldFile := make([]string, 0)
 	for _, item := range oldShopHotList {
-		picture := str.ConvertJsonStringToStringArray(item.Picture)
+		picture := _string.ConvertJsonStringToStringArray(item.Picture)
 		oldFile = append(oldFile, picture...)
 		oldFile = append(oldFile, item.Banner)
 	}
@@ -232,7 +232,7 @@ func (s *ShopHotService) UpdateShopHotItem(ctx context.Context, req *admin.ShopH
 // DeleteShopHotItem
 // 删除商城热门推荐属性
 func (s *ShopHotService) DeleteShopHotItem(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	err := s.hotItemCase.Delete(ctx, ids)
 	if err != nil {
 		log.Error("DeleteShopHotItem err:", err.Error())

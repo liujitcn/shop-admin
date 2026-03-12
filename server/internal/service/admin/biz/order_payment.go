@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
@@ -47,7 +47,7 @@ func (c *OrderPaymentCase) GetFromByOrderId(ctx context.Context, orderId int64) 
 		TradeState:     orderPayment.TradeState,
 		TradeStateDesc: orderPayment.TradeStateDesc,
 		BankType:       orderPayment.BankType,
-		SuccessTime:    timeutil.TimeToTimeString(orderPayment.SuccessTime),
+		SuccessTime:    _time.TimeToTimeString(orderPayment.SuccessTime),
 		Payer:          &payer,
 		Amount:         &amount,
 		SceneInfo:      &sceneInfo,

@@ -10,10 +10,10 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/liujitcn/go-sdk/auth"
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
+	"github.com/liujitcn/kratos-kit/auth"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	"github.com/liujitcn/shop-admin/server/internal/configs"
@@ -219,7 +219,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 				return err
 			}
 		}
-		successTime := timeutil.TimestamppbToTime(paymentResource.GetSuccessTime())
+		successTime := _time.TimestamppbToTime(paymentResource.GetSuccessTime())
 		if successTime == nil {
 			successTime = trans.Time(time.Now())
 		}
@@ -231,9 +231,9 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 		orderPayment.TradeStateDesc = paymentResource.GetTradeStateDesc()
 		orderPayment.BankType = paymentResource.GetBankType()
 		orderPayment.SuccessTime = trans.TimeValue(successTime)
-		orderPayment.Payer = str.ConvertAnyToJsonString(paymentResource.GetPayer())
-		orderPayment.Amount = str.ConvertAnyToJsonString(paymentResource.GetAmount())
-		orderPayment.SceneInfo = str.ConvertAnyToJsonString(paymentResource.GetSceneInfo())
+		orderPayment.Payer = _string.ConvertAnyToJsonString(paymentResource.GetPayer())
+		orderPayment.Amount = _string.ConvertAnyToJsonString(paymentResource.GetAmount())
+		orderPayment.SceneInfo = _string.ConvertAnyToJsonString(paymentResource.GetSceneInfo())
 		orderPayment.Status = 1
 
 		return c.tx.Transaction(ctx, func(ctx context.Context) error {
@@ -280,7 +280,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 		orderRefund, err = c.orderRefundRepo.Find(ctx, &data.OrderRefundCondition{
 			OrderId: order.ID,
 		})
-		successTime := timeutil.TimestamppbToTime(refundResource.GetSuccessTime())
+		successTime := _time.TimestamppbToTime(refundResource.GetSuccessTime())
 		if successTime == nil {
 			successTime = trans.Time(time.Now())
 		}
@@ -301,7 +301,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 		orderRefund.UserReceivedAccount = refundResource.GetUserReceivedAccount()
 		orderRefund.SuccessTime = trans.TimeValue(successTime)
 		orderRefund.RefundState = refundResource.GetRefundStatus().String()
-		orderRefund.Amount = str.ConvertAnyToJsonString(refundResource.GetAmount())
+		orderRefund.Amount = _string.ConvertAnyToJsonString(refundResource.GetAmount())
 		orderRefund.Status = 1
 
 		return c.tx.Transaction(ctx, func(ctx context.Context) error {

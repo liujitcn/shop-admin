@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
@@ -40,8 +40,8 @@ func (c *OrderRefundCase) GetFromByOrderId(ctx context.Context, orderId int64) (
 			ThirdRefundNo:       item.ThirdRefundNo,
 			Channel:             item.Channel,
 			UserReceivedAccount: item.UserReceivedAccount,
-			CreateTime:          timeutil.TimeToTimeString(item.CreateTime),
-			SuccessTime:         timeutil.TimeToTimeString(item.SuccessTime),
+			CreateTime:          _time.TimeToTimeString(item.CreateTime),
+			SuccessTime:         _time.TimeToTimeString(item.SuccessTime),
 			RefundState:         item.RefundState,
 			FundsAccount:        item.FundsAccount,
 			Amount:              &amount,

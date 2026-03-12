@@ -13,13 +13,14 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk"
-	"github.com/liujitcn/go-sdk/auth"
-	authData "github.com/liujitcn/go-sdk/auth/data"
-	"github.com/liujitcn/go-sdk/captcha"
 	"github.com/liujitcn/go-utils/crypto"
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
+	"github.com/liujitcn/kratos-kit/auth"
+	"github.com/liujitcn/kratos-kit/auth/authn/engine"
+	authData "github.com/liujitcn/kratos-kit/auth/data"
+	"github.com/liujitcn/kratos-kit/captcha"
+	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
@@ -28,7 +29,6 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/tx7do/kratos-authn/engine"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -82,8 +82,9 @@ func (s *AuthService) Login(ctx context.Context, req *login.LoginRequest) (*logi
 	if user.Status != int32(common.Status_ENABLE) {
 		return nil, errors.New("用户状态错误")
 	}
-	bMatched := crypto.CheckPasswordHash(req.GetPassword(), user.Password)
-	if !bMatched {
+	err = crypto.Verify(req.GetPassword(), user.Password)
+	if err != nil {
+		log.Errorf("verify pwd err: %s", err.Error())
 		return nil, errors.New("密码错误")
 	}
 
@@ -157,7 +158,7 @@ func (s *AuthService) GetUserInfo(ctx context.Context, req *emptypb.Empty) (*adm
 	}
 	//是否超级管理员
 	if baseRole.Code != _const.BaseRoleCode_Super {
-		condition.Ids = str.ConvertJsonStringToInt64Array(baseRole.Menus)
+		condition.Ids = _string.ConvertJsonStringToInt64Array(baseRole.Menus)
 	}
 
 	//用户权限
@@ -202,7 +203,7 @@ func (s *AuthService) GetUserMenu(ctx context.Context, req *emptypb.Empty) (*adm
 	}
 	//是否超级管理员
 	if baseRole.Code != _const.BaseRoleCode_Super {
-		condition.Ids = str.ConvertJsonStringToInt64Array(baseRole.Menus)
+		condition.Ids = _string.ConvertJsonStringToInt64Array(baseRole.Menus)
 	}
 
 	//用户权限
@@ -254,7 +255,7 @@ func (s *AuthService) GetUserProfile(ctx context.Context, req *emptypb.Empty) (*
 		Phone:     baseUser.Phone,
 		RoleName:  baseRole.Name,
 		DeptName:  baseDept.Name,
-		CreatedAt: timeutil.TimeToTimeString(baseUser.CreatedAt),
+		CreatedAt: _time.TimeToTimeString(baseUser.CreatedAt),
 	}, nil
 }
 
@@ -299,7 +300,7 @@ func (s *AuthService) SendUpdatePhoneCode(ctx context.Context, req *admin.SendUp
 		log.Errorf("用户认证失败")
 		return nil, common.ErrorAccessForbidden("用户认证失败")
 	}
-	code := str.GetRandomString(6)
+	code := _string.GetRandomString(6)
 	log.Errorf("code: %s", code)
 	err = sdk.Runtime.GetCache().Set(fmt.Sprintf("%s:%d", _const.CacheKeyUpdatePhoneCode, authInfo.UserId), code, time.Minute*5)
 	if err != nil {
@@ -356,8 +357,9 @@ func (s *AuthService) UpdateUserPwd(ctx context.Context, req *admin.UpdatePwdFor
 	if req.GetNewPwd() != req.GetConfirmPwd() {
 		return nil, errors.New("两次密码不一致")
 	}
-	bMatched := crypto.CheckPasswordHash(req.GetOldPwd(), baseUser.Password)
-	if !bMatched {
+	err = crypto.Verify(req.GetOldPwd(), baseUser.Password)
+	if err != nil {
+		log.Errorf("verify pwd err: %s", err.Error())
 		return nil, errors.New("旧密码错误")
 	}
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/liujitcn/go-utils/crypto"
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -78,8 +78,8 @@ func (c *BaseUserCase) Page(ctx context.Context, req *admin.PageBaseUserRequest)
 			Avatar:    item.Avatar,
 			Status:    common.Status(item.Status),
 			Remark:    item.Remark,
-			CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 
@@ -134,7 +134,7 @@ func (c *BaseUserCase) GetDefaultPassword(userName, phone string) string {
 }
 
 func (c *BaseUserCase) GetPassword(passwordStr string) string {
-	password, err := crypto.HashPassword(passwordStr)
+	password, err := crypto.Encrypt(passwordStr)
 	if err != nil {
 		return ""
 	}

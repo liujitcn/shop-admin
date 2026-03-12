@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
@@ -142,8 +142,8 @@ func (c *UserStoreCase) ConvertToProto(ctx context.Context, item *models.UserSto
 		Name:            item.Name,
 		Address:         c.baseAreaCase.GetAddressListByCode(ctx, item.Address),
 		Detail:          item.Detail,
-		Picture:         str.ConvertJsonStringToStringArray(item.Picture),
-		BusinessLicense: str.ConvertJsonStringToStringArray(item.BusinessLicense),
+		Picture:         _string.ConvertJsonStringToStringArray(item.Picture),
+		BusinessLicense: _string.ConvertJsonStringToStringArray(item.BusinessLicense),
 		Status:          common.UserStoreStatus(item.Status),
 		Remark:          item.Remark,
 	}

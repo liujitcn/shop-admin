@@ -8,12 +8,12 @@ import (
 	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk"
-	queueData "github.com/liujitcn/go-sdk/queue/data"
+	queueData "github.com/liujitcn/kratos-kit/queue/data"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/cmd/server/assets"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/data"
+	"github.com/liujitcn/shop-admin/server/internal/utils"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"gopkg.in/yaml.v3"
 )
@@ -121,21 +121,7 @@ func (c *BaseApiCase) ApiCheck() error {
 	if err != nil {
 		return err
 	}
-	q := sdk.Runtime.GetQueue()
-	if q != nil {
-		m := make(map[string]interface{})
-		m["data"] = baseApiList
-		var message queueData.Message
-		message, err = sdk.Runtime.GetStreamMessage(_const.ApiCheck, m)
-		if err != nil {
-			log.Error("GetStreamMessage error, %s ", err.Error())
-		} else {
-			err = q.Append(_const.ApiCheck, message)
-			if err != nil {
-				log.Error("Append message error, %s ", err.Error())
-			}
-		}
-	}
+	utils.AddQueue(_const.ApiCheck, baseApiList)
 	return nil
 }
 

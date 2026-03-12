@@ -8,14 +8,16 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/liujitcn/go-sdk/cache"
-	"github.com/liujitcn/go-sdk/gorm"
-	"github.com/liujitcn/go-sdk/oss"
-	"github.com/liujitcn/go-sdk/queue"
+	"github.com/liujitcn/kratos-kit/bootstrap"
+	"github.com/liujitcn/kratos-kit/cache"
+	"github.com/liujitcn/kratos-kit/database/gorm"
+	"github.com/liujitcn/kratos-kit/oss"
+	"github.com/liujitcn/kratos-kit/pprof"
+	"github.com/liujitcn/kratos-kit/queue"
 	"github.com/liujitcn/shop-admin/server/internal/configs"
 	"github.com/liujitcn/shop-admin/server/internal/core"
 	data2 "github.com/liujitcn/shop-admin/server/internal/data"
-	"github.com/liujitcn/shop-admin/server/internal/sdk"
+	"github.com/liujitcn/shop-admin/server/internal/middleware"
 	"github.com/liujitcn/shop-admin/server/internal/server"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
@@ -30,11 +32,11 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
 	biz2 "github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
 	"github.com/liujitcn/shop-gorm-gen/data"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 )
 
 import (
-	_ "github.com/tx7do/kratos-bootstrap/logger/zap"
+	_ "github.com/liujitcn/kratos-kit/database/gorm/driver/mysql"
+	_ "github.com/liujitcn/kratos-kit/logger/zap"
 )
 
 // Injectors from wire.go:
@@ -42,9 +44,13 @@ import (
 // initApp init kratos application.
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	authentication_Jwt := configs.ParseAuthnJwt(context)
-	authenticator := sdk.NewAuthenticator(authentication_Jwt)
-	v := sdk.RegisterMigrateModels()
-	client, err := gorm.NewGormClient(context, v)
+	authenticator := middleware.NewAuthenticator(authentication_Jwt)
+	confData, err := configs.ParseData(context)
+	if err != nil {
+		return nil, nil, err
+	}
+	data_Database := configs.ParseDatabase(confData)
+	client, cleanup, err := gorm.NewGormClient(data_Database)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -52,25 +58,43 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseUserRepo := data2.NewBaseUserRepo(dataData)
 	baseDeptRepo := data2.NewBaseDeptRepo(dataData)
 	baseUserCase := biz.NewBaseUserCase(baseUserRepo, baseDeptRepo)
-	engine, err := sdk.NewAuthzEngine()
-	if err != nil {
-		return nil, nil, err
-	}
-	cacheCache, cleanup, err := cache.NewCache(context)
-	if err != nil {
-		return nil, nil, err
-	}
-	userToken := sdk.NewUserToken(cacheCache, authenticator)
-	shopAdminServerConfig := configs.NewShopAdminServerConfig(context)
-	jwt := configs.ParseJwt(shopAdminServerConfig)
-	v2 := server.NewHttpMiddleware(context, authenticator, baseUserCase, engine, userToken, jwt)
-	queueQueue, cleanup2, err := queue.NewQueue(context)
+	engine, err := middleware.NewAuthzEngine()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	shopCore, cleanup3, err := core.NewShopCore(context, cacheCache, queueQueue, userToken)
+	data_Redis := configs.ParseRedis(confData)
+	cacheCache, cleanup2, err := cache.NewCache(data_Redis)
 	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	userToken := middleware.NewUserToken(authentication_Jwt, cacheCache, authenticator)
+	grpcMiddlewares := server.NewGrpcMiddleware(context, authenticator, baseUserCase, engine, userToken, authentication_Jwt)
+	data_Queue := configs.ParseQueue(confData)
+	queueQueue, cleanup3, err := queue.NewQueue(data_Redis, data_Queue)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	confPprof, err := configs.ParsePprof(context)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	pprofPprof, err := pprof.NewPprof(confPprof)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	shopCore, cleanup4, err := core.NewShopCore(context, cacheCache, queueQueue, client, pprofPprof, userToken)
+	if err != nil {
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -83,6 +107,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseApiCase := biz.NewBaseApiCase(baseApiRepo)
 	casbinRuleCase, err := biz.NewCasbinRuleCase(casbinRuleRepo, baseMenuRepo, baseRoleRepo, baseApiCase, engine)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -94,6 +119,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	authService := admin.NewAuthService(shopCore, baseUserCase, baseRoleCase, baseDeptCase, baseMenuCase)
 	baseApiService, err := admin.NewBaseApiService(shopCore, baseApiCase)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -103,6 +129,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseConfigCase := biz.NewBaseConfigCase(baseConfigRepo)
 	baseConfigService, err := admin.NewBaseConfigService(shopCore, baseConfigCase)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -115,9 +142,19 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseDictItemCase := biz.NewBaseDictItemCase(baseDictRepo, baseDictItemRepo)
 	baseDictService := admin.NewBaseDictService(shopCore, baseDictCase, baseDictItemCase)
 	baseJobRepo := data2.NewBaseJobRepo(dataData)
-	ossOSS := oss.NewOSS(context)
+	confOSS, err := configs.ParseOss(context)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	ossOSS := oss.NewOSS(confOSS)
+	shopAdminServerConfig := configs.NewShopAdminServerConfig(context)
 	wxPay, err := configs.ParseWxPay(shopAdminServerConfig)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -125,6 +162,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	}
 	wxPayCase, err := biz2.NewWxPayCase(wxPay)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -135,8 +173,8 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	orderPaymentRepo := data2.NewOrderPaymentRepo(dataData)
 	orderRefundRepo := data2.NewOrderRefundRepo(dataData)
 	tradeBill := task.NewTradeBill(ossOSS, transaction, wxPayCase, payBillCase, orderPaymentRepo, orderRefundRepo)
-	v3 := task.NewTaskList(tradeBill)
-	baseJobCase := biz.NewBaseJobCase(baseJobRepo, v3)
+	v := task.NewTaskList(tradeBill)
+	baseJobCase := biz.NewBaseJobCase(baseJobRepo, v)
 	baseJobLogRepo := data2.NewBaseJobLogRepo(dataData)
 	baseJobLogCase := biz.NewBaseJobLogCase(baseJobLogRepo)
 	baseJobService := admin.NewBaseJobService(shopCore, baseJobCase, baseJobLogCase)
@@ -205,15 +243,26 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	orderSchedulerCase := biz2.NewOrderSchedulerCase()
 	payCase := biz2.NewPayCase(transaction, orderRepo, orderGoodsRepo, orderPaymentRepo, orderRefundRepo, orderSchedulerCase, wxPayCase)
 	payService := pay.NewPayService(shopCore, payCase)
-	httpServer, err := server.NewHttpServer(context, v2, authService, baseApiService, baseConfigService, baseDeptService, baseDictService, baseJobService, baseLogService, baseMenuService, baseRoleService, baseUserService, dashboardService, goodsCategoryService, goodsService, goodsPropService, goodsSkuService, goodsSpecService, orderService, payBillService, shopBannerService, shopHotService, shopServiceService, userStoreService, appShopServiceService, configService, fileService, loginService, payService)
+	grpcServer, err := server.NewGRPCServer(context, grpcMiddlewares, authService, baseApiService, baseConfigService, baseDeptService, baseDictService, baseJobService, baseLogService, baseMenuService, baseRoleService, baseUserService, dashboardService, goodsCategoryService, goodsService, goodsPropService, goodsSkuService, goodsSpecService, orderService, payBillService, shopBannerService, shopHotService, shopServiceService, userStoreService, appShopServiceService, configService, fileService, loginService, payService)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	kratosApp := newApp(context, httpServer)
+	httpMiddlewares := server.NewHttpMiddleware(context, authenticator, baseUserCase, engine, userToken, authentication_Jwt)
+	httpServer, err := server.NewHttpServer(context, httpMiddlewares, authService, baseApiService, baseConfigService, baseDeptService, baseDictService, baseJobService, baseLogService, baseMenuService, baseRoleService, baseUserService, dashboardService, goodsCategoryService, goodsService, goodsPropService, goodsSkuService, goodsSpecService, orderService, payBillService, shopBannerService, shopHotService, shopServiceService, userStoreService, appShopServiceService, configService, fileService, loginService, payService)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	kratosApp := newApp(context, grpcServer, httpServer)
 	return kratosApp, func() {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()

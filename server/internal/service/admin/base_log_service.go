@@ -38,8 +38,7 @@ func NewBaseLogService(
 		ShopCore:    sc,
 		baseLogCase: logCase}
 	// 注册日志队列
-	// 注册定时任务日志队列
-	ss.Queue.Register(_const.Log, ss.baseLogCase.SaveLog)
+	ss.Queue.Register(string(_const.Log), ss.baseLogCase.SaveLog)
 	log.Debug("NewBaseLogService.")
 	return &ss
 }

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	queueData "github.com/liujitcn/go-sdk/queue/data"
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
+	queueData "github.com/liujitcn/kratos-kit/queue/data"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
@@ -35,8 +35,8 @@ func (c *BaseJobLogCase) Page(ctx context.Context, req *admin.PageBaseJobLogRequ
 	executeTime := req.GetExecuteTime()
 	var startTime, endTime *time.Time
 	if len(executeTime) == 2 {
-		startTime = timeutil.StringTimeToTime(executeTime[0])
-		endTime = timeutil.StringTimeToTime(executeTime[1])
+		startTime = _time.StringTimeToTime(executeTime[0])
+		endTime = _time.StringTimeToTime(executeTime[1])
 		if endTime != nil {
 			t := endTime.AddDate(0, 0, 1)
 			endTime = &t
@@ -74,7 +74,7 @@ func (c *BaseJobLogCase) ConvertToProto(item *models.BaseJobLog) *admin.BaseJobL
 		Error:       item.Error,
 		Status:      common.BaseJobLogStatus(item.Status),
 		ProcessTime: processTime.String(),
-		ExecuteTime: timeutil.TimeToTimeString(item.ExecuteTime),
+		ExecuteTime: _time.TimeToTimeString(item.ExecuteTime),
 	}
 }
 

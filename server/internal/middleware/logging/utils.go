@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strings"
 
-	authData "github.com/liujitcn/go-sdk/auth/data"
-	"github.com/tx7do/go-utils/geoip/qqwry"
-	authnEngine "github.com/tx7do/kratos-authn/engine"
+	"github.com/liujitcn/go-utils/geoip/qqwry"
+	authnEngine "github.com/liujitcn/kratos-kit/auth/authn/engine"
+	authData "github.com/liujitcn/kratos-kit/auth/data"
 )
 
 var ipClient = qqwry.NewClient()

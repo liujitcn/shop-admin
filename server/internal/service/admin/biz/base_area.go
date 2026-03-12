@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/liujitcn/go-sdk/cache"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
+	"github.com/liujitcn/kratos-kit/cache"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 )
 
@@ -41,7 +41,7 @@ func (c *BaseAreaCase) GetAddressListByCode(ctx context.Context, code string) []
 			codeMap[strconv.FormatInt(item.ID, 10)] = item.Name
 		}
 	}
-	codeList := str.ConvertJsonStringToStringArray(code)
+	codeList := _string.ConvertJsonStringToStringArray(code)
 	for _, item := range codeList {
 		if v, ok := codeMap[item]; ok {
 			res = append(res, v)

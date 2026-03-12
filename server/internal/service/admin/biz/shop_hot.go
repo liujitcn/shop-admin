@@ -3,8 +3,8 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -52,8 +52,8 @@ func (c *ShopHotCase) Page(ctx context.Context, req *admin.PageShopHotRequest) (
 			Desc:      item.Desc,
 			Sort:      item.Sort,
 			Status:    common.Status(item.Status),
-			CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 
@@ -69,7 +69,7 @@ func (c *ShopHotCase) ConvertToProto(item *models.ShopHot) *admin.ShopHotForm {
 		Title:   item.Title,
 		Desc:    item.Desc,
 		Banner:  item.Banner,
-		Picture: str.ConvertJsonStringToStringArray(item.Picture),
+		Picture: _string.ConvertJsonStringToStringArray(item.Picture),
 		Sort:    item.Sort,
 		Status:  trans.Enum(common.Status(item.Status)),
 	}
@@ -81,7 +81,7 @@ func (c *ShopHotCase) ConvertToModel(item *admin.ShopHotForm) *models.ShopHot {
 		Title:   item.GetTitle(),
 		Desc:    item.GetDesc(),
 		Banner:  item.GetBanner(),
-		Picture: str.ConvertStringArrayToString(item.GetPicture()),
+		Picture: _string.ConvertStringArrayToString(item.GetPicture()),
 		Sort:    item.GetSort(),
 		Status:  int32(item.GetStatus()),
 	}

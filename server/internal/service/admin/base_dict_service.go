@@ -14,13 +14,13 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -44,8 +44,8 @@ func NewBaseDictService(
 	dictItemCase *biz.BaseDictItemCase,
 ) *BaseDictService {
 	var ss = BaseDictService{
-		ShopCore: sc,
-		baseDictCase: dictCase,
+		ShopCore:         sc,
+		baseDictCase:     dictCase,
 		baseDictItemCase: dictItemCase,
 	}
 	log.Debug("NewBaseDictService.")
@@ -168,7 +168,7 @@ func (s *BaseDictService) UpdateBaseDict(ctx context.Context, req *admin.BaseDic
 // DeleteBaseDict
 // 删除字典
 func (s *BaseDictService) DeleteBaseDict(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	for _, id := range ids {
 		// 查询
 		dict, err := s.baseDictCase.GetFromID(ctx, id)
@@ -272,7 +272,7 @@ func (s *BaseDictService) UpdateBaseDictItem(ctx context.Context, req *admin.Bas
 // DeleteBaseDictItem
 // 删除字典属性
 func (s *BaseDictService) DeleteBaseDictItem(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	err := s.baseDictItemCase.Delete(ctx, ids)
 	if err != nil {
 		log.Error("DeleteBaseDictItem err:", err.Error())

@@ -12,13 +12,13 @@ import (
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -40,7 +40,7 @@ func NewGoodsCategoryService(
 	categoryCase *biz.GoodsCategoryCase,
 ) *GoodsCategoryService {
 	var ss = GoodsCategoryService{
-		ShopCore: sc,
+		ShopCore:          sc,
 		goodsCategoryCase: categoryCase}
 	log.Debug("NewGoodsCategoryService.")
 	return &ss
@@ -128,7 +128,7 @@ func (s *GoodsCategoryService) UpdateGoodsCategory(ctx context.Context, req *adm
 // DeleteGoodsCategory
 // 删除分类
 func (s *GoodsCategoryService) DeleteGoodsCategory(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	for _, id := range ids {
 		// 查询下级
 		count, err := s.goodsCategoryCase.Count(ctx, &data.GoodsCategoryCondition{

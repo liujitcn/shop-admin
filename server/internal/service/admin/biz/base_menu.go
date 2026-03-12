@@ -6,8 +6,8 @@ import (
 	"errors"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -86,7 +86,7 @@ func (c *BaseMenuCase) Update(ctx context.Context, req *admin.BaseMenuForm) erro
 }
 
 func (c *BaseMenuCase) Delete(ctx context.Context, id string) error {
-	ids := str.ConvertStringToInt64Array(id)
+	ids := _string.ConvertStringToInt64Array(id)
 	for _, item := range ids {
 		// 查询下级
 		count, err := c.Count(ctx, &data.BaseMenuCondition{
@@ -155,8 +155,8 @@ func (c *BaseMenuCase) buildTree(menuList []*models.BaseMenu, parentId int64) []
 				Meta:      &meta,
 				Sort:      item.Sort,
 				Status:    common.Status(item.Status),
-				CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-				UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+				CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+				UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 			}
 			menu.Children = c.buildTree(menuList, item.ID)
 			res = append(res, menu)
@@ -202,7 +202,7 @@ func (c *BaseMenuCase) ConvertToProto(item *models.BaseMenu) *admin.BaseMenuForm
 		Component: item.Component,
 		Redirect:  item.Redirect,
 		Meta:      &meta,
-		Apis:      str.ConvertJsonStringToStringArray(item.Apis),
+		Apis:      _string.ConvertJsonStringToStringArray(item.Apis),
 		Sort:      item.Sort,
 		Status:    trans.Enum(common.Status(item.Status)),
 	}
@@ -223,7 +223,7 @@ func (c *BaseMenuCase) ConvertToModel(item *admin.BaseMenuForm) *models.BaseMenu
 		Component: item.GetComponent(),
 		Redirect:  item.GetRedirect(),
 		Meta:      string(meta),
-		Apis:      str.ConvertStringArrayToString(item.GetApis()),
+		Apis:      _string.ConvertStringArrayToString(item.GetApis()),
 		Sort:      item.GetSort(),
 		Status:    int32(item.GetStatus()),
 	}

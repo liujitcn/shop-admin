@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -115,8 +115,8 @@ func (c *GoodsCase) Page(ctx context.Context, req *admin.PageGoodsRequest) (*adm
 			InitSaleNum:   item.InitSaleNum,
 			RealSaleNum:   item.RealSaleNum,
 			Status:        common.GoodsStatus(item.Status),
-			CreatedAt:     timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt:     timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt:     _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt:     _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 
@@ -236,8 +236,8 @@ func (c *GoodsCase) ConvertToProto(item *models.Goods) *admin.GoodsForm {
 		Name:       item.Name,
 		Desc:       item.Desc,
 		Picture:    item.Picture,
-		Banner:     str.ConvertJsonStringToStringArray(item.Banner),
-		Detail:     str.ConvertJsonStringToStringArray(item.Detail),
+		Banner:     _string.ConvertJsonStringToStringArray(item.Banner),
+		Detail:     _string.ConvertJsonStringToStringArray(item.Detail),
 		Status:     trans.Enum(common.GoodsStatus(item.Status)),
 	}
 	return res
@@ -250,8 +250,8 @@ func (c *GoodsCase) ConvertToModel(item *admin.GoodsForm) *models.Goods {
 		Name:          item.GetName(),
 		Desc:          item.GetDesc(),
 		Picture:       item.GetPicture(),
-		Banner:        str.ConvertStringArrayToString(item.GetBanner()),
-		Detail:        str.ConvertStringArrayToString(item.GetDetail()),
+		Banner:        _string.ConvertStringArrayToString(item.GetBanner()),
+		Detail:        _string.ConvertStringArrayToString(item.GetDetail()),
 		Price:         0,
 		DiscountPrice: 0,
 		InitSaleNum:   0,

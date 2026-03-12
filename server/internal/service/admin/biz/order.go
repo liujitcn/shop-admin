@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/liujitcn/go-sdk"
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	"github.com/liujitcn/go-utils/id"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -135,8 +135,8 @@ func (c *OrderCase) Page(ctx context.Context, req *admin.PageOrderRequest) (*adm
 	var startCreatedAt, endCreatedAt *time.Time
 	createdAt := req.GetCreatedAt()
 	if len(createdAt) == 2 {
-		startCreatedAt = timeutil.StringTimeToTime(createdAt[0])
-		endCreatedAt = timeutil.StringTimeToTime(createdAt[1])
+		startCreatedAt = _time.StringTimeToTime(createdAt[0])
+		endCreatedAt = _time.StringTimeToTime(createdAt[1])
 		if endCreatedAt != nil {
 			t := endCreatedAt.AddDate(0, 0, 1)
 			endCreatedAt = &t
@@ -202,10 +202,9 @@ func (c *OrderCase) RefundOrder(ctx context.Context, req *admin.RefundOrderReque
 		return fmt.Errorf("订单状态错误：【%s】", common.OrderStatus_name[order.Status])
 	}
 
-	tm := sdk.Runtime.GetSnowflake()
 	orderRefund := &models.OrderRefund{
 		OrderID:  req.GetOrderId(),
-		RefundNo: strconv.FormatInt(tm.NextVal(), 10),
+		RefundNo: strconv.FormatInt(id.GenSnowflakeID(), 10),
 		Reason:   int32(req.GetReason()),
 	}
 	// 在线支付
@@ -242,7 +241,7 @@ func (c *OrderCase) RefundOrder(ctx context.Context, req *admin.RefundOrderReque
 			orderRefund.SuccessTime = trans.TimeValue(refund.SuccessTime)
 			orderRefund.RefundState = string(*refund.Status.Ptr())
 			orderRefund.FundsAccount = string(*refund.FundsAccount)
-			orderRefund.Amount = str.ConvertAnyToJsonString(refund.Amount)
+			orderRefund.Amount = _string.ConvertAnyToJsonString(refund.Amount)
 			orderRefund.Status = 1
 		}
 	} else {
@@ -337,7 +336,7 @@ func (c *OrderCase) ShippedOrder(ctx context.Context, req *admin.ShippedOrderReq
 					return err
 				}
 			}
-			successTime := timeutil.StringDateToTime(transaction.SuccessTime)
+			successTime := _time.StringDateToTime(transaction.SuccessTime)
 			if successTime == nil {
 				successTime = trans.Time(time.Now())
 			}
@@ -349,8 +348,8 @@ func (c *OrderCase) ShippedOrder(ctx context.Context, req *admin.ShippedOrderReq
 			orderPayment.TradeStateDesc = trans.StringValue(transaction.TradeStateDesc)
 			orderPayment.BankType = trans.StringValue(transaction.BankType)
 			orderPayment.SuccessTime = trans.TimeValue(successTime)
-			orderPayment.Payer = str.ConvertAnyToJsonString(transaction.Payer)
-			orderPayment.Amount = str.ConvertAnyToJsonString(transaction.Amount)
+			orderPayment.Payer = _string.ConvertAnyToJsonString(transaction.Payer)
+			orderPayment.Amount = _string.ConvertAnyToJsonString(transaction.Amount)
 			// 添加支付信息
 			if orderPayment.ID == 0 {
 				err = c.orderPaymentCase.Create(ctx, orderPayment)
@@ -398,8 +397,8 @@ func (c *OrderCase) ConvertToProto(item *models.Order) *admin.Order {
 		DeliveryTime: common.OrderDeliveryTime(item.DeliveryTime),
 		Status:       common.OrderStatus(item.Status),
 		Remark:       item.Remark,
-		CreatedAt:    timeutil.TimeToTimeString(item.CreatedAt),
-		UpdatedAt:    timeutil.TimeToTimeString(item.UpdatedAt),
+		CreatedAt:    _time.TimeToTimeString(item.CreatedAt),
+		UpdatedAt:    _time.TimeToTimeString(item.UpdatedAt),
 	}
 	return res
 }

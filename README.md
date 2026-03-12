@@ -63,7 +63,8 @@ make wire
 go run ./cmd/server -conf ./configs
 ```
 
-启动成功后，管理端默认访问地址为：`http://localhost:8091/`  
+启动成功后，管理端默认访问地址为：`http://localhost:8091/`（会重定向到 `/web/`）  
+Swagger 文档地址为：`http://localhost:8091/docs/`
 
 ### 3) 前端打包并嵌入后端
 

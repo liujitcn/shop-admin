@@ -4,14 +4,14 @@ import (
 	"context"
 	"slices"
 
-	"github.com/liujitcn/go-sdk/auth"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
+	"github.com/liujitcn/kratos-kit/auth"
+	authzEngine "github.com/liujitcn/kratos-kit/auth/authz/engine"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	authzEngine "github.com/tx7do/kratos-authz/engine"
 
-	"github.com/tx7do/kratos-authz/engine/casbin"
+	"github.com/liujitcn/kratos-kit/auth/authz/engine/casbin"
 )
 
 type CasbinRuleCase struct {
@@ -52,7 +52,7 @@ func (c *CasbinRuleCase) RebuildCasbinRuleByMenuId(ctx context.Context, menuId i
 		return err
 	}
 	for _, item := range baseRoleList {
-		menus := str.ConvertJsonStringToInt64Array(item.Menus)
+		menus := _string.ConvertJsonStringToInt64Array(item.Menus)
 		if slices.Contains(menus, menuId) {
 			err = c.RebuildCasbinRuleByRole(ctx, item)
 			if err != nil {
@@ -70,7 +70,7 @@ func (c *CasbinRuleCase) DeleteCasbinRuleByMenuIds(ctx context.Context, menuIds 
 		return err
 	}
 	for _, item := range baseRoleList {
-		oldMenus := str.ConvertJsonStringToInt64Array(item.Menus)
+		oldMenus := _string.ConvertJsonStringToInt64Array(item.Menus)
 		newMenus := make([]int64, 0)
 		for _, menuId := range oldMenus {
 			// 不在删除列表
@@ -98,7 +98,7 @@ func (c *CasbinRuleCase) RebuildCasbinRuleByRole(ctx context.Context, baseRole *
 	// 查询当前角色菜单
 
 	// 查询菜单
-	menuIds := str.ConvertJsonStringToInt64Array(baseRole.Menus)
+	menuIds := _string.ConvertJsonStringToInt64Array(baseRole.Menus)
 	if len(menuIds) == 0 {
 		return nil
 	}
@@ -109,7 +109,7 @@ func (c *CasbinRuleCase) RebuildCasbinRuleByRole(ctx context.Context, baseRole *
 
 	operations := make([]string, 0)
 	for _, item := range baseMenuList {
-		apis := str.ConvertJsonStringToStringArray(item.Apis)
+		apis := _string.ConvertJsonStringToStringArray(item.Apis)
 		operations = append(operations, apis...)
 	}
 	if len(operations) == 0 {

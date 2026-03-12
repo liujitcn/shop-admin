@@ -5,5 +5,5 @@ import "embed"
 //go:embed openapi.yaml
 var OpenApiData []byte
 
-//go:embed web/*
+//go:embed all:web/*
 var WebAssets embed.FS

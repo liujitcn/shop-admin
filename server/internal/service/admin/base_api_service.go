@@ -38,7 +38,7 @@ func NewBaseApiService(
 		ShopCore:    sc,
 		baseApiCase: baseApiCase}
 	// 注册API队列
-	ss.Queue.Register(_const.ApiCheck, ss.baseApiCase.SaveApi)
+	ss.Queue.Register(string(_const.ApiCheck), ss.baseApiCase.SaveApi)
 	// 检查API
 	err := ss.baseApiCase.ApiCheck()
 	if err != nil {

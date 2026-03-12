@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk/oss"
-	"github.com/liujitcn/go-utils"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/go-utils/trans"
+	"github.com/liujitcn/kratos-kit/oss"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay/bill"
@@ -137,7 +137,7 @@ func (t *TradeBill) payment(billDate, billType string) ([]string, error) {
 		switch len(record) {
 		case 20:
 			// 计算金额
-			amount := utils.ConvertYuanToFen(record[12])
+			amount := _string.ConvertYuanStringToFen(record[12])
 			payBill.ThirdTotalCount += 1
 			payBill.ThirdTotalAmount += amount
 			// 交易记录
@@ -244,7 +244,7 @@ func (t *TradeBill) refund(billDate, billType string) ([]string, error) {
 		switch len(record) {
 		case 29:
 			// 计算金额
-			amount := utils.ConvertYuanToFen(record[18])
+			amount := _string.ConvertYuanStringToFen(record[18])
 			payBill.ThirdTotalCount += 1
 			payBill.ThirdTotalAmount += amount
 			// 交易记录

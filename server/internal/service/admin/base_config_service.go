@@ -13,15 +13,15 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-sdk"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
+	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -43,7 +43,7 @@ func NewBaseConfigService(
 	configCase *biz.BaseConfigCase,
 ) (*BaseConfigService, error) {
 	var ss = BaseConfigService{
-		ShopCore: sc,
+		ShopCore:       sc,
 		baseConfigCase: configCase}
 	// 服务启动，刷新缓存
 	_, err := ss.RefreshBaseConfig(context.Background(), &emptypb.Empty{})
@@ -149,7 +149,7 @@ func (s *BaseConfigService) UpdateBaseConfig(ctx context.Context, req *admin.Bas
 // DeleteBaseConfig
 // 删除系统配置
 func (s *BaseConfigService) DeleteBaseConfig(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	list, err := s.baseConfigCase.List(ctx, &data.BaseConfigCondition{
 		Ids: ids,
 	})

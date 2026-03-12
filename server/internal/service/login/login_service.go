@@ -9,14 +9,15 @@ package login
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk/auth"
-	"github.com/liujitcn/go-sdk/captcha"
+	"github.com/liujitcn/kratos-kit/auth"
+	"github.com/liujitcn/kratos-kit/auth/authn/engine"
+	"github.com/liujitcn/kratos-kit/captcha"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	"github.com/liujitcn/shop-admin/server/internal/core"
-	"github.com/tx7do/kratos-authn/engine"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -37,6 +38,10 @@ func NewLoginService(
 	var ss = LoginService{
 		ShopCore: sc,
 	}
+
+	// 设置验证码缓存
+	captcha.SetStore(captcha.NewCacheStore(sc.Cache, 60*time.Second))
+
 	log.Debug("NewLoginService.")
 	return &ss
 }
@@ -44,7 +49,7 @@ func NewLoginService(
 // Captcha
 // 验证码
 func (s *LoginService) Captcha(ctx context.Context, req *emptypb.Empty) (*login.CaptchaResponse, error) {
-	id, b64s, err := captcha.DriverDigitFunc()
+	id, b64s, _, err := captcha.DriverDigitFunc()
 	if err != nil {
 		return nil, err
 	}

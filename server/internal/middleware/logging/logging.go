@@ -13,17 +13,16 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/kratos/v2/transport/http/status"
-	"github.com/liujitcn/go-sdk"
-	queueData "github.com/liujitcn/go-sdk/queue/data"
 	"github.com/liujitcn/go-utils/trans"
+	authnEngine "github.com/liujitcn/kratos-kit/auth/authn/engine"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/file"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	"github.com/liujitcn/shop-admin/server/internal/utils"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"github.com/mileusna/useragent"
-	authnEngine "github.com/tx7do/kratos-authn/engine"
 	"google.golang.org/grpc/codes"
 )
 
@@ -138,7 +137,7 @@ func Server(logger log.Logger,
 				baseLog.Reason = fmt.Sprintf("[%s]%s", baseLog.Reason, stack)
 			}
 			// 写入日志
-			writeOperationLog(&baseLog)
+			utils.AddQueue(_const.Log, &baseLog)
 			log.NewHelper(log.WithContext(ctx, logger)).Log(level,
 				"kind", "server",
 				"component", kind,
@@ -171,28 +170,4 @@ func extractError(err error) (log.Level, string) {
 		return log.LevelError, fmt.Sprintf("%+v", err)
 	}
 	return log.LevelInfo, ""
-}
-
-// 写入操作日志
-func writeOperationLog(
-	baseLog *models.BaseLog,
-) {
-	var err error
-	// 加入日志队列
-	q := sdk.Runtime.GetQueue()
-	if q != nil {
-		m := make(map[string]interface{})
-		m["data"] = baseLog
-		var message queueData.Message
-		message, err = sdk.Runtime.GetStreamMessage(_const.Log, m)
-		if err != nil {
-			log.Errorf("GetStreamMessage error, %s", err.Error())
-			//日志报错错误，不中断请求
-		} else {
-			err = q.Append(_const.Log, message)
-			if err != nil {
-				log.Errorf("Append message error, %s", err.Error())
-			}
-		}
-	}
 }

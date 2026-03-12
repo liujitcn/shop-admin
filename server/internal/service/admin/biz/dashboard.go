@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/liujitcn/go-utils"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/data/dto"
@@ -46,7 +46,7 @@ func NewDashboardCase(
 
 func (c *DashboardCase) DashboardCountUser(ctx context.Context, req *admin.DashboardCountRequest) (*admin.DashboardCountResponse, error) {
 	var err error
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 
 	// 查询今日注册用户数
 	var user admin.DashboardCountResponse
@@ -68,7 +68,7 @@ func (c *DashboardCase) DashboardCountUser(ctx context.Context, req *admin.Dashb
 
 func (c *DashboardCase) DashboardCountGoods(ctx context.Context, req *admin.DashboardCountRequest) (*admin.DashboardCountResponse, error) {
 	var err error
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 
 	// 查询今日新增商品
 	var goods admin.DashboardCountResponse
@@ -90,7 +90,7 @@ func (c *DashboardCase) DashboardCountGoods(ctx context.Context, req *admin.Dash
 
 func (c *DashboardCase) DashboardCountOrder(ctx context.Context, req *admin.DashboardCountRequest) (*admin.DashboardCountResponse, error) {
 	var err error
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 
 	// 查询今日订单数
 	var order admin.DashboardCountResponse
@@ -111,7 +111,7 @@ func (c *DashboardCase) DashboardCountOrder(ctx context.Context, req *admin.Dash
 
 func (c *DashboardCase) DashboardCountSale(ctx context.Context, req *admin.DashboardCountRequest) (*admin.DashboardCountResponse, error) {
 	var err error
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 
 	// 查询今日销售额
 	var sale admin.DashboardCountResponse
@@ -143,7 +143,7 @@ func (c *DashboardCase) DashboardBarOrder(ctx context.Context, req *admin.Dashbo
 		endCreatedAt := startCreatedAt.AddDate(0, 1, 0).Add(-time.Nanosecond)
 		xAxisInt = endCreatedAt.Day()
 	}
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 	summary, err := c.orderCase.OrderSummary(ctx, int32(req.GetTimeType()), &data.OrderCondition{
 		StartCreatedAt: &startCreatedAt,
 		EndCreatedAt:   &endCreatedAt,
@@ -176,7 +176,7 @@ func (c *DashboardCase) DashboardBarOrder(ctx context.Context, req *admin.Dashbo
 	saleAmountRateRow := make([]int64, 0)
 	for i := 0; i < xAxisInt; i++ {
 		month := int64(i + 1)
-		axisData = append(axisData, utils.FormatDate(utils.TimeType(req.GetTimeType()), i))
+		axisData = append(axisData, _time.FormatDate(_time.TimeType(req.GetTimeType()), i))
 
 		if item, ok := summaryMap[month]; ok {
 			orderCountRow = append(orderCountRow, item.OrderCount)
@@ -186,11 +186,11 @@ func (c *DashboardCase) DashboardBarOrder(ctx context.Context, req *admin.Dashbo
 			saleAmountRow = append(saleAmountRow, 0)
 		}
 		if i == 0 {
-			orderCountRateRow = append(orderCountRateRow, utils.CalcGrowthRate(0, orderCountRow[i]))
-			saleAmountRateRow = append(saleAmountRateRow, utils.CalcGrowthRate(0, saleAmountRow[i]))
+			orderCountRateRow = append(orderCountRateRow, _time.CalcGrowthRate(0, orderCountRow[i]))
+			saleAmountRateRow = append(saleAmountRateRow, _time.CalcGrowthRate(0, saleAmountRow[i]))
 		} else {
-			orderCountRateRow = append(orderCountRateRow, utils.CalcGrowthRate(orderCountRow[i-1], orderCountRow[i]))
-			saleAmountRateRow = append(saleAmountRateRow, utils.CalcGrowthRate(saleAmountRow[i-1], saleAmountRow[i]))
+			orderCountRateRow = append(orderCountRateRow, _time.CalcGrowthRate(orderCountRow[i-1], orderCountRow[i]))
+			saleAmountRateRow = append(saleAmountRateRow, _time.CalcGrowthRate(saleAmountRow[i-1], saleAmountRow[i]))
 		}
 	}
 
@@ -215,7 +215,7 @@ func (c *DashboardCase) DashboardBarOrder(ctx context.Context, req *admin.Dashbo
 }
 
 func (c *DashboardCase) DashboardBarGoods(ctx context.Context, req *admin.DashboardBarGoodsRequest) (*admin.DashboardBarResponse, error) {
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 	summary, err := c.orderGoodsCase.OrderGoodsSummary(ctx, req.GetTop(), &startCreatedAt, &endCreatedAt)
 	if err != nil {
 		return nil, err
@@ -282,7 +282,7 @@ func (c *DashboardCase) DashboardPieGoods(ctx context.Context, req *admin.Dashbo
 }
 
 func (c *DashboardCase) DashboardRadarOrder(ctx context.Context, req *admin.DashboardRadarOrderRequest) (*admin.DashboardRadarResponse, error) {
-	startCreatedAt, endCreatedAt := utils.GetCreatedAt(utils.TimeType(req.GetTimeType()))
+	startCreatedAt, endCreatedAt := _time.GetCreatedAt(_time.TimeType(req.GetTimeType()))
 	summary, err := c.orderGoodsCase.OrderGoodsStatusSummary(ctx, &startCreatedAt, &endCreatedAt)
 	if err != nil {
 		return nil, err

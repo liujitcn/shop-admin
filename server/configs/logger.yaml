@@ -1,15 +1,16 @@
 logger:
-  type: std # Options: std, file, fluent, zap, logrus, aliyun, tencent
+  type: zap # Options: std, file, fluent, zap, logrus, aliyun, tencent
 
   fluent:
     endpoint: "tcp://localhost:24224"
 
   zap:
     level: "debug"
-    filename: "./data/logs/info.log"
+    filepath: "./data/logs"
     max_size: 1
     max_age: 30
     max_backups: 5
+    enable_console: true
 
   logrus:
     level: "debug"

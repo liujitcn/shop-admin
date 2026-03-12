@@ -12,13 +12,13 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -40,7 +40,7 @@ func NewShopBannerService(
 	bannerCase *biz.ShopBannerCase,
 ) *ShopBannerService {
 	var ss = ShopBannerService{
-		ShopCore: sc,
+		ShopCore:   sc,
 		bannerCase: bannerCase}
 	log.Debug("NewShopBannerService.")
 	return &ss
@@ -99,7 +99,7 @@ func (s *ShopBannerService) UpdateShopBanner(ctx context.Context, req *admin.Sho
 // DeleteShopBanner
 // 删除轮播图
 func (s *ShopBannerService) DeleteShopBanner(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	oldShopBannerList, err := s.bannerCase.FindAll(ctx, &data.ShopBannerCondition{
 		Ids: ids,
 	})

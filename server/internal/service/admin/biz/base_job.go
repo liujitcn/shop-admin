@@ -6,8 +6,8 @@ import (
 	"errors"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -61,8 +61,8 @@ func (c *BaseJobCase) Page(ctx context.Context, req *admin.PageBaseJobRequest) (
 			Args:           c.ConvertToBaseJobArgs(item.Args),
 			Status:         common.Status(item.Status),
 			EntryId:        item.EntryID,
-			CreatedAt:      timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt:      timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt:      _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt:      _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 
@@ -90,7 +90,7 @@ func (c *BaseJobCase) ConvertToModel(item *admin.BaseJobForm) *models.BaseJob {
 		Name:           item.GetName(),
 		CronExpression: item.GetCronExpression(),
 		InvokeTarget:   item.GetInvokeTarget(),
-		Args:           str.ConvertAnyToJsonString(item.GetArgs()),
+		Args:           _string.ConvertAnyToJsonString(item.GetArgs()),
 		Status:         int32(item.GetStatus()),
 	}
 	return res

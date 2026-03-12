@@ -6,16 +6,17 @@ import (
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/liujitcn/go-sdk/auth"
-	authData "github.com/liujitcn/go-sdk/auth/data"
+	"github.com/liujitcn/kratos-kit/auth"
+	authnEngine "github.com/liujitcn/kratos-kit/auth/authn/engine"
+	authzEngine "github.com/liujitcn/kratos-kit/auth/authz/engine"
+	authData "github.com/liujitcn/kratos-kit/auth/data"
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	appApi "github.com/liujitcn/shop-admin/server/api/gen/go/app"
-	"github.com/liujitcn/shop-admin/server/api/gen/go/conf"
 	configApi "github.com/liujitcn/shop-admin/server/api/gen/go/config"
 	loginApi "github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	payApi "github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	"github.com/liujitcn/shop-admin/server/cmd/server/assets"
-	customLogging "github.com/liujitcn/shop-admin/server/internal/middleware/logging"
+	"github.com/liujitcn/shop-admin/server/internal/middleware/logging"
 	"github.com/liujitcn/shop-admin/server/internal/service"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
@@ -24,15 +25,17 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/service/file"
 	"github.com/liujitcn/shop-admin/server/internal/service/login"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
-	authnEngine "github.com/tx7do/kratos-authn/engine"
-	authzEngine "github.com/tx7do/kratos-authz/engine"
 
-	swaggerUI "github.com/tx7do/kratos-swagger-ui"
+	bootstrapConf "github.com/liujitcn/kratos-kit/api/gen/go/conf"
+	swaggerUI "github.com/liujitcn/kratos-kit/swagger-ui"
 
-	"github.com/tx7do/kratos-bootstrap/rpc"
+	"github.com/liujitcn/kratos-kit/rpc"
 
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
+	"github.com/liujitcn/kratos-kit/bootstrap"
 )
+
+// HttpMiddlewares 为 HTTP 服务注入专用中间件类型，避免与 gRPC 中间件冲突。
+type HttpMiddlewares []middleware.Middleware
 
 // NewHttpMiddleware 创建中间件
 func NewHttpMiddleware(
@@ -41,25 +44,21 @@ func NewHttpMiddleware(
 	userCase *biz.BaseUserCase,
 	authorizer authzEngine.Engine,
 	userToken *authData.UserToken,
-	jwtCfg *conf.Jwt,
-) []middleware.Middleware {
-	whiteList := jwtCfg.GetWhiteList()
-
-	var ms []middleware.Middleware
-	ms = append(ms, customLogging.Server(ctx.GetLogger(), userCase, authenticator))
-	ms = append(ms, auth.NewAuthMiddleware(authenticator, authorizer, userToken, &auth.WhiteList{
-		Prefix: whiteList.GetPrefix(),
-		Regex:  whiteList.GetRegex(),
-		Path:   whiteList.GetPath(),
-		Match:  whiteList.GetMatch(),
-	}))
+	jwtCfg *bootstrapConf.Authentication_Jwt,
+) HttpMiddlewares {
+	var ms HttpMiddlewares
+	cfg := ctx.GetConfig()
+	if cfg != nil && cfg.Server == nil && cfg.Server.Http == nil && cfg.Server.Http.Middleware != nil && cfg.Server.Http.Middleware.EnableLogging {
+		ms = append(ms, logging.Server(ctx.GetLogger(), userCase, authenticator))
+	}
+	ms = append(ms, auth.NewAuthMiddleware(authenticator, authorizer, userToken, jwtCfg))
 	return ms
 }
 
 // NewHttpServer new an Http server.
 func NewHttpServer(
 	ctx *bootstrap.Context,
-	middlewares []middleware.Middleware,
+	middlewares HttpMiddlewares,
 	adminAuth *admin.AuthService,
 	adminBaseApi *admin.BaseApiService,
 	adminBaseConfig *admin.BaseConfigService,
@@ -98,13 +97,11 @@ func NewHttpServer(
 ) (*http.Server, error) {
 	cfg := ctx.GetConfig()
 
-	if cfg == nil || cfg.Server == nil || cfg.Server.Rest == nil {
+	if cfg == nil || cfg.Server == nil || cfg.Server.Http == nil {
 		return nil, nil
 	}
 
-	srv, err := rpc.CreateRestServer(cfg,
-		middlewares...,
-	)
+	srv, err := rpc.CreateHttpServer(cfg, middlewares...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,27 +116,19 @@ func NewHttpServer(
 	adminApi.RegisterBaseMenuServiceHTTPServer(srv, adminBaseMenu)
 	adminApi.RegisterBaseRoleServiceHTTPServer(srv, adminBaseRole)
 	adminApi.RegisterBaseUserServiceHTTPServer(srv, adminBaseUser)
-
 	adminApi.RegisterDashboardServiceHTTPServer(srv, adminDashboard)
-
 	adminApi.RegisterGoodsCategoryServiceHTTPServer(srv, adminGoodsCategory)
 	adminApi.RegisterGoodsServiceHTTPServer(srv, adminGoods)
 	adminApi.RegisterGoodsPropServiceHTTPServer(srv, adminGoodsProp)
 	adminApi.RegisterGoodsSkuServiceHTTPServer(srv, adminGoodsSku)
 	adminApi.RegisterGoodsSpecServiceHTTPServer(srv, adminGoodsSpec)
-
 	adminApi.RegisterOrderServiceHTTPServer(srv, adminOrder)
-
 	adminApi.RegisterPayBillServiceHTTPServer(srv, adminPayBill)
-
 	adminApi.RegisterShopBannerServiceHTTPServer(srv, adminShopBanner)
 	adminApi.RegisterShopHotServiceHTTPServer(srv, adminShopHot)
 	adminApi.RegisterShopServiceServiceHTTPServer(srv, adminShopService)
-
 	adminApi.RegisterUserStoreServiceHTTPServer(srv, adminUserStore)
-
 	appApi.RegisterShopServiceServiceHTTPServer(srv, appShopService)
-
 	configApi.RegisterConfigServiceHTTPServer(srv, config)
 	// 修改http接口实现
 	service.RegisterFileServiceHTTPServer(srv, file)
@@ -158,7 +147,7 @@ func NewHttpServer(
 		})
 	}
 
-	if cfg.GetServer().GetRest().GetEnableSwagger() {
+	if cfg.GetServer().GetHttp().GetEnableSwagger() {
 		swaggerUI.RegisterSwaggerUIServerWithOption(
 			srv,
 			swaggerUI.WithTitle(ctx.GetAppInfo().GetName()),

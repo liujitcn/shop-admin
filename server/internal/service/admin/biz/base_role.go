@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/liujitcn/go-utils/str"
-	"github.com/liujitcn/go-utils/timeutil"
+	_string "github.com/liujitcn/go-utils/string"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -64,11 +64,11 @@ func (c *BaseRoleCase) Page(ctx context.Context, req *admin.PageBaseRoleRequest)
 			Name:      item.Name,
 			Code:      item.Code,
 			DataScope: common.BaseRoleDataScope(item.DataScope),
-			Menus:     str.ConvertJsonStringToInt64Array(item.Menus),
+			Menus:     _string.ConvertJsonStringToInt64Array(item.Menus),
 			Status:    common.Status(item.Status),
 			Remark:    item.Remark,
-			CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 
@@ -112,7 +112,7 @@ func (c *BaseRoleCase) Update(ctx context.Context, req *admin.BaseRoleForm) erro
 }
 
 func (c *BaseRoleCase) Delete(ctx context.Context, id string) error {
-	ids := str.ConvertStringToInt64Array(id)
+	ids := _string.ConvertStringToInt64Array(id)
 	count, err := c.Count(ctx, &data.BaseRoleCondition{
 		Ids:  ids,
 		Code: _const.BaseRoleCode_Super,
@@ -143,7 +143,7 @@ func (c *BaseRoleCase) SetBaseRoleMenus(ctx context.Context, req *admin.SetMenus
 	}
 	baseRole := &models.BaseRole{
 		ID:    req.GetId(),
-		Menus: str.ConvertInt64ArrayToString(req.GetMenus()),
+		Menus: _string.ConvertInt64ArrayToString(req.GetMenus()),
 	}
 	return c.tx.Transaction(ctx, func(ctx context.Context) error {
 		err = c.UpdateByID(ctx, baseRole)
@@ -165,7 +165,7 @@ func (c *BaseRoleCase) ConvertToProto(item *models.BaseRole) *admin.BaseRoleForm
 		Name:      item.Name,
 		Code:      item.Code,
 		DataScope: trans.Enum(common.BaseRoleDataScope(item.DataScope)),
-		Menus:     str.ConvertJsonStringToInt64Array(item.Menus),
+		Menus:     _string.ConvertJsonStringToInt64Array(item.Menus),
 		Status:    trans.Enum(common.Status(item.Status)),
 		Remark:    item.Remark,
 	}
@@ -178,7 +178,7 @@ func (c *BaseRoleCase) ConvertToModel(item *admin.BaseRoleForm) *models.BaseRole
 		Name:      item.GetName(),
 		Code:      item.GetCode(),
 		DataScope: int32(item.GetDataScope()),
-		Menus:     str.ConvertInt64ArrayToString(item.GetMenus()),
+		Menus:     _string.ConvertInt64ArrayToString(item.GetMenus()),
 		Status:    int32(item.GetStatus()),
 		Remark:    item.GetRemark(),
 	}

@@ -5,9 +5,9 @@ import (
 	"slices"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/liujitcn/go-sdk"
-	"github.com/liujitcn/go-sdk/oss"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
+	"github.com/liujitcn/kratos-kit/oss"
+	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/file"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -70,7 +70,7 @@ func (c *FileCase) DownloadFile(req *file.DownloadFileRequest) (*wrapperspb.Byte
 }
 
 func (c *FileCase) MultiDeleteFileByString(oldFile string, newFile []string) {
-	c.MultiDeleteFile(str.ConvertJsonStringToStringArray(oldFile), newFile)
+	c.MultiDeleteFile(_string.ConvertJsonStringToStringArray(oldFile), newFile)
 }
 
 func (c *FileCase) MultiDeleteFile(oldFile, newFile []string) {

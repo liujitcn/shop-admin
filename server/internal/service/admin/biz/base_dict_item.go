@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -49,8 +49,8 @@ func (c *BaseDictItemCase) Page(ctx context.Context, req *admin.PageBaseDictItem
 			TagType:   item.TagType,
 			Sort:      item.Sort,
 			Status:    common.Status(item.Status),
-			CreatedAt: timeutil.TimeToTimeString(item.CreatedAt),
-			UpdatedAt: timeutil.TimeToTimeString(item.UpdatedAt),
+			CreatedAt: _time.TimeToTimeString(item.CreatedAt),
+			UpdatedAt: _time.TimeToTimeString(item.UpdatedAt),
 		})
 	}
 

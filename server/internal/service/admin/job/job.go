@@ -4,11 +4,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/sdk"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
+	"github.com/liujitcn/shop-admin/server/internal/utils"
 	"github.com/liujitcn/shop-gorm-gen/models"
 )
 
@@ -24,9 +24,9 @@ type ExecJob struct {
 func (e *ExecJob) Run() {
 	// 记录日志
 	baseJobLog := models.BaseJobLog{
-		JobID:       e.JobId,                            // 定时任务id
-		Input:       str.ConvertAnyToJsonString(e.Args), // 任务参数
-		ExecuteTime: time.Now(),                         // 执行时间
+		JobID:       e.JobId,                                // 定时任务id
+		Input:       _string.ConvertAnyToJsonString(e.Args), // 任务参数
+		ExecuteTime: time.Now(),                             // 执行时间
 	}
 	ret, err := e.InvokeTarget.Exec(e.Args)
 	if err != nil {
@@ -43,6 +43,6 @@ func (e *ExecJob) Run() {
 	// 执行时间
 	baseJobLog.ProcessTime = int32(time.Now().Sub(baseJobLog.ExecuteTime).Milliseconds())
 	// 加入日志队列
-	sdk.AddQueue(_const.JobLog, baseJobLog)
+	utils.AddQueue(_const.JobLog, baseJobLog)
 	return
 }

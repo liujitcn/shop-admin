@@ -4,19 +4,19 @@
 package main
 
 import (
+	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
-	"github.com/liujitcn/shop-admin/server/internal/sdk"
+	"github.com/liujitcn/shop-admin/server/internal/middleware"
 
-	"github.com/go-kratos/kratos/v2"
+	"github.com/liujitcn/kratos-kit/bootstrap"
 	"github.com/liujitcn/shop-admin/server/internal/configs"
 	"github.com/liujitcn/shop-admin/server/internal/server"
 	"github.com/liujitcn/shop-admin/server/internal/service"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
 )
 
 // initApp init kratos application.
 func initApp(*bootstrap.Context) (*kratos.App, func(), error) {
-	panic(wire.Build(configs.ProviderSet, core.ProviderSet, data.ProviderSet, sdk.ProviderSet, server.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(configs.ProviderSet, core.ProviderSet, data.ProviderSet, middleware.ProviderSet, server.ProviderSet, service.ProviderSet, newApp))
 }

@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
@@ -83,7 +83,7 @@ func (c *GoodsSpecCase) ConvertToProto(item *models.GoodsSpec) *admin.GoodsSpec 
 		Id:      item.ID,
 		GoodsId: item.GoodsID,
 		Name:    item.Name,
-		Item:    str.ConvertJsonStringToStringArray(item.Item),
+		Item:    _string.ConvertJsonStringToStringArray(item.Item),
 		Sort:    item.Sort,
 	}
 	return res
@@ -94,7 +94,7 @@ func (c *GoodsSpecCase) ConvertToModel(item *admin.GoodsSpec) *models.GoodsSpec 
 		ID:      item.GetId(),
 		GoodsID: item.GetGoodsId(),
 		Name:    item.GetName(),
-		Item:    str.ConvertStringArrayToString(item.GetItem()),
+		Item:    _string.ConvertStringArrayToString(item.GetItem()),
 		Sort:    item.GetSort(),
 	}
 	return res

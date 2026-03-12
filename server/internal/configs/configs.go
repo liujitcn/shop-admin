@@ -7,12 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/liujitcn/go-sdk"
+	bootstrapConf "github.com/liujitcn/kratos-kit/api/gen/go/conf"
+	"github.com/liujitcn/kratos-kit/bootstrap"
+	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/conf"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	bootstrapConf "github.com/tx7do/kratos-bootstrap/api/gen/go/conf/v1"
-	"github.com/tx7do/kratos-bootstrap/bootstrap"
-	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 const WrapperConfigKey = "ShopAdminServer"
@@ -26,27 +25,51 @@ func NewShopAdminServerConfig(ctx *bootstrap.Context) *conf.ShopAdminServerConfi
 	return &conf.ShopAdminServerConfig{}
 }
 
+func ParseOss(ctx *bootstrap.Context) (*bootstrapConf.OSS, error) {
+	cfg := ctx.GetConfig()
+	if cfg == nil || cfg.GetOss() == nil {
+		return nil, errors.New("config oss is nil")
+	}
+	return cfg.GetOss(), nil
+}
+
+func ParseData(ctx *bootstrap.Context) (*bootstrapConf.Data, error) {
+	cfg := ctx.GetConfig()
+	if cfg == nil || cfg.GetData() == nil {
+		return nil, errors.New("config data is nil")
+	}
+	return cfg.GetData(), nil
+}
+
+func ParseDatabase(cfg *bootstrapConf.Data) *bootstrapConf.Data_Database {
+	return cfg.GetDatabase()
+}
+
+func ParseQueue(cfg *bootstrapConf.Data) *bootstrapConf.Data_Queue {
+	return cfg.GetQueue()
+}
+
+func ParseRedis(cfg *bootstrapConf.Data) *bootstrapConf.Data_Redis {
+	return cfg.GetRedis()
+}
+
+func ParsePprof(ctx *bootstrap.Context) (*bootstrapConf.Pprof, error) {
+	cfg := ctx.GetConfig()
+	if cfg == nil || cfg.GetPprof() == nil {
+		return nil, errors.New("config pprof is nil")
+	}
+	return cfg.GetPprof(), nil
+}
+
 func ParseAuthnJwt(ctx *bootstrap.Context) *bootstrapConf.Authentication_Jwt {
 	cfg := ctx.GetConfig()
 	if cfg == nil || cfg.GetAuthn() == nil || cfg.GetAuthn().GetJwt() == nil {
 		return &bootstrapConf.Authentication_Jwt{
 			Method: "HS256",
-			Key:    "shop-admin",
+			Secret: "shop-admin",
 		}
 	}
 	return cfg.GetAuthn().GetJwt()
-}
-
-func ParseJwt(cfg *conf.ShopAdminServerConfig) *conf.Jwt {
-	jwt := cfg.GetJwt()
-	if jwt == nil {
-		jwt = &conf.Jwt{
-			AccessTokenExpires:  durationpb.New(7200 * time.Second),
-			RefreshTokenExpires: durationpb.New(14400 * time.Second),
-			WhiteList:           &conf.WhiteList{},
-		}
-	}
-	return jwt
 }
 
 func ParseWxPay(cfg *conf.ShopAdminServerConfig) (*conf.WxPay, error) {

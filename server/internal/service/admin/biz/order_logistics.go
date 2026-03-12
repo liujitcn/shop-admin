@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/liujitcn/go-utils/timeutil"
+	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"gorm.io/gorm"
@@ -40,6 +40,6 @@ func (c *OrderLogisticsCase) GetFromByOrderId(ctx context.Context, orderId int64
 		No:        orderLogistics.No,
 		Contact:   orderLogistics.Contact,
 		Detail:    detail,
-		CreatedAt: timeutil.TimeToTimeString(orderLogistics.CreatedAt),
+		CreatedAt: _time.TimeToTimeString(orderLogistics.CreatedAt),
 	}, nil
 }

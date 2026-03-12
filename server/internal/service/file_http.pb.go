@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/kratos/v2/transport/http/binding"
-	"github.com/liujitcn/go-sdk"
+	"github.com/liujitcn/go-utils/id"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/file"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -147,12 +147,12 @@ func _FileService_DownloadFile0_HTTP_Handler(srv FileServiceHTTPServer) func(ctx
 }
 
 func convertUploadFileInfo(multipartFile multipart.File, fileType, contentType, fileName string) (*file.UploadFileInfo, error) {
-	defer func(multipartFile multipart.File) {
-		err := multipartFile.Close()
-		if err != nil {
-			log.Error("form file close err: %v", err)
-		}
-	}(multipartFile)
+		defer func(multipartFile multipart.File) {
+			err := multipartFile.Close()
+			if err != nil {
+				log.Errorf("form file close err: %v", err)
+			}
+		}(multipartFile)
 
 	b := new(strings.Builder)
 	_, err := io.Copy(b, multipartFile)
@@ -192,10 +192,9 @@ func convertUploadFileInfo(multipartFile multipart.File, fileType, contentType, 
 		}
 	}
 
-	tm := sdk.Runtime.GetSnowflake()
 	datePath := time.Now().Format("2006/01/02")
 	return &file.UploadFileInfo{
-		Name:    fmt.Sprintf("%d.%s", tm.NextVal(), extname),
+		Name:    fmt.Sprintf("%d.%s", id.GenSnowflakeID(), extname),
 		Extname: extname,
 		Path:    fmt.Sprintf("/%s/%s", p, datePath),
 		Content: []byte(b.String()),

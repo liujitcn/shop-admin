@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 )
@@ -35,7 +35,7 @@ func (c *OrderGoodsCase) GetFromByOrderId(ctx context.Context, orderId int64) ([
 			Picture:       item.Picture,
 			Name:          item.Name,
 			Num:           item.Num,
-			SpecItem:      str.ConvertJsonStringToStringArray(item.SpecItem),
+			SpecItem:      _string.ConvertJsonStringToStringArray(item.SpecItem),
 			Price:         item.Price,
 			PayPrice:      item.PayPrice,
 			TotalPrice:    item.TotalPrice,

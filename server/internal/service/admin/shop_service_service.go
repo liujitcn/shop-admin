@@ -12,13 +12,13 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/liujitcn/go-utils/str"
+	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
+	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -40,7 +40,7 @@ func NewShopServiceService(
 	serviceCase *biz.ShopServiceCase,
 ) *ShopServiceService {
 	var ss = ShopServiceService{
-		ShopCore: sc,
+		ShopCore:    sc,
 		serviceCase: serviceCase}
 	log.Debug("NewShopServiceService.")
 	return &ss
@@ -99,7 +99,7 @@ func (s *ShopServiceService) UpdateShopService(ctx context.Context, req *admin.S
 // DeleteShopService
 // 删除商城服务
 func (s *ShopServiceService) DeleteShopService(ctx context.Context, req *wrapperspb.StringValue) (*emptypb.Empty, error) {
-	ids := str.ConvertStringToInt64Array(req.GetValue())
+	ids := _string.ConvertStringToInt64Array(req.GetValue())
 	err := s.serviceCase.Delete(ctx, ids)
 	if err != nil {
 		log.Error("DeleteShopService err:", err.Error())
