@@ -30,19 +30,15 @@ cover.out
 vendor/
 certs/
 
-# Go modules
-go.sum
-
 # Logs
 *.log
 logs/
+
 
 # Temporary files
 tmp/
 temp/
 *.tmp
-
-cert/
 
 # Environment files
 .env

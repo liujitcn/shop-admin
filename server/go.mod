@@ -19,7 +19,7 @@ require (
 	github.com/liujitcn/kratos-kit/auth/authn/engine/jwt v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authz v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authz/engine/casbin v0.0.4
-	github.com/liujitcn/kratos-kit/bootstrap v0.0.1
+	github.com/liujitcn/kratos-kit/bootstrap v0.0.3
 	github.com/liujitcn/kratos-kit/cache v0.0.4
 	github.com/liujitcn/kratos-kit/captcha v0.0.1
 	github.com/liujitcn/kratos-kit/database/gorm v0.0.6
