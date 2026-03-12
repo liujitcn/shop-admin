@@ -13,8 +13,8 @@ import (
 )
 
 type OrderGoodsCondition struct {
-	OrderId  int64
-	OrderIds []int64
+	OrderId  int64   `query:"type:eq;column:order_id"`
+	OrderIds []int64 `query:"type:in;column:order_id"`
 }
 
 type OrderGoodsRepo interface {

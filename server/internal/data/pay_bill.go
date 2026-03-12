@@ -10,9 +10,9 @@ import (
 )
 
 type PayBillCondition struct {
-	Id       int64
-	BillDate string
-	BillType string
+	Id       int64  `query:"type:eq;column:id"`
+	BillDate string `query:"type:eq;column:bill_date"`
+	BillType string `query:"type:eq;column:bill_type"`
 }
 
 type PayBillRepo interface {

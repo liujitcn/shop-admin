@@ -13,10 +13,10 @@ import (
 
 // ShopServiceCondition 商城服务查询条件
 type ShopServiceCondition struct {
-	Id     int64
-	Ids    []int64
-	Label  string
-	Status int32
+	Id     int64   `query:"type:eq;column:id"`
+	Ids    []int64 `query:"type:in;column:id"`
+	Label  string  `query:"type:contains;column:label"`
+	Status int32   `query:"type:eq;column:status"`
 }
 
 // ShopServiceRepo 商城服务数据接口

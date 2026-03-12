@@ -10,11 +10,11 @@ import (
 )
 
 type BaseMenuCondition struct {
-	Id       int64
-	ParentId *int64
-	Ids      []int64
-	Status   int32
-	Types    []int32
+	Id       int64   `query:"type:eq;column:id"`
+	ParentId *int64  `query:"type:eq;column:parent_id"`
+	Ids      []int64 `query:"type:in;column:id"`
+	Status   int32   `query:"type:eq;column:status"`
+	Types    []int32 `query:"type:in;column:type"`
 }
 
 type BaseMenuRepo interface {

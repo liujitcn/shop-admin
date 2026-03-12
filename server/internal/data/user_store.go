@@ -12,10 +12,10 @@ import (
 )
 
 type UserStoreCondition struct {
-	Id     int64
-	Name   string
-	UserId int64
-	Status int32
+	Id     int64  `query:"type:eq;column:id"`
+	Name   string `query:"type:contains;column:name"`
+	UserId int64  `query:"type:eq;column:user_id"`
+	Status int32  `query:"type:eq;column:status"`
 }
 
 type UserStoreRepo interface {

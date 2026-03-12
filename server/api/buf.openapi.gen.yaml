@@ -21,6 +21,7 @@ managed:
 plugins:
   # generate openapi v3 yaml doc
   - local: protoc-gen-openapi
+    strategy: all
     out: ../cmd/server/assets
     opt:
       - naming=json # 命名约定。使用"proto"则直接从proto文件传递名称。默认为：json

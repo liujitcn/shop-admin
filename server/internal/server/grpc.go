@@ -40,7 +40,7 @@ func NewGrpcMiddleware(
 ) GrpcMiddlewares {
 	var ms GrpcMiddlewares
 	cfg := ctx.GetConfig()
-	if cfg != nil && cfg.Server == nil && cfg.Server.Grpc == nil && cfg.Server.Grpc.Middleware != nil && cfg.Server.Grpc.Middleware.EnableLogging {
+	if cfg != nil && cfg.Server != nil && cfg.Server.Grpc != nil && cfg.Server.Grpc.Middleware != nil && cfg.Server.Grpc.Middleware.EnableLogging {
 		ms = append(ms, logging.Server(ctx.GetLogger(), userCase, authenticator))
 	}
 	ms = append(ms, auth.NewAuthMiddleware(authenticator, authorizer, userToken, jwtCfg))

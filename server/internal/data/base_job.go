@@ -10,10 +10,10 @@ import (
 )
 
 type BaseJobCondition struct {
-	Id           int64
-	Status       int32
-	Name         string
-	InvokeTarget string
+	Id           int64  `query:"type:eq;column:id"`
+	Status       int32  `query:"type:eq;column:status"`
+	Name         string `query:"type:contains;column:name"`
+	InvokeTarget string `query:"type:contains;column:invoke_target"`
 }
 
 type BaseJobRepo interface {

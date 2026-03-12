@@ -10,10 +10,10 @@ import (
 )
 
 type ShopHotItemCondition struct {
-	Id     int64
-	HotId  int64
-	Status int32
-	Title  string
+	Id     int64  `query:"type:eq;column:id"`
+	HotId  int64  `query:"type:eq;column:hot_id"`
+	Status int32  `query:"type:eq;column:status"`
+	Title  string `query:"type:contains;column:title"`
 }
 
 type ShopHotItemRepo interface {

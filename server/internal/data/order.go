@@ -17,14 +17,14 @@ import (
 )
 
 type OrderCondition struct {
-	Id             int64
-	UserId         int64
-	OrderNo        string
-	Status         int32
-	PayType        int32      // 支付方式，1为在线支付，2为货到付款
-	PayChannel     int32      // 支付渠道：支付渠道，1支付宝、2微信--支付方式为在线支付时，传值，为货到付款时，不传值
-	StartCreatedAt *time.Time // 创建开始时间
-	EndCreatedAt   *time.Time // 创建结束时间
+	Id             int64      `query:"type:eq;column:id"`
+	UserId         int64      `query:"type:eq;column:user_id"`
+	OrderNo        string     `query:"type:contains;column:order_no"`
+	Status         int32      `query:"type:eq;column:status"`
+	PayType        int32      `query:"type:eq;column:pay_type"`    // 支付方式，1为在线支付，2为货到付款
+	PayChannel     int32      `query:"type:eq;column:pay_channel"` // 支付渠道：支付渠道，1支付宝、2微信--支付方式为在线支付时，传值，为货到付款时，不传值
+	StartCreatedAt *time.Time `query:"type:gte;column:created_at"` // 创建开始时间
+	EndCreatedAt   *time.Time `query:"type:lte;column:created_at"` // 创建结束时间
 }
 
 type OrderRepo interface {

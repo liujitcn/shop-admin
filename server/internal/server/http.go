@@ -48,7 +48,7 @@ func NewHttpMiddleware(
 ) HttpMiddlewares {
 	var ms HttpMiddlewares
 	cfg := ctx.GetConfig()
-	if cfg != nil && cfg.Server == nil && cfg.Server.Http == nil && cfg.Server.Http.Middleware != nil && cfg.Server.Http.Middleware.EnableLogging {
+	if cfg != nil && cfg.Server != nil && cfg.Server.Http != nil && cfg.Server.Http.Middleware != nil && cfg.Server.Http.Middleware.EnableLogging {
 		ms = append(ms, logging.Server(ctx.GetLogger(), userCase, authenticator))
 	}
 	ms = append(ms, auth.NewAuthMiddleware(authenticator, authorizer, userToken, jwtCfg))
@@ -138,9 +138,13 @@ func NewHttpServer(
 	if webFS, subErr := fs.Sub(assets.WebAssets, "web"); subErr == nil {
 		webHandler := stdhttp.FileServer(stdhttp.FS(webFS))
 		srv.HandlePrefix("/web/", stdhttp.StripPrefix("/web/", webHandler))
+		srv.HandlePrefix("/js/", webHandler)
+		srv.HandlePrefix("/css/", webHandler)
+		srv.HandlePrefix("/img/", webHandler)
+		srv.Handle("/favicon.ico", webHandler)
 		srv.HandleFunc("/", func(w stdhttp.ResponseWriter, r *stdhttp.Request) {
 			if r.URL.Path == "/" {
-				stdhttp.Redirect(w, r, "/web/", stdhttp.StatusFound)
+				stdhttp.ServeFileFS(w, r, webFS, "index.html")
 				return
 			}
 			stdhttp.NotFound(w, r)

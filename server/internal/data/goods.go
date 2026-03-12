@@ -12,14 +12,14 @@ import (
 )
 
 type GoodsCondition struct {
-	Id             int64
-	Ids            []int64
-	Name           string
-	CategoryId     int64
+	Id             int64   `query:"type:eq;column:id"`
+	Ids            []int64 `query:"type:in;column:id"`
+	Name           string  `query:"type:contains;column:name"`
+	CategoryId     int64   `query:"type:eq;column:category_id"`
 	CategoryPath   string
-	Status         int32
-	StartCreatedAt *time.Time // 创建开始时间
-	EndCreatedAt   *time.Time // 创建结束时间
+	Status         int32      `query:"type:eq;column:status"`
+	StartCreatedAt *time.Time `query:"type:gte;column:created_at"` // 创建开始时间
+	EndCreatedAt   *time.Time `query:"type:lte;column:created_at"` // 创建结束时间
 }
 
 type GoodsRepo interface {

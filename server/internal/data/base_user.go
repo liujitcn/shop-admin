@@ -12,18 +12,18 @@ import (
 )
 
 type BaseUserCondition struct {
-	Id             int64
-	Ids            []int64
-	DeptId         int64
-	Status         int32
+	Id             int64      `query:"type:eq;column:id"`
+	Ids            []int64    `query:"type:in;column:id"`
+	DeptId         int64      `query:"type:eq;column:dept_id"`
+	Status         int32      `query:"type:eq;column:status"`
 	DeptPath       string     // 用户部门路径
-	UserName       string     // 用户账号
-	NickName       string     // 用户昵称
-	Phone          string     // 手机号码
-	Openid         string     // 手机号码
+	UserName       string     `query:"type:contains;column:user_name"` // 用户账号
+	NickName       string     `query:"type:contains;column:nick_name"` // 用户昵称
+	Phone          string     `query:"type:contains;column:phone"`     // 手机号码
+	Openid         string     `query:"type:contains;column:openid"`    // 手机号码
 	Keyword        string     // 关键字
-	StartCreatedAt *time.Time // 创建开始时间
-	EndCreatedAt   *time.Time // 创建结束时间
+	StartCreatedAt *time.Time `query:"type:gte;column:created_at"` // 创建开始时间
+	EndCreatedAt   *time.Time `query:"type:lte;column:created_at"` // 创建结束时间
 }
 
 type BaseUserRepo interface {

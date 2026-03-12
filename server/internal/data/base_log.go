@@ -11,11 +11,11 @@ import (
 )
 
 type BaseLogCondition struct {
-	Id               int64
-	Operation        string
-	StatusCode       int32
-	RequestStartTime *time.Time
-	RequestEndTime   *time.Time
+	Id               int64      `query:"type:eq;column:id"`
+	Operation        string     `query:"type:contains;column:operation"`
+	StatusCode       int32      `query:"type:eq;column:status_code"`
+	RequestStartTime *time.Time `query:"type:gte;column:request_time"`
+	RequestEndTime   *time.Time `query:"type:lte;column:request_time"`
 }
 
 type BaseLogRepo interface {

@@ -11,11 +11,11 @@ import (
 )
 
 type BaseJobLogCondition struct {
-	Id               int64
-	JobId            int64
-	Status           int32
-	ExecuteStartTime *time.Time
-	ExecuteEndTime   *time.Time
+	Id               int64      `query:"type:eq;column:id"`
+	JobId            int64      `query:"type:eq;column:job_id"`
+	Status           int32      `query:"type:eq;column:status"`
+	ExecuteStartTime *time.Time `query:"type:gte;column:execute_time"`
+	ExecuteEndTime   *time.Time `query:"type:lte;column:execute_time"`
 }
 
 type BaseJobLogRepo interface {

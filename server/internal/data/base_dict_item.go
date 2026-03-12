@@ -11,12 +11,12 @@ import (
 )
 
 type BaseDictItemCondition struct {
-	Id      int64
-	DictId  int64
-	DictIds []int64
-	Status  int32
-	Label   string
-	Value   string
+	Id      int64   `query:"type:eq;column:id"`
+	DictId  int64   `query:"type:eq;column:dict_id"`
+	DictIds []int64 `query:"type:in;column:dict_id"`
+	Status  int32   `query:"type:eq;column:status"`
+	Label   string  `query:"type:contains;column:label"`
+	Value   string  `query:"type:contains;column:value"`
 }
 
 type BaseDictItemRepo interface {

@@ -11,11 +11,11 @@ import (
 )
 
 type BaseAreaCondition struct {
-	Id      int64
-	Ids     []int64
-	parenId int64
-	Name    string
-	Code    string
+	Id       int64   `query:"type:eq;column:id"`
+	Ids      []int64 `query:"type:in;column:id"`
+	ParentId int64   `query:"type:eq;column:parent_id"`
+	Name     string  `query:"type:contains;column:name"`
+	Code     string
 }
 
 type BaseAreaRepo interface {

@@ -10,11 +10,11 @@ import (
 )
 
 type ShopBannerCondition struct {
-	Id     int64
-	Ids    []int64
-	Site   int32
-	Type   int32
-	Status int32
+	Id     int64   `query:"type:eq;column:id"`
+	Ids    []int64 `query:"type:in;column:id"`
+	Site   int32   `query:"type:eq;column:site"`
+	Type   int32   `query:"type:eq;column:type"`
+	Status int32   `query:"type:eq;column:status"`
 }
 
 type ShopBannerRepo interface {

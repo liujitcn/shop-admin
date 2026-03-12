@@ -10,11 +10,11 @@ import (
 )
 
 type BaseDictCondition struct {
-	Id     int64
-	Status int32
-	Name   string   // 字典名称
-	Code   string   // 字典代码
-	Codes  []string // 字典代码
+	Id     int64    `query:"type:eq;column:id"`
+	Status int32    `query:"type:eq;column:status"`
+	Name   string   `query:"type:contains;column:name"` // 字典名称
+	Code   string   `query:"type:contains;column:code"` // 字典代码
+	Codes  []string `query:"type:in;column:code"`       // 字典代码
 }
 
 type BaseDictRepo interface {

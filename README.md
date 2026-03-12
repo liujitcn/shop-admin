@@ -87,6 +87,7 @@ pnpm build-only
 - `make api`：生成 Go 的 proto/grpc/http/error 代码（`server/api/gen/go`）
 - `make openapi`：生成 OpenAPI 文档（输出到 `server/cmd/server/assets`）
 - `make ts`：生成 TS proto（输出到 `web/src/rpc`）
+- `make ts` 与 `make openapi` 默认排除 `protos/conf` 目录（避免生成 `web/src/rpc/conf` 与相关 OpenAPI conf 定义）
 - `make wire`：生成 `cmd/server/wire_gen.go`
 - `make test`：运行单测
 - `make compose-up`：启动依赖服务（docker compose）

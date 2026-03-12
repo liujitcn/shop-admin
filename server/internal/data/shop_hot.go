@@ -10,11 +10,11 @@ import (
 )
 
 type ShopHotCondition struct {
-	Id     int64
-	Ids    []int64
-	Status int32
-	Title  string // 热门推荐标题
-	Desc   string // 热门推荐描述
+	Id     int64   `query:"type:eq;column:id"`
+	Ids    []int64 `query:"type:in;column:id"`
+	Status int32   `query:"type:eq;column:status"`
+	Title  string  `query:"type:contains;column:title"` // 热门推荐标题
+	Desc   string  `query:"type:contains;column:desc"`  // 热门推荐描述
 }
 
 type ShopHotRepo interface {

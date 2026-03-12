@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	_string "github.com/liujitcn/go-utils/string"
-	"github.com/liujitcn/kratos-kit/cache"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 )
 
@@ -15,7 +14,6 @@ var lock sync.RWMutex
 
 type BaseAreaCase struct {
 	data.BaseAreaRepo
-	cache cache.Cache
 }
 
 // NewBaseAreaCase new a BaseArea use case.

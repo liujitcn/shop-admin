@@ -11,12 +11,12 @@ import (
 )
 
 type BaseApiCondition struct {
-	Id          int64
-	Ids         []int64
-	ServiceName string // 服务名
-	ServiceDesc string // 服务描述
-	Desc        string // 描述
-	Path        string // 请求地址
+	Id          int64   `query:"type:eq;column:id"`
+	Ids         []int64 `query:"type:in;column:id"`
+	ServiceName string  `query:"type:contains;column:service_name"` // 服务名
+	ServiceDesc string  `query:"type:contains;column:service_desc"` // 服务描述
+	Desc        string  `query:"type:contains;column:desc"`         // 描述
+	Path        string  `query:"type:contains;column:path"`         // 请求地址
 }
 
 type BaseApiRepo interface {

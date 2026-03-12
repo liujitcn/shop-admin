@@ -9,7 +9,7 @@ import (
 )
 
 type ShopHotGoodsCondition struct {
-	HotItemId int64
+	HotItemId int64 `query:"type:eq;column:hot_item_id"`
 }
 
 type ShopHotGoodsRepo interface {

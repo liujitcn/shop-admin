@@ -10,11 +10,11 @@ import (
 )
 
 type GoodsPropCondition struct {
-	Id      int64
-	Ids     []int64
-	GoodsId int64
-	Label   string
-	Status  int32
+	Id      int64   `query:"type:eq;column:id"`
+	Ids     []int64 `query:"type:in;column:id"`
+	GoodsId int64   `query:"type:eq;column:goods_id"`
+	Label   string  `query:"type:contains;column:label"`
+	Status  int32   `query:"type:eq;column:status"`
 }
 
 type GoodsPropRepo interface {

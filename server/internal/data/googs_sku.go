@@ -10,12 +10,12 @@ import (
 )
 
 type GoodsSkuCondition struct {
-	Id       int64
-	Ids      []int64
-	GoodsId  int64
-	SkuCode  string
-	SkuCodes []string
-	Status   int32
+	Id       int64    `query:"type:eq;column:id"`
+	Ids      []int64  `query:"type:in;column:id"`
+	GoodsId  int64    `query:"type:eq;column:goods_id"`
+	SkuCode  string   `query:"type:eq;column:sku_code"`
+	SkuCodes []string `query:"type:in;column:sku_code"`
+	Status   int32    `query:"type:eq;column:status"`
 }
 
 type GoodsSkuRepo interface {

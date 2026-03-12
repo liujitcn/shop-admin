@@ -10,9 +10,9 @@ import (
 )
 
 type BaseDeptCondition struct {
-	Id       int64
-	ParentId *int64
-	Status   int32
+	Id       int64  `query:"type:eq;column:id"`
+	ParentId *int64 `query:"type:eq;column:parent_id"`
+	Status   int32  `query:"type:eq;column:status"`
 }
 
 type BaseDeptRepo interface {

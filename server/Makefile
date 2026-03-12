@@ -79,12 +79,12 @@ api:
 # generate OpenAPI v3 docs.
 openapi:
 	@cd api && \
-	buf generate --template buf.openapi.gen.yaml
+	buf generate --template buf.openapi.gen.yaml --exclude-path protos/conf
 
 # generate typescript.
 ts:
 	@cd api && \
-	buf generate --template buf.typescript.gen.yaml
+	buf generate --template buf.typescript.gen.yaml --exclude-path protos/conf
 
 
 # run application

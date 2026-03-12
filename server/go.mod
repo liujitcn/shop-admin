@@ -2,6 +2,8 @@ module github.com/liujitcn/shop-admin/server
 
 go 1.26.0
 
+replace github.com/liujitcn/shop-gorm-gen => ../../shop-gorm-gen
+
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-sql-driver/mysql v1.9.3
@@ -30,7 +32,7 @@ require (
 	github.com/liujitcn/kratos-kit/queue v0.0.4
 	github.com/liujitcn/kratos-kit/rpc v0.0.1
 	github.com/liujitcn/kratos-kit/swagger-ui v0.0.1
-	github.com/liujitcn/shop-gorm-gen v0.0.1
+	github.com/liujitcn/shop-gorm-gen v0.0.3
 	github.com/mileusna/useragent v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.21

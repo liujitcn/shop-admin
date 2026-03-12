@@ -10,7 +10,7 @@ import (
 )
 
 type OrderAddressCondition struct {
-	OrderId int64
+	OrderId int64 `query:"type:eq;column:order_id"`
 }
 
 type OrderAddressRepo interface {

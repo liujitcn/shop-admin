@@ -10,8 +10,8 @@ import (
 )
 
 type OrderPaymentCondition struct {
-	OrderId     int64
-	Status      int32
+	OrderId     int64 `query:"type:eq;column:order_id"`
+	Status      int32 `query:"type:eq;column:status"`
 	SuccessTime string
 }
 

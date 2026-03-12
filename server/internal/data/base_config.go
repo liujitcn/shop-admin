@@ -10,13 +10,13 @@ import (
 )
 
 type BaseConfigCondition struct {
-	Id     int64
-	Ids    []int64
-	Site   int32
-	Name   string
-	Type   int32
-	Key    string
-	Status int32
+	Id     int64   `query:"type:eq;column:id"`
+	Ids    []int64 `query:"type:in;column:id"`
+	Site   int32   `query:"type:eq;column:site"`
+	Name   string  `query:"type:contains;column:name"`
+	Type   int32   `query:"type:eq;column:type"`
+	Key    string  `query:"type:contains;column:key"`
+	Status int32   `query:"type:eq;column:status"`
 }
 
 type BaseConfigRepo interface {
