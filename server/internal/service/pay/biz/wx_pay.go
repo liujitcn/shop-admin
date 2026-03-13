@@ -8,18 +8,14 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	nethttp "net/http"
 	"strings"
-	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/google/uuid"
 	"github.com/liujitcn/go-utils/trans"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/conf"
-	"github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay/bill"
 	wxPayCore "github.com/wechatpay-apiv3/wechatpay-go/core"
@@ -28,7 +24,6 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/wechatpay-apiv3/wechatpay-go/core/option"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments"
-	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/h5"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic"
 	"github.com/wechatpay-apiv3/wechatpay-go/utils"
@@ -68,40 +63,6 @@ func NewWxPayCase(
 	}, nil
 }
 
-func (c *WxPayCase) JsapiPay(req jsapi.PrepayRequest) (*pay.JsapiPayResponse, error) {
-	// 拼接公共参数
-	req.Appid = trans.String(c.wxPay.GetAppid())
-	req.Mchid = trans.String(c.wxPay.GetMchId())
-	req.NotifyUrl = trans.String(c.wxPay.GetNotifyUrl() + _const.NotifyUrl)
-
-	svc := jsapi.JsapiApiService{Client: c.client}
-	resp, result, err := svc.Prepay(c.ctx, req)
-	if err != nil {
-		log.Errorf("支付失败[%s]", err.Error())
-		return nil, errors.New("支付失败")
-	}
-	if result.Response.StatusCode != nethttp.StatusOK {
-		log.Errorf("支付失败[%s]", result.Response.Status)
-		return nil, errors.New("支付失败")
-	}
-
-	// 1. 生成基础参数
-	nonceStr := strings.ReplaceAll(uuid.New().String(), "-", "")
-	timestamp := fmt.Sprintf("%d", time.Now().Unix())
-	packageStr := fmt.Sprintf("prepay_id=%s", trans.StringValue(resp.PrepayId))
-
-	// 计算签名
-	paySign := c.generatePaySign(timestamp, nonceStr, packageStr)
-
-	return &pay.JsapiPayResponse{
-		AppId:     c.wxPay.GetAppid(),
-		TimeStamp: timestamp,
-		NonceStr:  nonceStr,
-		Package:   packageStr,
-		PaySign:   paySign,
-	}, err
-}
-
 func (c *WxPayCase) Refund(req refunddomestic.CreateRequest) (*refunddomestic.Refund, error) {
 	// 拼接公共参数
 	req.NotifyUrl = trans.String(c.wxPay.GetNotifyUrl() + _const.NotifyUrl)
@@ -118,28 +79,6 @@ func (c *WxPayCase) Refund(req refunddomestic.CreateRequest) (*refunddomestic.Re
 	}
 
 	return resp, err
-}
-
-func (c *WxPayCase) H5Pay(req h5.PrepayRequest) (*pay.H5PayResponse, error) {
-	// 拼接公共参数
-	req.Appid = trans.String(c.wxPay.GetAppid())
-	req.Mchid = trans.String(c.wxPay.GetMchId())
-	req.NotifyUrl = trans.String(c.wxPay.GetNotifyUrl() + _const.NotifyUrl)
-
-	svc := h5.H5ApiService{Client: c.client}
-	resp, result, err := svc.Prepay(c.ctx, req)
-	if err != nil {
-		log.Errorf("支付失败[%s]", err.Error())
-		return nil, errors.New("支付失败")
-	}
-	if result.Response.StatusCode != nethttp.StatusOK {
-		log.Errorf("支付失败[%s]", result.Response.Status)
-		return nil, errors.New("支付失败")
-	}
-
-	return &pay.H5PayResponse{
-		H5Url: trans.StringValue(resp.H5Url),
-	}, err
 }
 
 func (c *WxPayCase) QueryByOutRefundNo(req refunddomestic.QueryByOutRefundNoRequest) (*refunddomestic.Refund, error) {

@@ -20,74 +20,16 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationPayServiceH5Pay = "/pay.PayService/H5Pay"
-const OperationPayServiceJsapiPay = "/pay.PayService/JsapiPay"
 const OperationPayServicePayNotify = "/pay.PayService/PayNotify"
 
 type PayServiceHTTPServer interface {
-	// H5Pay H5支付
-	H5Pay(context.Context, *PayRequest) (*H5PayResponse, error)
-	// JsapiPay 小程序支付
-	JsapiPay(context.Context, *PayRequest) (*JsapiPayResponse, error)
 	// PayNotify 支付通知
 	PayNotify(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 }
 
 func RegisterPayServiceHTTPServer(s *http.Server, srv PayServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/pay/{orderId}/jsapi", _PayService_JsapiPay0_HTTP_Handler(srv))
-	r.POST("/api/pay/{orderId}/h5", _PayService_H5Pay0_HTTP_Handler(srv))
 	r.POST("/api/pay/notify", _PayService_PayNotify0_HTTP_Handler(srv))
-}
-
-func _PayService_JsapiPay0_HTTP_Handler(srv PayServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in PayRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationPayServiceJsapiPay)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.JsapiPay(ctx, req.(*PayRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*JsapiPayResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _PayService_H5Pay0_HTTP_Handler(srv PayServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in PayRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationPayServiceH5Pay)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.H5Pay(ctx, req.(*PayRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*H5PayResponse)
-		return ctx.Result(200, reply)
-	}
 }
 
 func _PayService_PayNotify0_HTTP_Handler(srv PayServiceHTTPServer) func(ctx http.Context) error {
@@ -113,10 +55,6 @@ func _PayService_PayNotify0_HTTP_Handler(srv PayServiceHTTPServer) func(ctx http
 }
 
 type PayServiceHTTPClient interface {
-	// H5Pay H5支付
-	H5Pay(ctx context.Context, req *PayRequest, opts ...http.CallOption) (rsp *H5PayResponse, err error)
-	// JsapiPay 小程序支付
-	JsapiPay(ctx context.Context, req *PayRequest, opts ...http.CallOption) (rsp *JsapiPayResponse, err error)
 	// PayNotify 支付通知
 	PayNotify(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
@@ -127,34 +65,6 @@ type PayServiceHTTPClientImpl struct {
 
 func NewPayServiceHTTPClient(client *http.Client) PayServiceHTTPClient {
 	return &PayServiceHTTPClientImpl{client}
-}
-
-// H5Pay H5支付
-func (c *PayServiceHTTPClientImpl) H5Pay(ctx context.Context, in *PayRequest, opts ...http.CallOption) (*H5PayResponse, error) {
-	var out H5PayResponse
-	pattern := "/api/pay/{orderId}/h5"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationPayServiceH5Pay))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-// JsapiPay 小程序支付
-func (c *PayServiceHTTPClientImpl) JsapiPay(ctx context.Context, in *PayRequest, opts ...http.CallOption) (*JsapiPayResponse, error) {
-	var out JsapiPayResponse
-	pattern := "/api/pay/{orderId}/jsapi"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationPayServiceJsapiPay))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
 }
 
 // PayNotify 支付通知

@@ -3070,19 +3070,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UserStore'
-    /api/app/shop/service:
-        get:
-            tags:
-                - ShopServiceService
-            description: 查询商城服务列表
-            operationId: ShopServiceService_ListShopService
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListShopServiceResponse'
     /api/config:
         get:
             tags:
@@ -3223,56 +3210,6 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /api/pay/{orderId}/h5:
-        post:
-            tags:
-                - PayService
-            description: H5支付
-            operationId: PayService_H5Pay
-            parameters:
-                - name: orderId
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PayRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/H5PayResponse'
-    /api/pay/{orderId}/jsapi:
-        post:
-            tags:
-                - PayService
-            description: 小程序支付
-            operationId: PayService_JsapiPay
-            parameters:
-                - name: orderId
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PayRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/JsapiPayResponse'
 components:
     schemas:
         AuditUserStoreForm:
@@ -4477,30 +4414,6 @@ components:
                     type: integer
                     description: 排序
                     format: int32
-        H5PayResponse:
-            type: object
-            properties:
-                h5Url:
-                    type: string
-                    description: 支付url
-        JsapiPayResponse:
-            type: object
-            properties:
-                appId:
-                    type: string
-                    description: 填写下单时传入的appid，且必需与当前实际调起支付的公众号appid一致，否则无法调起支付。
-                timeStamp:
-                    type: string
-                    description: Unix 时间戳，是从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数。注意：常见时间戳为秒级或毫秒级，该处必需传秒级时间戳。
-                nonceStr:
-                    type: string
-                    description: 随机字符串，不长于32位。该值建议使用随机数算法生成。
-                package:
-                    type: string
-                    description: 订单详情扩展字符串，JSAPI下单接口返回的prepay_id参数值，提交格式如：prepay_id=***。
-                paySign:
-                    type: string
-                    description: 签名，使用字段appId、timeStamp、nonceStr、package计算得出的签名值 注意：取值RSA格式。详细参考JSAPI调起支付签名https://pay.weixin.qq.com/doc/v3/merchant/4012365339
         ListBaseApiResponse:
             type: object
             properties:
@@ -4574,14 +4487,6 @@ components:
                     items:
                         $ref: '#/components/schemas/GoodsSpec'
                     description: 分页数据
-        ListShopServiceResponse:
-            type: object
-            properties:
-                list:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ShopService'
-                    description: 列表数据
         LoginRequest:
             type: object
             properties:
@@ -5260,12 +5165,6 @@ components:
                     description: 对账状态：枚举【PayBillStatus】
                     format: enum
             description: 支付账单
-        PayRequest:
-            type: object
-            properties:
-                orderId:
-                    type: string
-                    description: 订单id
         RefreshTokenRequest:
             type: object
             properties:
@@ -5932,7 +5831,5 @@ tags:
       description: Admin商城热门推荐服务
     - name: ShopServiceService
       description: Admin商城服务
-    - name: ShopServiceService
-      description: App商城服务
     - name: UserStoreService
       description: Admin用户门店管理服务

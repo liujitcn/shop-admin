@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/pay"
-	"github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
 	"github.com/liujitcn/shop-admin/server/internal/core"
+	"github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -35,31 +35,9 @@ func NewPayService(
 ) *PayService {
 	var ss = PayService{
 		ShopCore: sc,
-		payCase: payCase}
+		payCase:  payCase}
 	log.Debug("NewPayService.")
 	return &ss
-}
-
-// JsapiPay
-// 小程序支付
-func (s *PayService) JsapiPay(ctx context.Context, req *pay.PayRequest) (*pay.JsapiPayResponse, error) {
-	res, err := s.payCase.JsapiPay(ctx, req)
-	if err != nil {
-		log.Error("JsapiPay err:", err.Error())
-		return nil, errors.New("支付失败")
-	}
-	return res, nil
-}
-
-// H5Pay
-// H5支付
-func (s *PayService) H5Pay(ctx context.Context, req *pay.PayRequest) (*pay.H5PayResponse, error) {
-	res, err := s.payCase.H5Pay(ctx, req)
-	if err != nil {
-		log.Error("H5Pay err:", err.Error())
-		return nil, errors.New("支付失败")
-	}
-	return res, nil
 }
 
 // PayNotify

@@ -11,7 +11,6 @@ import (
 	authzEngine "github.com/liujitcn/kratos-kit/auth/authz/engine"
 	authData "github.com/liujitcn/kratos-kit/auth/data"
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	appApi "github.com/liujitcn/shop-admin/server/api/gen/go/app"
 	configApi "github.com/liujitcn/shop-admin/server/api/gen/go/config"
 	loginApi "github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	payApi "github.com/liujitcn/shop-admin/server/api/gen/go/pay"
@@ -20,7 +19,6 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/service"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/app"
 	"github.com/liujitcn/shop-admin/server/internal/service/config"
 	"github.com/liujitcn/shop-admin/server/internal/service/file"
 	"github.com/liujitcn/shop-admin/server/internal/service/login"
@@ -88,8 +86,6 @@ func NewHttpServer(
 
 	adminUserStore *admin.UserStoreService,
 
-	appShopService *app.ShopServiceService,
-
 	config *config.ConfigService,
 	file *file.FileService,
 	login *login.LoginService,
@@ -128,7 +124,6 @@ func NewHttpServer(
 	adminApi.RegisterShopHotServiceHTTPServer(srv, adminShopHot)
 	adminApi.RegisterShopServiceServiceHTTPServer(srv, adminShopService)
 	adminApi.RegisterUserStoreServiceHTTPServer(srv, adminUserStore)
-	appApi.RegisterShopServiceServiceHTTPServer(srv, appShopService)
 	configApi.RegisterConfigServiceHTTPServer(srv, config)
 	// 修改http接口实现
 	service.RegisterFileServiceHTTPServer(srv, file)

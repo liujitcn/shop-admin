@@ -3,8 +3,6 @@ package biz
 import (
 	"context"
 	"errors"
-	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -12,15 +10,11 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
-	"github.com/liujitcn/kratos-kit/auth"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/pay"
-	"github.com/liujitcn/shop-admin/server/internal/configs"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/h5"
-	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
@@ -55,131 +49,6 @@ func NewPayCase(
 		orderSchedulerCase: orderSchedulerCase,
 		wxPayCase:          wxPayCase,
 	}
-}
-
-func (c *PayCase) JsapiPay(ctx context.Context, req *pay.PayRequest) (*pay.JsapiPayResponse, error) {
-	authInfo, err := auth.FromContext(ctx)
-	if err != nil {
-		log.Errorf("用户认证失败[%s]", err.Error())
-		return nil, common.ErrorAccessForbidden("用户认证失败")
-	}
-	var order *models.Order
-	order, err = c.orderRepo.Find(ctx, &data.OrderCondition{
-		Id:     req.GetOrderId(),
-		UserId: authInfo.UserId,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if order.Status != int32(common.OrderStatus_CREATED) {
-		return nil, fmt.Errorf("订单状态错误：【%s】", common.OrderStatus_name[order.Status])
-	}
-
-	var goods []*models.OrderGoods
-	goods, err = c.orderGoodsRepo.FindAll(ctx, &data.OrderGoodsCondition{
-		OrderId: order.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	goodsDetail := make([]jsapi.GoodsDetail, 0)
-	for _, item := range goods {
-		goodsId := fmt.Sprintf("%s_%s", strconv.FormatInt(item.GoodsID, 10), item.SkuCode)
-		goodsDetail = append(goodsDetail, jsapi.GoodsDetail{
-			MerchantGoodsId: &goodsId,
-			GoodsName:       &item.Name,
-			Quantity:        &item.Num,
-			UnitPrice:       &item.Price,
-		})
-	}
-
-	payTimeout := configs.ParsePayTimeout()
-	createdAt := order.CreatedAt.Add(payTimeout)
-
-	var description = "小程序支付"
-	if len(goodsDetail) > 0 {
-		description = trans.StringValue(goodsDetail[0].GoodsName)
-	}
-
-	return c.wxPayCase.JsapiPay(jsapi.PrepayRequest{
-		Description: &description,
-		OutTradeNo:  &order.OrderNo,
-		TimeExpire:  &createdAt,
-		Amount: &jsapi.Amount{
-			Total: &order.PayMoney,
-		},
-		Payer: &jsapi.Payer{
-			Openid: &authInfo.OpenId,
-		},
-		Detail: &jsapi.Detail{
-			GoodsDetail: goodsDetail,
-		},
-	})
-}
-
-func (c *PayCase) H5Pay(ctx context.Context, req *pay.PayRequest) (*pay.H5PayResponse, error) {
-	authInfo, err := auth.FromContext(ctx)
-	if err != nil {
-		log.Errorf("用户认证失败[%s]", err.Error())
-		return nil, common.ErrorAccessForbidden("用户认证失败")
-	}
-	var order *models.Order
-	order, err = c.orderRepo.Find(ctx, &data.OrderCondition{
-		Id:     req.GetOrderId(),
-		UserId: authInfo.UserId,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if order.Status != int32(common.OrderStatus_CREATED) {
-		return nil, fmt.Errorf("订单状态错误：【%s】", common.OrderStatus_name[order.Status])
-	}
-
-	var goods []*models.OrderGoods
-	goods, err = c.orderGoodsRepo.FindAll(ctx, &data.OrderGoodsCondition{
-		OrderId: order.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	goodsDetail := make([]h5.GoodsDetail, 0)
-	for _, item := range goods {
-		goodsId := fmt.Sprintf("%s_%s", strconv.FormatInt(item.GoodsID, 10), item.SkuCode)
-		goodsDetail = append(goodsDetail, h5.GoodsDetail{
-			MerchantGoodsId: &goodsId,
-			GoodsName:       &item.Name,
-			Quantity:        &item.Num,
-			UnitPrice:       &item.Price,
-		})
-	}
-	payTimeout := configs.ParsePayTimeout()
-	createdAt := order.CreatedAt.Add(payTimeout)
-
-	var description = "H5支付"
-	if len(goodsDetail) > 0 {
-		description = trans.StringValue(goodsDetail[0].GoodsName)
-	}
-	return c.wxPayCase.H5Pay(h5.PrepayRequest{
-		Description: trans.String(description),
-		OutTradeNo:  trans.String(order.OrderNo),
-		TimeExpire:  trans.Time(createdAt),
-		Amount: &h5.Amount{
-			Total: &order.PayMoney,
-		},
-		SceneInfo: &h5.SceneInfo{
-			PayerClientIp: nil,
-			DeviceId:      nil,
-			StoreInfo:     nil,
-			H5Info: &h5.H5Info{
-				Type: trans.String("Wap"),
-			},
-		},
-		Detail: &h5.Detail{
-			GoodsDetail: goodsDetail,
-		},
-	})
 }
 
 func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
@@ -328,7 +197,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 			}
 			return nil
 		})
-	} else {
-		return errors.New("notify event type err")
 	}
+
+	return errors.New("notify event type err")
 }

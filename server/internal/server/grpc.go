@@ -11,7 +11,6 @@ import (
 	"github.com/liujitcn/kratos-kit/bootstrap"
 	"github.com/liujitcn/kratos-kit/rpc"
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	appApi "github.com/liujitcn/shop-admin/server/api/gen/go/app"
 	configApi "github.com/liujitcn/shop-admin/server/api/gen/go/config"
 	fileApi "github.com/liujitcn/shop-admin/server/api/gen/go/file"
 	loginApi "github.com/liujitcn/shop-admin/server/api/gen/go/login"
@@ -19,7 +18,6 @@ import (
 	"github.com/liujitcn/shop-admin/server/internal/middleware/logging"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/app"
 	"github.com/liujitcn/shop-admin/server/internal/service/config"
 	"github.com/liujitcn/shop-admin/server/internal/service/file"
 	"github.com/liujitcn/shop-admin/server/internal/service/login"
@@ -81,8 +79,6 @@ func NewGRPCServer(
 
 	adminUserStore *admin.UserStoreService,
 
-	appShopService *app.ShopServiceService,
-
 	config *config.ConfigService,
 	file *file.FileService,
 	login *login.LoginService,
@@ -120,7 +116,6 @@ func NewGRPCServer(
 	adminApi.RegisterShopHotServiceServer(srv, adminShopHot)
 	adminApi.RegisterShopServiceServiceServer(srv, adminShopService)
 	adminApi.RegisterUserStoreServiceServer(srv, adminUserStore)
-	appApi.RegisterShopServiceServiceServer(srv, appShopService)
 	configApi.RegisterConfigServiceServer(srv, config)
 	fileApi.RegisterFileServiceServer(srv, file)
 	loginApi.RegisterLoginServiceServer(srv, login)

@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/google/wire"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
-	"github.com/liujitcn/shop-admin/server/internal/service/app"
 	"github.com/liujitcn/shop-admin/server/internal/service/config"
 	"github.com/liujitcn/shop-admin/server/internal/service/file"
 	"github.com/liujitcn/shop-admin/server/internal/service/login"
@@ -12,7 +11,6 @@ import (
 
 	adminBiz "github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
-	appBiz "github.com/liujitcn/shop-admin/server/internal/service/app/biz"
 	configBiz "github.com/liujitcn/shop-admin/server/internal/service/config/biz"
 	fileBiz "github.com/liujitcn/shop-admin/server/internal/service/file/biz"
 )
@@ -60,8 +58,6 @@ var ProviderSet = wire.NewSet(
 
 	adminBiz.NewUserStoreCase,
 
-	appBiz.NewShopServiceCase,
-
 	configBiz.NewConfigCase,
 	fileBiz.NewFileCase,
 
@@ -101,8 +97,6 @@ var ProviderSet = wire.NewSet(
 	admin.NewShopServiceService,
 
 	admin.NewUserStoreService,
-
-	app.NewShopServiceService,
 
 	config.NewConfigService,
 

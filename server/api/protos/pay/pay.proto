@@ -10,20 +10,6 @@ import "google/protobuf/wrappers.proto";
 
 // 支付服务
 service PayService {
-  // 小程序支付
-  rpc JsapiPay (PayRequest) returns (JsapiPayResponse) {
-    option (google.api.http) = {
-      post: "/api/pay/{orderId}/jsapi"
-      body: "*"
-    };
-  }
-  // H5支付
-  rpc H5Pay (PayRequest) returns (H5PayResponse) {
-    option (google.api.http) = {
-      post: "/api/pay/{orderId}/h5"
-      body: "*"
-    };
-  }
   // 支付通知
   rpc PayNotify (google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -31,30 +17,6 @@ service PayService {
       body: "*"
     };
   }
-}
-
-message PayRequest{
-  int64 orderId = 1 [
-    (gnostic.openapi.v3.property) = {description: "订单id"}
-  ];  // 订单id
-}
-
-message JsapiPayResponse{
-  // 填写下单时传入的appid，且必需与当前实际调起支付的公众号appid一致，否则无法调起支付。
-  string appId = 1;
-  // Unix 时间戳，是从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数。注意：常见时间戳为秒级或毫秒级，该处必需传秒级时间戳。
-  string timeStamp = 2;
-  // 随机字符串，不长于32位。该值建议使用随机数算法生成。
-  string nonceStr = 3;
-  // 订单详情扩展字符串，JSAPI下单接口返回的prepay_id参数值，提交格式如：prepay_id=***。
-  string package = 4;
-  // 签名，使用字段appId、timeStamp、nonceStr、package计算得出的签名值 注意：取值RSA格式。详细参考JSAPI调起支付签名https://pay.weixin.qq.com/doc/v3/merchant/4012365339
-  string paySign = 5;
-}
-
-message H5PayResponse{
-  // 支付url
-  string h5Url = 1;
 }
 
 enum ResourceType {

@@ -15,29 +15,6 @@ export enum ResourceType {
   REFUND = 1,
 }
 
-export interface PayRequest {
-  /** 订单id */
-  orderId: number;
-}
-
-export interface JsapiPayResponse {
-  /** 填写下单时传入的appid，且必需与当前实际调起支付的公众号appid一致，否则无法调起支付。 */
-  appId: string;
-  /** Unix 时间戳，是从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数。注意：常见时间戳为秒级或毫秒级，该处必需传秒级时间戳。 */
-  timeStamp: string;
-  /** 随机字符串，不长于32位。该值建议使用随机数算法生成。 */
-  nonceStr: string;
-  /** 订单详情扩展字符串，JSAPI下单接口返回的prepay_id参数值，提交格式如：prepay_id=***。 */
-  package: string;
-  /** 签名，使用字段appId、timeStamp、nonceStr、package计算得出的签名值 注意：取值RSA格式。详细参考JSAPI调起支付签名https://pay.weixin.qq.com/doc/v3/merchant/4012365339 */
-  paySign: string;
-}
-
-export interface H5PayResponse {
-  /** 支付url */
-  h5Url: string;
-}
-
 /** 支付资源数据 */
 export interface PaymentResource {
   /** 【微信支付订单号】微信支付侧订单的唯一标识 */
@@ -175,10 +152,6 @@ export interface RefundResource_Amount {
 
 /** 支付服务 */
 export interface PayService {
-  /** 小程序支付 */
-  JsapiPay(request: PayRequest): Promise<JsapiPayResponse>;
-  /** H5支付 */
-  H5Pay(request: PayRequest): Promise<H5PayResponse>;
   /** 支付通知 */
   PayNotify(request: Empty): Promise<Empty>;
 }
