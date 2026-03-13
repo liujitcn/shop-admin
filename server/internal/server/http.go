@@ -11,18 +11,18 @@ import (
 	authzEngine "github.com/liujitcn/kratos-kit/auth/authz/engine"
 	authData "github.com/liujitcn/kratos-kit/auth/data"
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	configApi "github.com/liujitcn/shop-admin/server/api/gen/go/config"
-	loginApi "github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	payApi "github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	"github.com/liujitcn/shop-admin/server/cmd/server/assets"
 	"github.com/liujitcn/shop-admin/server/internal/middleware/logging"
-	"github.com/liujitcn/shop-admin/server/internal/service"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/config"
-	"github.com/liujitcn/shop-admin/server/internal/service/file"
-	"github.com/liujitcn/shop-admin/server/internal/service/login"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
+	baseConfigApi "github.com/liujitcn/shop-base/server/api/gen/go/config"
+	baseFileApi "github.com/liujitcn/shop-base/server/api/gen/go/file"
+	baseLoginApi "github.com/liujitcn/shop-base/server/api/gen/go/login"
+	baseConfig "github.com/liujitcn/shop-base/server/service/config"
+	baseFile "github.com/liujitcn/shop-base/server/service/file"
+	baseLogin "github.com/liujitcn/shop-base/server/service/login"
 
 	bootstrapConf "github.com/liujitcn/kratos-kit/api/gen/go/conf"
 	swaggerUI "github.com/liujitcn/kratos-kit/swagger-ui"
@@ -86,9 +86,9 @@ func NewHttpServer(
 
 	adminUserStore *admin.UserStoreService,
 
-	config *config.ConfigService,
-	file *file.FileService,
-	login *login.LoginService,
+	config *baseConfig.ConfigService,
+	file *baseFile.FileService,
+	login *baseLogin.LoginService,
 	pay *pay.PayService,
 ) (*http.Server, error) {
 	cfg := ctx.GetConfig()
@@ -124,10 +124,10 @@ func NewHttpServer(
 	adminApi.RegisterShopHotServiceHTTPServer(srv, adminShopHot)
 	adminApi.RegisterShopServiceServiceHTTPServer(srv, adminShopService)
 	adminApi.RegisterUserStoreServiceHTTPServer(srv, adminUserStore)
-	configApi.RegisterConfigServiceHTTPServer(srv, config)
+	baseConfigApi.RegisterConfigServiceHTTPServer(srv, config)
 	// 修改http接口实现
-	service.RegisterFileServiceHTTPServer(srv, file)
-	loginApi.RegisterLoginServiceHTTPServer(srv, login)
+	baseFileApi.RegisterFileServiceHTTPServer(srv, file)
+	baseLoginApi.RegisterLoginServiceHTTPServer(srv, login)
 	payApi.RegisterPayServiceHTTPServer(srv, pay)
 
 	if webFS, subErr := fs.Sub(assets.WebAssets, "web"); subErr == nil {

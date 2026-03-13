@@ -4,8 +4,7 @@ import { useDictStoreHook } from "@/store/modules/dict";
 
 import { defAuthService } from "@/api/admin/auth";
 import { defLoginService } from "@/api/login/login";
-import { type UserInfo } from "@/rpc/admin/auth";
-import { type LoginRequest } from "@/rpc/login/login";
+import { type UserInfo, type LoginRequest } from "@/rpc/admin/auth";
 
 import {
   setToken,

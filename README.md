@@ -27,18 +27,11 @@ shop-admin/
 - Go `>= 1.26`（见 `server/go.mod`）
 - Node.js `>= 18`
 - pnpm
-- MySQL、Redis 等依赖（可用 `server/Makefile` 的 `compose-up` 启动）
+- MySQL、Redis 等依赖（请按本地环境自行启动）
 
 ## 快速开始
 
-### 1. 启动依赖服务（可选）
-
-```bash
-cd server
-make compose-up
-```
-
-### 2. 启动后端
+### 1. 启动后端
 
 ```bash
 cd server
@@ -55,9 +48,9 @@ go run ./cmd/server -conf ./configs
 访问地址：
 
 - 管理页面：`http://localhost:8091/`（或 `http://localhost:8091/web/`）
-- Swagger 文档：`http://localhost:8091/docs/`
+- Swagger 文档：`http://localhost:8091/docs`
 
-### 3. 启动前端开发模式
+### 2. 启动前端开发模式
 
 ```bash
 cd web
@@ -95,8 +88,8 @@ make api         # 生成 Go proto/grpc/http/error
 make openapi     # 生成 OpenAPI 文档
 make ts          # 生成 TS proto
 make wire        # 生成 wire 注入代码
-make test        # go test ./...
 make run         # 生成 API+OpenAPI 后启动服务
+go test ./...    # 运行测试
 ```
 
 ### web
@@ -114,4 +107,3 @@ pnpm build-only
 2. 修改依赖注入构造函数或 ProviderSet 后执行：`make wire`
 3. 前端页面需要由后端托管时执行：`pnpm build-only`
 4. 提交前建议至少执行：`cd server && go test ./...`
-

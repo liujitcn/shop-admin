@@ -11,17 +11,17 @@ import (
 	"github.com/liujitcn/kratos-kit/bootstrap"
 	"github.com/liujitcn/kratos-kit/rpc"
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	configApi "github.com/liujitcn/shop-admin/server/api/gen/go/config"
-	fileApi "github.com/liujitcn/shop-admin/server/api/gen/go/file"
-	loginApi "github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	payApi "github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	"github.com/liujitcn/shop-admin/server/internal/middleware/logging"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/config"
-	"github.com/liujitcn/shop-admin/server/internal/service/file"
-	"github.com/liujitcn/shop-admin/server/internal/service/login"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
+	baseConfigApi "github.com/liujitcn/shop-base/server/api/gen/go/config"
+	baseFileApi "github.com/liujitcn/shop-base/server/api/gen/go/file"
+	baseLoginApi "github.com/liujitcn/shop-base/server/api/gen/go/login"
+	baseConfig "github.com/liujitcn/shop-base/server/service/config"
+	baseFile "github.com/liujitcn/shop-base/server/service/file"
+	baseLogin "github.com/liujitcn/shop-base/server/service/login"
 )
 
 // GrpcMiddlewares 为 gRPC 服务注入专用中间件类型，避免与 HTTP 中间件冲突。
@@ -79,9 +79,9 @@ func NewGRPCServer(
 
 	adminUserStore *admin.UserStoreService,
 
-	config *config.ConfigService,
-	file *file.FileService,
-	login *login.LoginService,
+	config *baseConfig.ConfigService,
+	file *baseFile.FileService,
+	login *baseLogin.LoginService,
 	pay *pay.PayService,
 ) (*grpc.Server, error) {
 	cfg := ctx.GetConfig()
@@ -116,9 +116,9 @@ func NewGRPCServer(
 	adminApi.RegisterShopHotServiceServer(srv, adminShopHot)
 	adminApi.RegisterShopServiceServiceServer(srv, adminShopService)
 	adminApi.RegisterUserStoreServiceServer(srv, adminUserStore)
-	configApi.RegisterConfigServiceServer(srv, config)
-	fileApi.RegisterFileServiceServer(srv, file)
-	loginApi.RegisterLoginServiceServer(srv, login)
+	baseConfigApi.RegisterConfigServiceServer(srv, config)
+	baseFileApi.RegisterFileServiceServer(srv, file)
+	baseLoginApi.RegisterLoginServiceServer(srv, login)
 	payApi.RegisterPayServiceServer(srv, pay)
 
 	return srv, nil

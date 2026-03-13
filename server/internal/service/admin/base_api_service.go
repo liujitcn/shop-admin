@@ -13,8 +13,8 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -24,14 +24,14 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseApiService is the server API for BaseApiService service implement.
 type BaseApiService struct {
 	admin.UnimplementedBaseApiServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseApiCase *biz.BaseApiCase
 }
 
 // NewBaseApiService create a service implement.
 // AdminAPI列表
 func NewBaseApiService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	baseApiCase *biz.BaseApiCase,
 ) (*BaseApiService, error) {
 	var ss = BaseApiService{

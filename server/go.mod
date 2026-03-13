@@ -6,7 +6,6 @@ require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/gnostic v0.7.1
-	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/liujitcn/go-utils v0.0.11
 	github.com/liujitcn/go-utils/crypto v0.0.5
@@ -30,6 +29,7 @@ require (
 	github.com/liujitcn/kratos-kit/queue v0.0.4
 	github.com/liujitcn/kratos-kit/rpc v0.0.1
 	github.com/liujitcn/kratos-kit/swagger-ui v0.0.1
+	github.com/liujitcn/shop-base/server v0.0.3
 	github.com/liujitcn/shop-gorm-gen v0.0.5
 	github.com/mileusna/useragent v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
@@ -84,6 +84,7 @@ require (
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/subcommands v1.2.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grafana/pyroscope-go v1.2.7 // indirect

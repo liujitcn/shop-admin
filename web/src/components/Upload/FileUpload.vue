@@ -52,7 +52,9 @@ import {
 } from "element-plus";
 
 import { defFileService } from "@/api/file/file";
-import type { FileInfo } from "@/rpc/file/file";
+import type { File } from "@liujitcn/shop-base";
+
+type FileInfo = File.FileInfo;
 
 const props = defineProps({
   /**

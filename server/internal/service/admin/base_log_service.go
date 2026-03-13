@@ -13,8 +13,8 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -24,14 +24,14 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseLogService is the server API for BaseLogService service implement.
 type BaseLogService struct {
 	admin.UnimplementedBaseLogServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseLogCase *biz.BaseLogCase
 }
 
 // NewBaseLogService create a service implement.
 // Admin日志服务
 func NewBaseLogService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	logCase *biz.BaseLogCase,
 ) *BaseLogService {
 	var ss = BaseLogService{

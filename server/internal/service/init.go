@@ -3,16 +3,11 @@ package service
 import (
 	"github.com/google/wire"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
-	"github.com/liujitcn/shop-admin/server/internal/service/config"
-	"github.com/liujitcn/shop-admin/server/internal/service/file"
-	"github.com/liujitcn/shop-admin/server/internal/service/login"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
 	payBiz "github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
 
 	adminBiz "github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
-	configBiz "github.com/liujitcn/shop-admin/server/internal/service/config/biz"
-	fileBiz "github.com/liujitcn/shop-admin/server/internal/service/file/biz"
 )
 
 // ProviderSet is server providers.
@@ -58,9 +53,6 @@ var ProviderSet = wire.NewSet(
 
 	adminBiz.NewUserStoreCase,
 
-	configBiz.NewConfigCase,
-	fileBiz.NewFileCase,
-
 	payBiz.NewOrderSchedulerCase,
 	payBiz.NewPayCase,
 	payBiz.NewPayBillCase,
@@ -97,12 +89,6 @@ var ProviderSet = wire.NewSet(
 	admin.NewShopServiceService,
 
 	admin.NewUserStoreService,
-
-	config.NewConfigService,
-
-	file.NewFileService,
-
-	login.NewLoginService,
 
 	pay.NewPayService,
 )

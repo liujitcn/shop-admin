@@ -1,5 +1,9 @@
 import service from "@/utils/request";
-import { type ConfigService, type ConfigRequest, type ConfigResponse } from "@/rpc/config/config";
+import type { Config } from "@liujitcn/shop-base";
+
+type ConfigService = Config.ConfigService;
+type ConfigRequest = Config.ConfigRequest;
+type ConfigResponse = Config.ConfigResponse;
 
 const CONFIG_URL = "/config";
 

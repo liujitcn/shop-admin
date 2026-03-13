@@ -15,8 +15,8 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -27,7 +27,7 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseMenuService is the server API for BaseMenuService service implement.
 type BaseMenuService struct {
 	admin.UnimplementedBaseMenuServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseMenuCase   *biz.BaseMenuCase
 	casbinRuleCase *biz.CasbinRuleCase
 }
@@ -35,13 +35,13 @@ type BaseMenuService struct {
 // NewBaseMenuService create a service implement.
 // Admin菜单管理服务
 func NewBaseMenuService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	menuCase *biz.BaseMenuCase,
 	casbinRuleCase *biz.CasbinRuleCase,
 ) *BaseMenuService {
 	var ss = BaseMenuService{
-		ShopCore: sc,
-		baseMenuCase: menuCase,
+		ShopCore:       sc,
+		baseMenuCase:   menuCase,
 		casbinRuleCase: casbinRuleCase,
 	}
 	log.Debug("NewBaseMenuService.")

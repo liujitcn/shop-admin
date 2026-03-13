@@ -17,9 +17,9 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -31,14 +31,14 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseConfigService is the server API for BaseConfigService service implement.
 type BaseConfigService struct {
 	admin.UnimplementedBaseConfigServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseConfigCase *biz.BaseConfigCase
 }
 
 // NewBaseConfigService create a service implement.
 // Admin系统配置服务
 func NewBaseConfigService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	configCase *biz.BaseConfigCase,
 ) (*BaseConfigService, error) {
 	var ss = BaseConfigService{

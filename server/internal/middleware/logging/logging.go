@@ -16,11 +16,10 @@ import (
 	"github.com/liujitcn/go-utils/trans"
 	authnEngine "github.com/liujitcn/kratos-kit/auth/authn/engine"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	"github.com/liujitcn/shop-admin/server/api/gen/go/file"
-	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/utils"
+	baseFileApi "github.com/liujitcn/shop-base/server/api/gen/go/file"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"github.com/mileusna/useragent"
 	"google.golang.org/grpc/codes"
@@ -54,7 +53,7 @@ func Server(logger log.Logger,
 				if htr, htrOk := info.(*http.Transport); htrOk {
 					baseLog.RequestID = getRequestId(htr.Request())
 					// 文件上传不存请求内容
-					if !(htr.Operation() == file.OperationFileServiceMultiUploadFile || htr.Operation() == file.OperationFileServiceUploadFile || htr.Operation() == file.OperationFileServiceDownloadFile) {
+					if !(htr.Operation() == baseFileApi.OperationFileServiceMultiUploadFile || htr.Operation() == baseFileApi.OperationFileServiceUploadFile || htr.Operation() == baseFileApi.OperationFileServiceDownloadFile) {
 						baseLog.RequestBody = extractArgs(req)
 					}
 
@@ -80,7 +79,7 @@ func Server(logger log.Logger,
 					baseLog.Location = trans.Ptr(clientIpToLocation(clientIp))
 
 					if htr.Operation() == admin.OperationAuthServiceLogin {
-						var loginRequest login.LoginRequest
+						var loginRequest admin.LoginRequest
 						if fullErr = json.Unmarshal([]byte(baseLog.RequestBody), &loginRequest); fullErr == nil {
 							userName := loginRequest.GetUserName()
 							if len(userName) > 0 {

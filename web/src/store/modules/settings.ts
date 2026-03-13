@@ -67,7 +67,7 @@ export const useSettingsStore = defineStore("setting", () => {
       site: 2,
     });
     data.value = {};
-    res.data?.forEach((item) => {
+    res.data?.forEach((item: { key: string; value: string }) => {
       data.value[item.key] = item.value;
     });
   };

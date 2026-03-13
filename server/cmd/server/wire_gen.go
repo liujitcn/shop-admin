@@ -15,20 +15,22 @@ import (
 	"github.com/liujitcn/kratos-kit/pprof"
 	"github.com/liujitcn/kratos-kit/queue"
 	"github.com/liujitcn/shop-admin/server/internal/configs"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	data2 "github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/middleware"
 	"github.com/liujitcn/shop-admin/server/internal/server"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
-	"github.com/liujitcn/shop-admin/server/internal/service/config"
-	biz3 "github.com/liujitcn/shop-admin/server/internal/service/config/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/file"
-	biz4 "github.com/liujitcn/shop-admin/server/internal/service/file/biz"
-	"github.com/liujitcn/shop-admin/server/internal/service/login"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
 	biz2 "github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
+	configs2 "github.com/liujitcn/shop-base/server/configs"
+	"github.com/liujitcn/shop-base/server/core"
+	data3 "github.com/liujitcn/shop-base/server/data"
+	"github.com/liujitcn/shop-base/server/service/config"
+	biz3 "github.com/liujitcn/shop-base/server/service/config/biz"
+	"github.com/liujitcn/shop-base/server/service/file"
+	biz4 "github.com/liujitcn/shop-base/server/service/file/biz"
+	"github.com/liujitcn/shop-base/server/service/login"
 	"github.com/liujitcn/shop-gorm-gen/data"
 )
 
@@ -43,11 +45,11 @@ import (
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	authentication_Jwt := configs.ParseAuthnJwt(context)
 	authenticator := middleware.NewAuthenticator(authentication_Jwt)
-	confData, err := configs.ParseData(context)
+	confData, err := configs2.ParseData(context)
 	if err != nil {
 		return nil, nil, err
 	}
-	data_Database := configs.ParseDatabase(confData)
+	data_Database := configs2.ParseDatabase(confData)
 	client, cleanup, err := gorm.NewGormClient(data_Database)
 	if err != nil {
 		return nil, nil, err
@@ -61,7 +63,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	data_Redis := configs.ParseRedis(confData)
+	data_Redis := configs2.ParseRedis(confData)
 	cacheCache, cleanup2, err := cache.NewCache(data_Redis)
 	if err != nil {
 		cleanup()
@@ -69,14 +71,14 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	}
 	userToken := middleware.NewUserToken(authentication_Jwt, cacheCache, authenticator)
 	grpcMiddlewares := server.NewGrpcMiddleware(context, authenticator, baseUserCase, engine, userToken, authentication_Jwt)
-	data_Queue := configs.ParseQueue(confData)
+	data_Queue := configs2.ParseQueue(confData)
 	queueQueue, cleanup3, err := queue.NewQueue(data_Redis, data_Queue)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	confPprof, err := configs.ParsePprof(context)
+	confPprof, err := configs2.ParsePprof(context)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -140,7 +142,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseDictItemCase := biz.NewBaseDictItemCase(baseDictRepo, baseDictItemRepo)
 	baseDictService := admin.NewBaseDictService(shopCore, baseDictCase, baseDictItemCase)
 	baseJobRepo := data2.NewBaseJobRepo(dataData)
-	confOSS, err := configs.ParseOss(context)
+	confOSS, err := configs2.ParseOss(context)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -231,7 +233,8 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	baseAreaCase := biz.NewBaseAreaCase(baseAreaRepo)
 	userStoreCase := biz.NewUserStoreCase(transaction, userStoreRepo, baseAreaCase, baseUserCase, baseRoleCase)
 	userStoreService := admin.NewUserStoreService(shopCore, userStoreCase)
-	configCase := biz3.NewConfigCase(baseConfigRepo)
+	dataBaseConfigRepo := data3.NewBaseConfigRepo(dataData)
+	configCase := biz3.NewConfigCase(dataBaseConfigRepo)
 	configService := config.NewConfigService(shopCore, configCase)
 	fileCase := biz4.NewFileCase(ossOSS)
 	fileService := file.NewFileService(shopCore, fileCase)

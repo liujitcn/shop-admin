@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/core"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -24,18 +24,18 @@ const _ = grpc.SupportPackageIsVersion7
 // OrderService is the server API for OrderService service implement.
 type OrderService struct {
 	admin.UnimplementedOrderServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	orderCase *biz.OrderCase
 }
 
 // NewOrderService create a service implement.
 // 订单服务
 func NewOrderService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	orderCase *biz.OrderCase,
 ) *OrderService {
 	var ss = OrderService{
-		ShopCore: sc,
+		ShopCore:  sc,
 		orderCase: orderCase}
 	log.Debug("NewOrderService.")
 	return &ss

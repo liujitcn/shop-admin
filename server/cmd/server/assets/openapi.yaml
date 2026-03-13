@@ -3070,132 +3070,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UserStore'
-    /api/config:
-        get:
-            tags:
-                - ConfigService
-            description: 获取系统配置
-            operationId: ConfigService_GetConfig
-            parameters:
-                - name: site
-                  in: query
-                  schema:
-                    enum:
-                        - UNKNOWN_BCS
-                        - SYSTEM
-                        - ADMIN
-                        - APP
-                    type: string
-                    format: enum
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ConfigResponse'
-    /api/file:
-        get:
-            tags:
-                - FileService
-            description: 下载文件
-            operationId: FileService_DownloadFile
-            parameters:
-                - name: name
-                  in: query
-                  schema:
-                    type: string
-                - name: path
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: string
-                                format: bytes
-        post:
-            tags:
-                - FileService
-            description: 单个文件上传
-            operationId: FileService_UploadFile
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UploadFileInfo'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/FileInfo'
-    /api/file/multi:
-        post:
-            tags:
-                - FileService
-            description: 多个文件上传
-            operationId: FileService_MultiUploadFile
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/MultiUploadFileRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/MultiUploadFileResponse'
-    /api/login/captcha:
-        get:
-            tags:
-                - LoginService
-            description: 验证码
-            operationId: LoginService_Captcha
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CaptchaResponse'
-    /api/login/logout:
-        delete:
-            tags:
-                - LoginService
-            description: 登出
-            operationId: LoginService_Logout
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /api/login/refreshToken:
-        post:
-            tags:
-                - LoginService
-            description: 刷新认证令牌
-            operationId: LoginService_RefreshToken
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/RefreshTokenRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LoginResponse'
     /api/pay/notify:
         post:
             tags:
@@ -4041,32 +3915,6 @@ components:
                     type: string
                     description: 备注名
             description: 用户
-        CaptchaResponse:
-            type: object
-            properties:
-                captchaId:
-                    type: string
-                    description: 验证码ID
-                captchaBase64:
-                    type: string
-                    description: 验证码base64
-        ConfigResponse:
-            type: object
-            properties:
-                data:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ConfigResponse_Data'
-                    description: 系统配置
-        ConfigResponse_Data:
-            type: object
-            properties:
-                key:
-                    type: string
-                    description: 配置key
-                value:
-                    type: string
-                    description: 配置value
         DashboardBarResponse:
             type: object
             properties:
@@ -4159,18 +4007,6 @@ components:
                 id:
                     type: string
                     description: 主键id
-        FileInfo:
-            type: object
-            properties:
-                url:
-                    type: string
-                    description: 文件路径
-                name:
-                    type: string
-                    description: 文件名
-                extname:
-                    type: string
-                    description: 文件扩展名
         Goods:
             type: object
             properties:
@@ -4520,22 +4356,6 @@ components:
                     type: string
                     description: 令牌有效时间，单位为秒。如果访问令牌过期，服务器应回复授予访问令牌的持续时间。如果省略该参数，必须其他方式设置过期时间。
             description: 用户后台登录 - 回应
-        MultiUploadFileRequest:
-            type: object
-            properties:
-                files:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/UploadFileInfo'
-                    description: 上传文件信息
-        MultiUploadFileResponse:
-            type: object
-            properties:
-                files:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/FileInfo'
-                    description: 文件上传结果
         Order:
             type: object
             properties:
@@ -5165,13 +4985,6 @@ components:
                     description: 对账状态：枚举【PayBillStatus】
                     format: enum
             description: 支付账单
-        RefreshTokenRequest:
-            type: object
-            properties:
-                refreshToken:
-                    type: string
-                    description: 更新令牌，用来获取下一次的访问令牌，可选项。如果访问令牌将过期，则返回刷新令牌很有用，应用程序可以使用该刷新令牌来获取另一个访问令牌。但是，通过隐式授予颁发的令牌不能颁发刷新令牌。
-            description: 用户刷新令牌 - 请求
         RefundOrderRequest:
             type: object
             properties:
@@ -5667,22 +5480,6 @@ components:
                     type: string
                     description: 确认密码
             description: 修改密码表单
-        UploadFileInfo:
-            type: object
-            properties:
-                name:
-                    type: string
-                    description: 文件名
-                extname:
-                    type: string
-                    description: 文件扩展名
-                path:
-                    type: string
-                    description: 文件路径
-                content:
-                    type: string
-                    description: ' 二进制内容将通过 base64 编码传输'
-                    format: bytes
         UserInfo:
             type: object
             properties:
@@ -5801,12 +5598,8 @@ tags:
       description: Admin角色管理服务
     - name: BaseUserService
       description: Admin用户管理服务
-    - name: ConfigService
-      description: 系统配置公共服务
     - name: DashboardService
       description: Admin首页服务
-    - name: FileService
-      description: 文件服务
     - name: GoodsCategoryService
       description: Admin分类服务
     - name: GoodsPropService
@@ -5817,8 +5610,6 @@ tags:
       description: Admin商品SKU服务
     - name: GoodsSpecService
       description: Admin商品规格服务
-    - name: LoginService
-      description: 登录公共服务
     - name: OrderService
       description: Admin订单服务
     - name: PayBillService

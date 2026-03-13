@@ -40,8 +40,10 @@
 </template>
 <script setup lang="ts">
 import { UploadRawFile, UploadRequestOptions, UploadUserFile } from "element-plus";
-import type { FileInfo } from "@/rpc/file/file";
+import type { File } from "@liujitcn/shop-base";
 import { defFileService } from "@/api/file/file";
+
+type FileInfo = File.FileInfo;
 
 const props = defineProps({
   /**

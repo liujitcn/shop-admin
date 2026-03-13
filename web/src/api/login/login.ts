@@ -1,11 +1,11 @@
 import service from "@/utils/request";
-import {
-  type CaptchaResponse,
-  type RefreshTokenRequest,
-  type LoginService,
-  type LoginResponse,
-} from "@/rpc/login/login";
+import type { Login } from "@liujitcn/shop-base";
 import type { Empty } from "@/rpc/google/protobuf/empty";
+
+type CaptchaResponse = Login.CaptchaResponse;
+type RefreshTokenRequest = Login.RefreshTokenRequest;
+type RefreshTokenResponse = Login.RefreshTokenResponse;
+type LoginService = Login.LoginService;
 
 const LOGIN_URL = "/login";
 
@@ -28,8 +28,8 @@ export class LoginServiceImpl implements LoginService {
     });
   }
   /** 刷新认证令牌 */
-  RefreshToken(request: RefreshTokenRequest): Promise<LoginResponse> {
-    return service<RefreshTokenRequest, LoginResponse>({
+  RefreshToken(request: RefreshTokenRequest): Promise<RefreshTokenResponse> {
+    return service<RefreshTokenRequest, RefreshTokenResponse>({
       url: `${LOGIN_URL}/refreshToken`,
       method: "post",
       data: request,

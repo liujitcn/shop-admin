@@ -16,9 +16,9 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -30,7 +30,7 @@ const _ = grpc.SupportPackageIsVersion7
 // GoodsService is the server API for GoodsService service implement.
 type GoodsService struct {
 	admin.UnimplementedGoodsServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	goodsCase         *biz.GoodsCase
 	goodsCategoryCase *biz.GoodsCategoryCase
 }
@@ -38,7 +38,7 @@ type GoodsService struct {
 // NewGoodsService create a service implement.
 // Admin商品服务
 func NewGoodsService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	infoCase *biz.GoodsCase,
 	categoryCase *biz.GoodsCategoryCase,
 ) *GoodsService {

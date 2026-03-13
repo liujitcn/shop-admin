@@ -1,23 +1,12 @@
-# Not Support Windows
+# Makefile 常用目标：初始化工具、生成代码、启动服务、
+.PHONY: help init plugin cli wire api openapi ts run
 
-.PHONY: help wire gen ent build api openapi init all vendor dep test cover vet lint docker
-
-ifeq ($(OS),Windows_NT)
-    IS_WINDOWS := 1
-endif
-
-CURRENT_DIR	:= $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-ROOT_DIR	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-
-SRCS_MK		:= $(foreach dir, app, $(wildcard $(dir)/*/*/Makefile))
-
-
-# initialize develop environment
+# 初始化开发环境
 init: plugin cli
 
-# install protoc plugin
+# 安装 protoc 插件
 plugin:
-	# go
+	# Go 相关插件
 	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	@go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
@@ -27,7 +16,7 @@ plugin:
 	@go install github.com/menta2k/protoc-gen-redact/v3@latest
 	@go install github.com/go-kratos/protoc-gen-typescript-http@latest
 
-# install cli tools
+# 安装命令行工具
 cli:
 	@go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 	@go install github.com/google/gnostic@latest
@@ -35,63 +24,32 @@ cli:
 	@go install entgo.io/ent/cmd/ent@latest
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-# use docker compose to run backend services and all its dependency services like redis, mysql, etc.
-compose-up:
-	@docker compose up -d --force-recreate
-
-compose-down:
-	@docker compose down
-
-# download dependencies of module
-dep:
-	@go mod download
-
-# create vendor
-vendor:
-	@go mod vendor
-
-# run tests
-test:
-	@go test ./...
-
-# run coverage tests
-cover:
-	@go test -v ./... -coverprofile=coverage.out
-
-# run static analysis
-vet:
-	@go vet
-
-# run lint
-lint:
-	@golangci-lint run
-
-# generate wire code
+# 生成 wire 依赖注入代码
 wire:
 	@cd cmd/server && \
 	wire
 
-# generate protobuf api go code
+# 生成 protobuf 的 Go 代码
 api:
 	@cd api && \
 	buf generate
 
-# generate OpenAPI v3 docs.
+# 生成 OpenAPI v3 文档
 openapi:
 	@cd api && \
 	buf generate --template buf.openapi.gen.yaml --exclude-path protos/conf
 
-# generate typescript.
+# 生成 TypeScript 代码
 ts:
 	@cd api && \
 	buf generate --template buf.typescript.gen.yaml --exclude-path protos/conf
 
 
-# run application
+# 启动应用
 run: api openapi
 	@go run ./cmd/server -conf ./configs
 
-# show help
+# 显示帮助
 help:
 	@echo ""
 	@echo "Usage:"

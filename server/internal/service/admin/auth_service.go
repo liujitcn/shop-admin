@@ -23,11 +23,11 @@ import (
 	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
-	"github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCommon "github.com/liujitcn/shop-base/server/api/gen/go/common"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -38,7 +38,7 @@ const _ = grpc.SupportPackageIsVersion7
 // AuthService is the server API for AuthService service implement.
 type AuthService struct {
 	admin.UnimplementedAuthServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseUserCase *biz.BaseUserCase
 	baseRoleCase *biz.BaseRoleCase
 	baseDeptCase *biz.BaseDeptCase
@@ -48,7 +48,7 @@ type AuthService struct {
 // NewAuthService create a service implement.
 // Admin用户登录认证服务
 func NewAuthService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	userCase *biz.BaseUserCase,
 	roleCase *biz.BaseRoleCase,
 	deptCase *biz.BaseDeptCase,
@@ -67,7 +67,7 @@ func NewAuthService(
 
 // Login
 // 登录
-func (s *AuthService) Login(ctx context.Context, req *login.LoginRequest) (*login.LoginResponse, error) {
+func (s *AuthService) Login(ctx context.Context, req *admin.LoginRequest) (*admin.LoginResponse, error) {
 	if req.GetCaptchaId() == "" || req.GetCaptchaCode() == "" {
 		return nil, errors.New("验证码不存在")
 	}
@@ -120,7 +120,7 @@ func (s *AuthService) Login(ctx context.Context, req *login.LoginRequest) (*logi
 	// Token 有效期
 	expiresIn := s.UserToken.GetAccessTokenExpires()
 
-	return &login.LoginResponse{
+	return &admin.LoginResponse{
 		TokenType:    engine.BearerWord,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -134,7 +134,7 @@ func (s *AuthService) GetUserInfo(ctx context.Context, req *emptypb.Empty) (*adm
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 	var baseUser *models.BaseUser
 	baseUser, err = s.baseUserCase.GetFromID(ctx, authInfo.UserId)
@@ -166,7 +166,7 @@ func (s *AuthService) GetUserInfo(ctx context.Context, req *emptypb.Empty) (*adm
 	baseMenus, err = s.baseMenuCase.List(ctx, condition)
 	permission := make([]string, 0)
 	if err != nil {
-		return nil, common.ErrorAccessForbidden("用户权限不存在")
+		return nil, baseCommon.ErrorAccessForbidden("用户权限不存在")
 	}
 	for _, item := range baseMenus {
 		permission = append(permission, item.Path)
@@ -187,7 +187,7 @@ func (s *AuthService) GetUserMenu(ctx context.Context, req *emptypb.Empty) (*adm
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 
 	// 查询角色信息
@@ -210,7 +210,7 @@ func (s *AuthService) GetUserMenu(ctx context.Context, req *emptypb.Empty) (*adm
 	var baseMenus []*models.BaseMenu
 	baseMenus, err = s.baseMenuCase.List(ctx, condition)
 	if err != nil {
-		return nil, common.ErrorAccessForbidden("用户权限不存在")
+		return nil, baseCommon.ErrorAccessForbidden("用户权限不存在")
 	}
 
 	return &admin.TreeRouteResponse{
@@ -224,7 +224,7 @@ func (s *AuthService) GetUserProfile(ctx context.Context, req *emptypb.Empty) (*
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 
 	var baseUser *models.BaseUser
@@ -265,7 +265,7 @@ func (s *AuthService) UpdateUserProfile(ctx context.Context, req *admin.UserProf
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 
 	var oldBaseUser *models.BaseUser
@@ -298,7 +298,7 @@ func (s *AuthService) SendUpdatePhoneCode(ctx context.Context, req *admin.SendUp
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 	code := _string.GetRandomString(6)
 	log.Errorf("code: %s", code)
@@ -316,7 +316,7 @@ func (s *AuthService) UpdateUserPhone(ctx context.Context, req *admin.UpdatePhon
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 	var code string
 	code, err = sdk.Runtime.GetCache().Get(fmt.Sprintf("%s:%d", _const.CacheKeyUpdatePhoneCode, authInfo.UserId))
@@ -346,7 +346,7 @@ func (s *AuthService) UpdateUserPwd(ctx context.Context, req *admin.UpdatePwdFor
 	authInfo, err := auth.FromContext(ctx)
 	if err != nil {
 		log.Errorf("用户认证失败")
-		return nil, common.ErrorAccessForbidden("用户认证失败")
+		return nil, baseCommon.ErrorAccessForbidden("用户认证失败")
 	}
 
 	var baseUser *models.BaseUser

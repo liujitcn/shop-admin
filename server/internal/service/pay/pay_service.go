@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/pay"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -23,14 +23,14 @@ const _ = grpc.SupportPackageIsVersion7
 // PayService is the server API for PayService service implement.
 type PayService struct {
 	pay.UnimplementedPayServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	payCase *biz.PayCase
 }
 
 // NewPayService create a service implement.
 // 支付服务
 func NewPayService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	payCase *biz.PayCase,
 ) *PayService {
 	var ss = PayService{

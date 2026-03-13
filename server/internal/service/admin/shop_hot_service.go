@@ -15,9 +15,9 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -29,7 +29,7 @@ const _ = grpc.SupportPackageIsVersion7
 // ShopHotService is the server API for ShopHotService service implement.
 type ShopHotService struct {
 	admin.UnimplementedShopHotServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	hotCase     *biz.ShopHotCase
 	hotItemCase *biz.ShopHotItemCase
 }
@@ -37,7 +37,7 @@ type ShopHotService struct {
 // NewShopHotService create a service implement.
 // Admin商城热门推荐服务
 func NewShopHotService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	hotCase *biz.ShopHotCase,
 	hotItemCase *biz.ShopHotItemCase,
 ) *ShopHotService {

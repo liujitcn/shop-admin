@@ -14,8 +14,8 @@ import (
 	"github.com/go-sql-driver/mysql"
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -26,14 +26,14 @@ const _ = grpc.SupportPackageIsVersion7
 // GoodsPropService is the server API for GoodsPropService service implement.
 type GoodsPropService struct {
 	admin.UnimplementedGoodsPropServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	goodsPropCase *biz.GoodsPropCase
 }
 
 // NewGoodsPropService create a service implement.
 // Admin商品属性服务
 func NewGoodsPropService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	goodsPropCase *biz.GoodsPropCase,
 ) *GoodsPropService {
 	var ss = GoodsPropService{

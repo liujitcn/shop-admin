@@ -15,9 +15,10 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCommon "github.com/liujitcn/shop-base/server/api/gen/go/common"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -29,14 +30,14 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseUserService is the server API for BaseUserService service implement.
 type BaseUserService struct {
 	admin.UnimplementedBaseUserServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseUserCase *biz.BaseUserCase
 }
 
 // NewBaseUserService create a service implement.
 // Admin用户管理服务
 func NewBaseUserService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	userCase *biz.BaseUserCase,
 ) *BaseUserService {
 	var ss = BaseUserService{
@@ -121,7 +122,7 @@ func (s *BaseUserService) UpdateBaseUser(ctx context.Context, req *admin.BaseUse
 	oldBaseUser, err := s.baseUserCase.GetFromID(ctx, req.GetId())
 	if err != nil {
 		log.Error("UpdateBaseUser err:", err.Error())
-		return nil, common.ErrorUserNotFound("更新用户失败, 用户信息不存在")
+		return nil, baseCommon.ErrorUserNotFound("更新用户失败, 用户信息不存在")
 	}
 	if oldBaseUser.UserName == admin.BaseUserName_super.String() {
 		return nil, errors.New("更新用户失败，不能操作超级管理员")
@@ -169,7 +170,7 @@ func (s *BaseUserService) SetBaseUserStatus(ctx context.Context, req *common.Set
 	baseUserOld, err := s.baseUserCase.GetFromID(ctx, req.GetId())
 	if err != nil {
 		log.Error("SetBaseUserStatus err:", err.Error())
-		return nil, common.ErrorUserNotFound("设置状态失败, 用户信息不存在")
+		return nil, baseCommon.ErrorUserNotFound("设置状态失败, 用户信息不存在")
 	}
 	if baseUserOld.UserName == admin.BaseUserName_super.String() {
 		return nil, errors.New("设置状态失败，不能操作超级管理员")
@@ -191,7 +192,7 @@ func (s *BaseUserService) ResetBaseUserPwd(ctx context.Context, req *admin.Reset
 	baseUserOld, err := s.baseUserCase.GetFromID(ctx, req.GetId())
 	if err != nil {
 		log.Error("ResetBaseUserPwd err:", err.Error())
-		return nil, common.ErrorUserNotFound("重置密码失败, 用户信息不存在")
+		return nil, baseCommon.ErrorUserNotFound("重置密码失败, 用户信息不存在")
 	}
 	if baseUserOld.UserName == admin.BaseUserName_super.String() {
 		return nil, errors.New("重置密码失败，不能操作超级管理员")

@@ -10,7 +10,6 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
-	login "github.com/liujitcn/shop-admin/server/api/gen/go/login"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -38,7 +37,7 @@ type AuthServiceHTTPServer interface {
 	// GetUserProfile 获取个人中心用户信息
 	GetUserProfile(context.Context, *emptypb.Empty) (*UserProfileForm, error)
 	// Login 登录
-	Login(context.Context, *login.LoginRequest) (*login.LoginResponse, error)
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	// SendUpdatePhoneCode 发送手机号验证码
 	SendUpdatePhoneCode(context.Context, *SendUpdatePhoneCodeForm) (*emptypb.Empty, error)
 	// UpdateUserPhone 修改个人中心手机号
@@ -63,7 +62,7 @@ func RegisterAuthServiceHTTPServer(s *http.Server, srv AuthServiceHTTPServer) {
 
 func _AuthService_Login0_HTTP_Handler(srv AuthServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in login.LoginRequest
+		var in LoginRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
@@ -72,13 +71,13 @@ func _AuthService_Login0_HTTP_Handler(srv AuthServiceHTTPServer) func(ctx http.C
 		}
 		http.SetOperation(ctx, OperationAuthServiceLogin)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Login(ctx, req.(*login.LoginRequest))
+			return srv.Login(ctx, req.(*LoginRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*login.LoginResponse)
+		reply := out.(*LoginResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -236,7 +235,7 @@ type AuthServiceHTTPClient interface {
 	// GetUserProfile 获取个人中心用户信息
 	GetUserProfile(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *UserProfileForm, err error)
 	// Login 登录
-	Login(ctx context.Context, req *login.LoginRequest, opts ...http.CallOption) (rsp *login.LoginResponse, err error)
+	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginResponse, err error)
 	// SendUpdatePhoneCode 发送手机号验证码
 	SendUpdatePhoneCode(ctx context.Context, req *SendUpdatePhoneCodeForm, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// UpdateUserPhone 修改个人中心手机号
@@ -298,8 +297,8 @@ func (c *AuthServiceHTTPClientImpl) GetUserProfile(ctx context.Context, in *empt
 }
 
 // Login 登录
-func (c *AuthServiceHTTPClientImpl) Login(ctx context.Context, in *login.LoginRequest, opts ...http.CallOption) (*login.LoginResponse, error) {
-	var out login.LoginResponse
+func (c *AuthServiceHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginResponse, error) {
+	var out LoginResponse
 	pattern := "/api/admin/auth/login"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAuthServiceLogin))

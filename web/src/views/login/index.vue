@@ -101,7 +101,7 @@
 import { LocationQuery, useRoute } from "vue-router";
 
 import { defLoginService } from "@/api/login/login";
-import { LoginRequest } from "@/rpc/login/login";
+import type { LoginRequest } from "@/rpc/admin/auth";
 import router from "@/router";
 
 import defaultSettings from "@/settings";

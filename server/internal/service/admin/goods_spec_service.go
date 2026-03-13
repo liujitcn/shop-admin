@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
-	"github.com/liujitcn/shop-admin/server/internal/core"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 )
 
@@ -22,18 +22,18 @@ const _ = grpc.SupportPackageIsVersion7
 // GoodsSpecService is the server API for GoodsSpecService service implement.
 type GoodsSpecService struct {
 	admin.UnimplementedGoodsSpecServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	goodsSpecCase *biz.GoodsSpecCase
 }
 
 // NewGoodsSpecService create a service implement.
 // Admin商品规格服务
 func NewGoodsSpecService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	goodsSpecCase *biz.GoodsSpecCase,
 ) *GoodsSpecService {
 	var ss = GoodsSpecService{
-		ShopCore: sc,
+		ShopCore:      sc,
 		goodsSpecCase: goodsSpecCase}
 	log.Debug("NewGoodsSpecService.")
 	return &ss

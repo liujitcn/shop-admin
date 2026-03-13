@@ -1,5 +1,9 @@
 import service from "@/utils/request";
-import type { DownloadFileRequest, FileInfo, MultiUploadFileResponse } from "@/rpc/file/file";
+import type { File } from "@liujitcn/shop-base";
+
+type DownloadFileRequest = File.DownloadFileRequest;
+type FileInfo = File.FileInfo;
+type MultiUploadFileResponse = File.MultiUploadFileResponse;
 
 const FILE_URL = "/file";
 

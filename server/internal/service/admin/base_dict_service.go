@@ -16,9 +16,9 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -30,7 +30,7 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseDictService is the server API for BaseDictService service implement.
 type BaseDictService struct {
 	admin.UnimplementedBaseDictServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseDictCase     *biz.BaseDictCase
 	baseDictItemCase *biz.BaseDictItemCase
 }
@@ -38,7 +38,7 @@ type BaseDictService struct {
 // NewBaseDictService create a service implement.
 // Admin字典服务
 func NewBaseDictService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	dictCase *biz.BaseDictCase,
 	dictItemCase *biz.BaseDictItemCase,
 ) *BaseDictService {

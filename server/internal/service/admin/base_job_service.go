@@ -17,8 +17,8 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
-	"github.com/liujitcn/shop-admin/server/internal/core"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseCore "github.com/liujitcn/shop-base/server/core"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -30,7 +30,7 @@ const _ = grpc.SupportPackageIsVersion7
 // BaseJobService is the server API for BaseJobService service implement.
 type BaseJobService struct {
 	admin.UnimplementedBaseJobServiceServer
-	*core.ShopCore
+	*baseCore.ShopCore
 	baseJobCase    *biz.BaseJobCase
 	baseJobLogCase *biz.BaseJobLogCase
 }
@@ -38,7 +38,7 @@ type BaseJobService struct {
 // NewBaseJobService create a service implement.
 // Admin定时任务服务
 func NewBaseJobService(
-	sc *core.ShopCore,
+	sc *baseCore.ShopCore,
 	baseJobCase *biz.BaseJobCase,
 	baseJobLogCase *biz.BaseJobLogCase,
 ) *BaseJobService {

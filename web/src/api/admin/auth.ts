@@ -1,6 +1,8 @@
 import service from "@/utils/request";
 import {
   type AuthService,
+  type LoginRequest,
+  type LoginResponse,
   type TreeRouteResponse,
   type UserInfo,
   type UserProfileForm,
@@ -8,7 +10,6 @@ import {
   type UpdatePhoneForm,
   type UpdatePwdForm,
 } from "@/rpc/admin/auth";
-import { type LoginRequest, type LoginResponse } from "@/rpc/login/login";
 import type { Empty } from "@/rpc/google/protobuf/empty";
 
 const AUTH_URL = "/admin/auth";
