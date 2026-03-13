@@ -2,13 +2,14 @@ package data
 
 import (
 	"context"
+	"time"
+
 	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	"github.com/liujitcn/shop-admin/server/internal/data/dto"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
-	"time"
 )
 
 type GoodsCondition struct {
@@ -24,8 +25,6 @@ type GoodsCondition struct {
 
 type GoodsRepo interface {
 	baseRepo.BaseRepo[models.Goods, GoodsCondition]
-	AddSaleNum(ctx context.Context, id, saleNum int64) error
-	SubSaleNum(ctx context.Context, id, saleNum int64) error
 	GoodsCategorySummary(ctx context.Context) ([]*dto.GoodsCategorySummary, error)
 }
 
@@ -51,18 +50,6 @@ func NewGoodsRepo(data *genData.Data) GoodsRepo {
 		BaseRepo: base,
 		data:     data,
 	}
-}
-
-func (r *goodsRepo) AddSaleNum(ctx context.Context, id, saleNum int64) error {
-	q := r.data.Query(ctx).Goods
-	_, err := q.WithContext(ctx).Where(q.ID.Eq(id)).Update(q.RealSaleNum, q.RealSaleNum.Add(saleNum))
-	return err
-}
-
-func (r *goodsRepo) SubSaleNum(ctx context.Context, id, saleNum int64) error {
-	q := r.data.Query(ctx).Goods
-	_, err := q.WithContext(ctx).Where(q.ID.Eq(id), q.RealSaleNum.Gte(saleNum)).Update(q.RealSaleNum, q.RealSaleNum.Sub(saleNum))
-	return err
 }
 
 func (r *goodsRepo) GoodsCategorySummary(ctx context.Context) ([]*dto.GoodsCategorySummary, error) {

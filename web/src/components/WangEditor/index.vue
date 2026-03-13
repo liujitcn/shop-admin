@@ -1,13 +1,3 @@
-<!--
- * 基于 wangEditor-next 的富文本编辑器组件二次封装
- * 版权所有 © 2021-present 有来开源组织
- *
- * 开源协议：https://opensource.org/licenses/MIT
- * 项目地址：https://gitee.com/youlaiorg/vue3-element-admin
- *
- * 在使用时，请保留此注释，感谢您对开源的支持！
- -->
-
 <template>
   <div style="z-index: 999; border: 1px solid #ccc">
     <!-- 工具栏 -->

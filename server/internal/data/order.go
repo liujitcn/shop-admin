@@ -29,10 +29,8 @@ type OrderCondition struct {
 
 type OrderRepo interface {
 	baseRepo.BaseRepo[models.Order, OrderCondition]
-	DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error
 	UpdateByUserIdAndId(ctx context.Context, userID int64, orderInfo *models.Order) error
 	UpdateByUserIdAndIds(ctx context.Context, userId int64, ids []int64, orderInfo *models.Order) error
-	MapCount(ctx context.Context, userId int64) (map[int32]int32, error)
 	FindByOrderNo(ctx context.Context, orderNo string) (*models.Order, error)
 	Sum(ctx context.Context, condition *OrderCondition) (int64, error)
 	OrderSummary(ctx context.Context, timeType int32, condition *OrderCondition) ([]*dto.OrderSummary, error)
@@ -62,15 +60,6 @@ func NewOrderRepo(data *genData.Data) OrderRepo {
 	}
 }
 
-func (r *orderRepo) DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error {
-	if len(ids) == 0 {
-		return nil
-	}
-	q := r.data.Query(ctx).Order
-	_, err := q.WithContext(ctx).Where(q.UserID.Eq(userID), q.ID.In(ids...)).Delete()
-	return err
-}
-
 func (r *orderRepo) UpdateByUserIdAndId(ctx context.Context, userID int64, orderInfo *models.Order) error {
 	if orderInfo.ID == 0 {
 		return errors.New("orderInfo can not update without id")
@@ -87,25 +76,6 @@ func (r *orderRepo) UpdateByUserIdAndIds(ctx context.Context, userId int64, ids 
 	q := r.data.Query(ctx).Order
 	_, err := q.WithContext(ctx).Where(q.UserID.Eq(userId), q.ID.In(ids...)).Updates(orderInfo)
 	return err
-}
-
-func (r *orderRepo) MapCount(ctx context.Context, userId int64) (map[int32]int32, error) {
-	m := r.data.Query(ctx).Order
-	q := m.WithContext(ctx)
-	var results []struct {
-		Status int32
-		Count  int32
-	}
-	q = q.Select(m.Status.As("status"), m.Status.Count().As("count")).Where(m.UserID.Eq(userId)).Group(m.Status)
-	err := q.Scan(&results)
-	if err != nil {
-		return nil, err
-	}
-	total := make(map[int32]int32)
-	for _, result := range results {
-		total[result.Status] = result.Count
-	}
-	return total, nil
 }
 
 func (r *orderRepo) FindByOrderNo(ctx context.Context, orderNo string) (*models.Order, error) {

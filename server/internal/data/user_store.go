@@ -20,7 +20,6 @@ type UserStoreCondition struct {
 
 type UserStoreRepo interface {
 	baseRepo.BaseRepo[models.UserStore, UserStoreCondition]
-	DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error
 	UpdateByUserIdAndId(ctx context.Context, userID int64, userStore *models.UserStore) error
 }
 
@@ -46,15 +45,6 @@ func NewUserStoreRepo(data *genData.Data) UserStoreRepo {
 		BaseRepo: base,
 		data:     data,
 	}
-}
-
-func (r *userStoreRepo) DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error {
-	if len(ids) == 0 {
-		return nil
-	}
-	q := r.data.Query(ctx).UserStore
-	_, err := q.WithContext(ctx).Where(q.UserID.Eq(userID), q.ID.In(ids...)).Delete()
-	return err
 }
 
 func (r *userStoreRepo) UpdateByUserIdAndId(ctx context.Context, userID int64, userStore *models.UserStore) error {

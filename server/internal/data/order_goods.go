@@ -19,7 +19,6 @@ type OrderGoodsCondition struct {
 
 type OrderGoodsRepo interface {
 	baseRepo.BaseRepo[models.OrderGoods, OrderGoodsCondition]
-	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 	OrderGoodsStatusSummary(ctx context.Context, startCreatedAt, endCreatedAt *time.Time) ([]*dto.OrderGoodsStatusSummary, error)
 	OrderGoodsSummary(ctx context.Context, top int64, startCreatedAt, endCreatedAt *time.Time) ([]*dto.OrderGoodsSummary, error)
 }
@@ -46,12 +45,6 @@ func NewOrderGoodsRepo(data *genData.Data) OrderGoodsRepo {
 		BaseRepo: base,
 		data:     data,
 	}
-}
-
-func (r *orderGoodsRepo) DeleteByOrderIds(ctx context.Context, orderIds []int64) error {
-	q := r.data.Query(ctx).OrderGoods
-	_, err := q.WithContext(ctx).Where(q.OrderID.In(orderIds...)).Delete()
-	return err
 }
 
 func (r *orderGoodsRepo) OrderGoodsStatusSummary(ctx context.Context, startCreatedAt, endCreatedAt *time.Time) ([]*dto.OrderGoodsStatusSummary, error) {

@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+
 	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
@@ -15,7 +16,6 @@ type OrderAddressCondition struct {
 
 type OrderAddressRepo interface {
 	baseRepo.BaseRepo[models.OrderAddress, OrderAddressCondition]
-	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 }
 
 type orderAddressRepo struct {
@@ -40,10 +40,4 @@ func NewOrderAddressRepo(data *genData.Data) OrderAddressRepo {
 		BaseRepo: base,
 		data:     data,
 	}
-}
-
-func (r *orderAddressRepo) DeleteByOrderIds(ctx context.Context, orderIds []int64) error {
-	q := r.data.Query(ctx).OrderAddress
-	_, err := q.WithContext(ctx).Where(q.OrderID.In(orderIds...)).Delete()
-	return err
 }
