@@ -2,31 +2,31 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type OrderRefundCondition struct {
-	OrderId     int64 `query:"type:eq;column:order_id"`
-	Status      int32 `query:"type:eq;column:status"`
+	OrderId     int64 `search:"type:eq;column:order_id"`
+	Status      int32 `search:"type:eq;column:status"`
 	SuccessTime string
 }
 
 type OrderRefundRepo interface {
-	genRepo.BaseRepo[models.OrderRefund, OrderRefundCondition]
+	baseRepo.BaseRepo[models.OrderRefund, OrderRefundCondition]
 	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 }
 
 type orderRefundRepo struct {
-	genRepo.BaseRepo[models.OrderRefund, OrderRefundCondition]
+	baseRepo.BaseRepo[models.OrderRefund, OrderRefundCondition]
 	data *genData.Data
 }
 
 func NewOrderRefundRepo(data *genData.Data) OrderRefundRepo {
-	base := genRepo.NewBaseRepo[models.OrderRefund, OrderRefundCondition](
+	base := baseRepo.NewBaseRepo[models.OrderRefund, OrderRefundCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderRefund.WithContext(ctx).DO)
 		},
@@ -37,7 +37,6 @@ func NewOrderRefundRepo(data *genData.Data) OrderRefundRepo {
 			return entity.ID
 		},
 		new(models.OrderRefund),
-		100,
 	)
 	return &orderRefundRepo{
 		BaseRepo: base,

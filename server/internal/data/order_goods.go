@@ -4,33 +4,33 @@ import (
 	"context"
 	"time"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	"github.com/liujitcn/shop-admin/server/internal/data/dto"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type OrderGoodsCondition struct {
-	OrderId  int64   `query:"type:eq;column:order_id"`
-	OrderIds []int64 `query:"type:in;column:order_id"`
+	OrderId  int64   `search:"type:eq;column:order_id"`
+	OrderIds []int64 `search:"type:in;column:order_id"`
 }
 
 type OrderGoodsRepo interface {
-	genRepo.BaseRepo[models.OrderGoods, OrderGoodsCondition]
+	baseRepo.BaseRepo[models.OrderGoods, OrderGoodsCondition]
 	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 	OrderGoodsStatusSummary(ctx context.Context, startCreatedAt, endCreatedAt *time.Time) ([]*dto.OrderGoodsStatusSummary, error)
 	OrderGoodsSummary(ctx context.Context, top int64, startCreatedAt, endCreatedAt *time.Time) ([]*dto.OrderGoodsSummary, error)
 }
 
 type orderGoodsRepo struct {
-	genRepo.BaseRepo[models.OrderGoods, OrderGoodsCondition]
+	baseRepo.BaseRepo[models.OrderGoods, OrderGoodsCondition]
 	data *genData.Data
 }
 
 func NewOrderGoodsRepo(data *genData.Data) OrderGoodsRepo {
-	base := genRepo.NewBaseRepo[models.OrderGoods, OrderGoodsCondition](
+	base := baseRepo.NewBaseRepo[models.OrderGoods, OrderGoodsCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderGoods.WithContext(ctx).DO)
 		},
@@ -41,7 +41,6 @@ func NewOrderGoodsRepo(data *genData.Data) OrderGoodsRepo {
 			return entity.ID
 		},
 		new(models.OrderGoods),
-		100,
 	)
 	return &orderGoodsRepo{
 		BaseRepo: base,

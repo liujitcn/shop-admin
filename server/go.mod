@@ -2,8 +2,6 @@ module github.com/liujitcn/shop-admin/server
 
 go 1.26.0
 
-replace github.com/liujitcn/shop-gorm-gen => ../../shop-gorm-gen
-
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-sql-driver/mysql v1.9.3
@@ -14,6 +12,7 @@ require (
 	github.com/liujitcn/go-utils v0.0.11
 	github.com/liujitcn/go-utils/crypto v0.0.5
 	github.com/liujitcn/go-utils/geoip v0.0.1
+	github.com/liujitcn/gorm-kit v0.0.4
 	github.com/liujitcn/kratos-kit v0.0.5
 	github.com/liujitcn/kratos-kit/api v0.0.9
 	github.com/liujitcn/kratos-kit/auth v0.0.2
@@ -32,7 +31,7 @@ require (
 	github.com/liujitcn/kratos-kit/queue v0.0.4
 	github.com/liujitcn/kratos-kit/rpc v0.0.1
 	github.com/liujitcn/kratos-kit/swagger-ui v0.0.1
-	github.com/liujitcn/shop-gorm-gen v0.0.3
+	github.com/liujitcn/shop-gorm-gen v0.0.5
 	github.com/mileusna/useragent v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.21
@@ -106,6 +105,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/lithammer/shortuuid/v4 v4.2.0 // indirect
 	github.com/liujitcn/go-utils/jwt v0.0.1 // indirect
+	github.com/liujitcn/gorm-kit/api v0.0.2 // indirect
 	github.com/liujitcn/kratos-kit/auth/authn/middleware v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/auth/authz/middleware v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/config v0.0.4 // indirect

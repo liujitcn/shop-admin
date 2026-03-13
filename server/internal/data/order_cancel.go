@@ -2,29 +2,29 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type OrderCancelCondition struct {
-	OrderId int64 `query:"type:eq;column:order_id"`
+	OrderId int64 `search:"type:eq;column:order_id"`
 }
 
 type OrderCancelRepo interface {
-	genRepo.BaseRepo[models.OrderCancel, OrderCancelCondition]
+	baseRepo.BaseRepo[models.OrderCancel, OrderCancelCondition]
 	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 }
 
 type orderCancelRepo struct {
-	genRepo.BaseRepo[models.OrderCancel, OrderCancelCondition]
+	baseRepo.BaseRepo[models.OrderCancel, OrderCancelCondition]
 	data *genData.Data
 }
 
 func NewOrderCancelRepo(data *genData.Data) OrderCancelRepo {
-	base := genRepo.NewBaseRepo[models.OrderCancel, OrderCancelCondition](
+	base := baseRepo.NewBaseRepo[models.OrderCancel, OrderCancelCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderCancel.WithContext(ctx).DO)
 		},
@@ -35,7 +35,6 @@ func NewOrderCancelRepo(data *genData.Data) OrderCancelRepo {
 			return entity.ID
 		},
 		new(models.OrderCancel),
-		100,
 	)
 	return &orderCancelRepo{
 		BaseRepo: base,

@@ -2,32 +2,32 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type BaseDictCondition struct {
-	Id     int64    `query:"type:eq;column:id"`
-	Status int32    `query:"type:eq;column:status"`
-	Name   string   `query:"type:contains;column:name"` // 字典名称
-	Code   string   `query:"type:contains;column:code"` // 字典代码
-	Codes  []string `query:"type:in;column:code"`       // 字典代码
+	Id     int64    `search:"type:eq;column:id"`
+	Status int32    `search:"type:eq;column:status"`
+	Name   string   `search:"type:contains;column:name"` // 字典名称
+	Code   string   `search:"type:contains;column:code"` // 字典代码
+	Codes  []string `search:"type:in;column:code"`       // 字典代码
 }
 
 type BaseDictRepo interface {
-	genRepo.BaseRepo[models.BaseDict, BaseDictCondition]
+	baseRepo.BaseRepo[models.BaseDict, BaseDictCondition]
 }
 
 type baseDictRepo struct {
-	genRepo.BaseRepo[models.BaseDict, BaseDictCondition]
+	baseRepo.BaseRepo[models.BaseDict, BaseDictCondition]
 	data *genData.Data
 }
 
 func NewBaseDictRepo(data *genData.Data) BaseDictRepo {
-	base := genRepo.NewBaseRepo[models.BaseDict, BaseDictCondition](
+	base := baseRepo.NewBaseRepo[models.BaseDict, BaseDictCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseDict.WithContext(ctx).DO)
 		},
@@ -38,7 +38,6 @@ func NewBaseDictRepo(data *genData.Data) BaseDictRepo {
 			return entity.ID
 		},
 		new(models.BaseDict),
-		100,
 	)
 	return &baseDictRepo{
 		BaseRepo: base,

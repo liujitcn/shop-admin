@@ -6,10 +6,10 @@ import (
 
 	"time"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	"github.com/liujitcn/shop-admin/server/internal/data/dto"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 
 	//"github.com/liujitcn/shop-admin/server/api/common"
 	"gorm.io/gen"
@@ -17,18 +17,18 @@ import (
 )
 
 type OrderCondition struct {
-	Id             int64      `query:"type:eq;column:id"`
-	UserId         int64      `query:"type:eq;column:user_id"`
-	OrderNo        string     `query:"type:contains;column:order_no"`
-	Status         int32      `query:"type:eq;column:status"`
-	PayType        int32      `query:"type:eq;column:pay_type"`    // 支付方式，1为在线支付，2为货到付款
-	PayChannel     int32      `query:"type:eq;column:pay_channel"` // 支付渠道：支付渠道，1支付宝、2微信--支付方式为在线支付时，传值，为货到付款时，不传值
-	StartCreatedAt *time.Time `query:"type:gte;column:created_at"` // 创建开始时间
-	EndCreatedAt   *time.Time `query:"type:lte;column:created_at"` // 创建结束时间
+	Id             int64      `search:"type:eq;column:id"`
+	UserId         int64      `search:"type:eq;column:user_id"`
+	OrderNo        string     `search:"type:contains;column:order_no"`
+	Status         int32      `search:"type:eq;column:status"`
+	PayType        int32      `search:"type:eq;column:pay_type"`    // 支付方式，1为在线支付，2为货到付款
+	PayChannel     int32      `search:"type:eq;column:pay_channel"` // 支付渠道：支付渠道，1支付宝、2微信--支付方式为在线支付时，传值，为货到付款时，不传值
+	StartCreatedAt *time.Time `search:"type:gte;column:created_at"` // 创建开始时间
+	EndCreatedAt   *time.Time `search:"type:lte;column:created_at"` // 创建结束时间
 }
 
 type OrderRepo interface {
-	genRepo.BaseRepo[models.Order, OrderCondition]
+	baseRepo.BaseRepo[models.Order, OrderCondition]
 	DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error
 	UpdateByUserIdAndId(ctx context.Context, userID int64, orderInfo *models.Order) error
 	UpdateByUserIdAndIds(ctx context.Context, userId int64, ids []int64, orderInfo *models.Order) error
@@ -39,12 +39,12 @@ type OrderRepo interface {
 }
 
 type orderRepo struct {
-	genRepo.BaseRepo[models.Order, OrderCondition]
+	baseRepo.BaseRepo[models.Order, OrderCondition]
 	data *genData.Data
 }
 
 func NewOrderRepo(data *genData.Data) OrderRepo {
-	base := genRepo.NewBaseRepo[models.Order, OrderCondition](
+	base := baseRepo.NewBaseRepo[models.Order, OrderCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).Order.WithContext(ctx).DO)
 		},
@@ -55,7 +55,6 @@ func NewOrderRepo(data *genData.Data) OrderRepo {
 			return entity.ID
 		},
 		new(models.Order),
-		100,
 	)
 	return &orderRepo{
 		BaseRepo: base,
@@ -115,7 +114,7 @@ func (r *orderRepo) FindByOrderNo(ctx context.Context, orderNo string) (*models.
 }
 func (r *orderRepo) Sum(ctx context.Context, condition *OrderCondition) (int64, error) {
 	m := r.data.Query(ctx).Order
-	q, err := genRepo.BuildDao(new(r.data.Query(ctx).Order.WithContext(ctx).DO), new(models.Order), condition)
+	q, err := baseRepo.BuildDao(new(r.data.Query(ctx).Order.WithContext(ctx).DO), new(models.Order), condition)
 	if err != nil {
 		return 0, err
 	}

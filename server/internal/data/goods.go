@@ -2,40 +2,40 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	"github.com/liujitcn/shop-admin/server/internal/data/dto"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"time"
 )
 
 type GoodsCondition struct {
-	Id             int64   `query:"type:eq;column:id"`
-	Ids            []int64 `query:"type:in;column:id"`
-	Name           string  `query:"type:contains;column:name"`
-	CategoryId     int64   `query:"type:eq;column:category_id"`
+	Id             int64   `search:"type:eq;column:id"`
+	Ids            []int64 `search:"type:in;column:id"`
+	Name           string  `search:"type:contains;column:name"`
+	CategoryId     int64   `search:"type:eq;column:category_id"`
 	CategoryPath   string
-	Status         int32      `query:"type:eq;column:status"`
-	StartCreatedAt *time.Time `query:"type:gte;column:created_at"` // 创建开始时间
-	EndCreatedAt   *time.Time `query:"type:lte;column:created_at"` // 创建结束时间
+	Status         int32      `search:"type:eq;column:status"`
+	StartCreatedAt *time.Time `search:"type:gte;column:created_at"` // 创建开始时间
+	EndCreatedAt   *time.Time `search:"type:lte;column:created_at"` // 创建结束时间
 }
 
 type GoodsRepo interface {
-	genRepo.BaseRepo[models.Goods, GoodsCondition]
+	baseRepo.BaseRepo[models.Goods, GoodsCondition]
 	AddSaleNum(ctx context.Context, id, saleNum int64) error
 	SubSaleNum(ctx context.Context, id, saleNum int64) error
 	GoodsCategorySummary(ctx context.Context) ([]*dto.GoodsCategorySummary, error)
 }
 
 type goodsRepo struct {
-	genRepo.BaseRepo[models.Goods, GoodsCondition]
+	baseRepo.BaseRepo[models.Goods, GoodsCondition]
 	data *genData.Data
 }
 
 func NewGoodsRepo(data *genData.Data) GoodsRepo {
-	base := genRepo.NewBaseRepo[models.Goods, GoodsCondition](
+	base := baseRepo.NewBaseRepo[models.Goods, GoodsCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).Goods.WithContext(ctx).DO)
 		},
@@ -46,7 +46,6 @@ func NewGoodsRepo(data *genData.Data) GoodsRepo {
 			return entity.ID
 		},
 		new(models.Goods),
-		100,
 	)
 	return &goodsRepo{
 		BaseRepo: base,

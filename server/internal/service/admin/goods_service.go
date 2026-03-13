@@ -121,7 +121,7 @@ func (s *GoodsService) CreateGoods(ctx context.Context, req *admin.GoodsForm) (*
 				if strings.Contains(msg, models.TableNameGoodsProp) {
 					return nil, errors.New("商品属性重复")
 				}
-				if strings.Contains(msg, models.TableNameGoodsSku) {
+				if strings.Contains(msg, models.TableNameGoodsSKU) {
 					return nil, errors.New("规格编号重复")
 				}
 			}
@@ -146,7 +146,7 @@ func (s *GoodsService) UpdateGoods(ctx context.Context, req *admin.GoodsForm) (*
 				if strings.Contains(msg, models.TableNameGoodsProp) {
 					return nil, errors.New("商品属性重复")
 				}
-				if strings.Contains(msg, models.TableNameGoodsSku) {
+				if strings.Contains(msg, models.TableNameGoodsSKU) {
 					return nil, errors.New("规格编号重复")
 				}
 			}

@@ -2,32 +2,32 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type ShopBannerCondition struct {
-	Id     int64   `query:"type:eq;column:id"`
-	Ids    []int64 `query:"type:in;column:id"`
-	Site   int32   `query:"type:eq;column:site"`
-	Type   int32   `query:"type:eq;column:type"`
-	Status int32   `query:"type:eq;column:status"`
+	Id     int64   `search:"type:eq;column:id"`
+	Ids    []int64 `search:"type:in;column:id"`
+	Site   int32   `search:"type:eq;column:site"`
+	Type   int32   `search:"type:eq;column:type"`
+	Status int32   `search:"type:eq;column:status"`
 }
 
 type ShopBannerRepo interface {
-	genRepo.BaseRepo[models.ShopBanner, ShopBannerCondition]
+	baseRepo.BaseRepo[models.ShopBanner, ShopBannerCondition]
 }
 
 type shopBannerRepo struct {
-	genRepo.BaseRepo[models.ShopBanner, ShopBannerCondition]
+	baseRepo.BaseRepo[models.ShopBanner, ShopBannerCondition]
 	data *genData.Data
 }
 
 func NewShopBannerRepo(data *genData.Data) ShopBannerRepo {
-	base := genRepo.NewBaseRepo[models.ShopBanner, ShopBannerCondition](
+	base := baseRepo.NewBaseRepo[models.ShopBanner, ShopBannerCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).ShopBanner.WithContext(ctx).DO)
 		},
@@ -38,7 +38,6 @@ func NewShopBannerRepo(data *genData.Data) ShopBannerRepo {
 			return entity.ID
 		},
 		new(models.ShopBanner),
-		100,
 	)
 	return &shopBannerRepo{
 		BaseRepo: base,

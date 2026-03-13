@@ -3,32 +3,32 @@ package data
 import (
 	"context"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type BaseAreaCondition struct {
-	Id       int64   `query:"type:eq;column:id"`
-	Ids      []int64 `query:"type:in;column:id"`
-	ParentId int64   `query:"type:eq;column:parent_id"`
-	Name     string  `query:"type:contains;column:name"`
+	Id       int64   `search:"type:eq;column:id"`
+	Ids      []int64 `search:"type:in;column:id"`
+	ParentId int64   `search:"type:eq;column:parent_id"`
+	Name     string  `search:"type:contains;column:name"`
 	Code     string
 }
 
 type BaseAreaRepo interface {
-	genRepo.BaseRepo[models.BaseArea, BaseAreaCondition]
+	baseRepo.BaseRepo[models.BaseArea, BaseAreaCondition]
 }
 
 type baseAreaRepo struct {
-	genRepo.BaseRepo[models.BaseArea, BaseAreaCondition]
+	baseRepo.BaseRepo[models.BaseArea, BaseAreaCondition]
 	data *genData.Data
 }
 
 func NewBaseAreaRepo(data *genData.Data) BaseAreaRepo {
-	base := genRepo.NewBaseRepo[models.BaseArea, BaseAreaCondition](
+	base := baseRepo.NewBaseRepo[models.BaseArea, BaseAreaCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseArea.WithContext(ctx).DO)
 		},
@@ -39,7 +39,6 @@ func NewBaseAreaRepo(data *genData.Data) BaseAreaRepo {
 			return entity.ID
 		},
 		new(models.BaseArea),
-		100,
 	)
 	return &baseAreaRepo{
 		BaseRepo: base,

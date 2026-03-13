@@ -2,33 +2,33 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 	"time"
 )
 
 type BaseLogCondition struct {
-	Id               int64      `query:"type:eq;column:id"`
-	Operation        string     `query:"type:contains;column:operation"`
-	StatusCode       int32      `query:"type:eq;column:status_code"`
-	RequestStartTime *time.Time `query:"type:gte;column:request_time"`
-	RequestEndTime   *time.Time `query:"type:lte;column:request_time"`
+	Id               int64      `search:"type:eq;column:id"`
+	Operation        string     `search:"type:contains;column:operation"`
+	StatusCode       int32      `search:"type:eq;column:status_code"`
+	RequestStartTime *time.Time `search:"type:gte;column:request_time"`
+	RequestEndTime   *time.Time `search:"type:lte;column:request_time"`
 }
 
 type BaseLogRepo interface {
-	genRepo.BaseRepo[models.BaseLog, BaseLogCondition]
+	baseRepo.BaseRepo[models.BaseLog, BaseLogCondition]
 }
 
 type baseLogRepo struct {
-	genRepo.BaseRepo[models.BaseLog, BaseLogCondition]
+	baseRepo.BaseRepo[models.BaseLog, BaseLogCondition]
 	data *genData.Data
 }
 
 func NewBaseLogRepo(data *genData.Data) BaseLogRepo {
-	base := genRepo.NewBaseRepo[models.BaseLog, BaseLogCondition](
+	base := baseRepo.NewBaseRepo[models.BaseLog, BaseLogCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseLog.WithContext(ctx).DO)
 		},
@@ -39,7 +39,6 @@ func NewBaseLogRepo(data *genData.Data) BaseLogRepo {
 			return entity.ID
 		},
 		new(models.BaseLog),
-		100,
 	)
 	return &baseLogRepo{
 		BaseRepo: base,

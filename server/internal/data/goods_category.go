@@ -3,34 +3,34 @@ package data
 import (
 	"context"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type GoodsCategoryCondition struct {
-	Id            int64   `query:"type:eq;column:id"`
-	Ids           []int64 `query:"type:in;column:id"`
-	Name          string  `query:"type:contains;column:name"`
-	ParentId      *int64  `query:"type:eq;column:parent_id"`
-	Status        int32   `query:"type:eq;column:status"`
-	ParentIDOrder string  `query:"type:order;column:parent_id"`
-	SortOrder     string  `query:"type:order;column:sort"`
+	Id            int64   `search:"type:eq;column:id"`
+	Ids           []int64 `search:"type:in;column:id"`
+	Name          string  `search:"type:contains;column:name"`
+	ParentId      *int64  `search:"type:eq;column:parent_id"`
+	Status        int32   `search:"type:eq;column:status"`
+	ParentIDOrder string  `search:"type:order;column:parent_id"`
+	SortOrder     string  `search:"type:order;column:sort"`
 }
 
 type GoodsCategoryRepo interface {
-	genRepo.BaseRepo[models.GoodsCategory, GoodsCategoryCondition]
+	baseRepo.BaseRepo[models.GoodsCategory, GoodsCategoryCondition]
 }
 
 type goodsCategoryRepo struct {
-	genRepo.BaseRepo[models.GoodsCategory, GoodsCategoryCondition]
+	baseRepo.BaseRepo[models.GoodsCategory, GoodsCategoryCondition]
 	data *genData.Data
 }
 
 func NewGoodsCategoryRepo(data *genData.Data) GoodsCategoryRepo {
-	base := genRepo.NewBaseRepo[models.GoodsCategory, GoodsCategoryCondition](
+	base := baseRepo.NewBaseRepo[models.GoodsCategory, GoodsCategoryCondition](
 		func(ctx context.Context) gen.Dao {
 			dao := data.Query(ctx).GoodsCategory.WithContext(ctx).DO
 			return &dao
@@ -42,7 +42,6 @@ func NewGoodsCategoryRepo(data *genData.Data) GoodsCategoryRepo {
 			return entity.ID
 		},
 		new(models.GoodsCategory),
-		100,
 	)
 	return &goodsCategoryRepo{
 		BaseRepo: base,

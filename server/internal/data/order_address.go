@@ -2,29 +2,29 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type OrderAddressCondition struct {
-	OrderId int64 `query:"type:eq;column:order_id"`
+	OrderId int64 `search:"type:eq;column:order_id"`
 }
 
 type OrderAddressRepo interface {
-	genRepo.BaseRepo[models.OrderAddress, OrderAddressCondition]
+	baseRepo.BaseRepo[models.OrderAddress, OrderAddressCondition]
 	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 }
 
 type orderAddressRepo struct {
-	genRepo.BaseRepo[models.OrderAddress, OrderAddressCondition]
+	baseRepo.BaseRepo[models.OrderAddress, OrderAddressCondition]
 	data *genData.Data
 }
 
 func NewOrderAddressRepo(data *genData.Data) OrderAddressRepo {
-	base := genRepo.NewBaseRepo[models.OrderAddress, OrderAddressCondition](
+	base := baseRepo.NewBaseRepo[models.OrderAddress, OrderAddressCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderAddress.WithContext(ctx).DO)
 		},
@@ -35,7 +35,6 @@ func NewOrderAddressRepo(data *genData.Data) OrderAddressRepo {
 			return entity.ID
 		},
 		new(models.OrderAddress),
-		100,
 	)
 	return &orderAddressRepo{
 		BaseRepo: base,

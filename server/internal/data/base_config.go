@@ -2,34 +2,34 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type BaseConfigCondition struct {
-	Id     int64   `query:"type:eq;column:id"`
-	Ids    []int64 `query:"type:in;column:id"`
-	Site   int32   `query:"type:eq;column:site"`
-	Name   string  `query:"type:contains;column:name"`
-	Type   int32   `query:"type:eq;column:type"`
-	Key    string  `query:"type:contains;column:key"`
-	Status int32   `query:"type:eq;column:status"`
+	Id     int64   `search:"type:eq;column:id"`
+	Ids    []int64 `search:"type:in;column:id"`
+	Site   int32   `search:"type:eq;column:site"`
+	Name   string  `search:"type:contains;column:name"`
+	Type   int32   `search:"type:eq;column:type"`
+	Key    string  `search:"type:contains;column:key"`
+	Status int32   `search:"type:eq;column:status"`
 }
 
 type BaseConfigRepo interface {
-	genRepo.BaseRepo[models.BaseConfig, BaseConfigCondition]
+	baseRepo.BaseRepo[models.BaseConfig, BaseConfigCondition]
 }
 
 type baseConfigRepo struct {
-	genRepo.BaseRepo[models.BaseConfig, BaseConfigCondition]
+	baseRepo.BaseRepo[models.BaseConfig, BaseConfigCondition]
 	data *genData.Data
 }
 
 func NewBaseConfigRepo(data *genData.Data) BaseConfigRepo {
-	base := genRepo.NewBaseRepo[models.BaseConfig, BaseConfigCondition](
+	base := baseRepo.NewBaseRepo[models.BaseConfig, BaseConfigCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseConfig.WithContext(ctx).DO)
 		},
@@ -40,7 +40,6 @@ func NewBaseConfigRepo(data *genData.Data) BaseConfigRepo {
 			return entity.ID
 		},
 		new(models.BaseConfig),
-		100,
 	)
 	return &baseConfigRepo{
 		BaseRepo: base,

@@ -3,32 +3,32 @@ package data
 import (
 	"context"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type BaseRoleCondition struct {
-	Id     int64   `query:"type:eq;column:id"`
-	Ids    []int64 `query:"type:in;column:id"`
-	Status int32   `query:"type:eq;column:status"`
-	Name   string  `query:"type:contains;column:name"`
-	Code   string  `query:"type:contains;column:code"`
+	Id     int64   `search:"type:eq;column:id"`
+	Ids    []int64 `search:"type:in;column:id"`
+	Status int32   `search:"type:eq;column:status"`
+	Name   string  `search:"type:contains;column:name"`
+	Code   string  `search:"type:contains;column:code"`
 }
 
 type BaseRoleRepo interface {
-	genRepo.BaseRepo[models.BaseRole, BaseRoleCondition]
+	baseRepo.BaseRepo[models.BaseRole, BaseRoleCondition]
 }
 
 type baseRoleRepo struct {
-	genRepo.BaseRepo[models.BaseRole, BaseRoleCondition]
+	baseRepo.BaseRepo[models.BaseRole, BaseRoleCondition]
 	data *genData.Data
 }
 
 func NewBaseRoleRepo(data *genData.Data) BaseRoleRepo {
-	base := genRepo.NewBaseRepo[models.BaseRole, BaseRoleCondition](
+	base := baseRepo.NewBaseRepo[models.BaseRole, BaseRoleCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseRole.WithContext(ctx).DO)
 		},
@@ -39,7 +39,6 @@ func NewBaseRoleRepo(data *genData.Data) BaseRoleRepo {
 			return entity.ID
 		},
 		new(models.BaseRole),
-		100,
 	)
 	return &baseRoleRepo{
 		BaseRepo: base,

@@ -2,30 +2,30 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type PayBillCondition struct {
-	Id       int64  `query:"type:eq;column:id"`
-	BillDate string `query:"type:eq;column:bill_date"`
-	BillType string `query:"type:eq;column:bill_type"`
+	Id       int64  `search:"type:eq;column:id"`
+	BillDate string `search:"type:eq;column:bill_date"`
+	BillType string `search:"type:eq;column:bill_type"`
 }
 
 type PayBillRepo interface {
-	genRepo.BaseRepo[models.PayBill, PayBillCondition]
+	baseRepo.BaseRepo[models.PayBill, PayBillCondition]
 }
 
 type payBillRepo struct {
-	genRepo.BaseRepo[models.PayBill, PayBillCondition]
+	baseRepo.BaseRepo[models.PayBill, PayBillCondition]
 	data *genData.Data
 }
 
 func NewPayBillRepo(data *genData.Data) PayBillRepo {
-	base := genRepo.NewBaseRepo[models.PayBill, PayBillCondition](
+	base := baseRepo.NewBaseRepo[models.PayBill, PayBillCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).PayBill.WithContext(ctx).DO)
 		},
@@ -36,7 +36,6 @@ func NewPayBillRepo(data *genData.Data) PayBillRepo {
 			return entity.ID
 		},
 		new(models.PayBill),
-		100,
 	)
 	return &payBillRepo{
 		BaseRepo: base,

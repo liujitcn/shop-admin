@@ -332,6 +332,10 @@ github.com/liujitcn/go-utils/geoip v0.0.1 h1:Vqv+x03Yesn4/AR2OJvmbKaHhLifdXpMHsk
 github.com/liujitcn/go-utils/geoip v0.0.1/go.mod h1:m8vD01rqR+3H3aK6taD/pFCLYx5dv50Rqz663yb/UmE=
 github.com/liujitcn/go-utils/jwt v0.0.1 h1:ymO+Eo3Kk+I3ALHRqbEvvclc95YrwQWKmLTGILbsCE8=
 github.com/liujitcn/go-utils/jwt v0.0.1/go.mod h1:BRJq3jIGdss3tWOZrNsmmdD8nOxF6P3diKIIe4r1oJs=
+github.com/liujitcn/gorm-kit v0.0.4 h1:Bs/NhouUQ1zazWWbGxN18TFTfQo3H3+2ohdbXMf4Q2U=
+github.com/liujitcn/gorm-kit v0.0.4/go.mod h1:jr1dr7usx5TyP9hZ31lImj35/TE90y8GoLDB7Go/jcs=
+github.com/liujitcn/gorm-kit/api v0.0.2 h1:G1qUYE2IJQpOvVnGJ4K+rGH0gv+izXK9/1l9g0SL26A=
+github.com/liujitcn/gorm-kit/api v0.0.2/go.mod h1:+elnmnHKiTTJ8ecO3GM8XYqAodc0ngRGMKE/K1GeI/8=
 github.com/liujitcn/kratos-kit v0.0.5 h1:nNsKNy2zzVrUSazGnELxIGOvK+5CFag4bcpwS0uDzvY=
 github.com/liujitcn/kratos-kit v0.0.5/go.mod h1:OmcgdFgDnK+MToZm+nU06Y8EVL6KJwimDjUVyHnTsiM=
 github.com/liujitcn/kratos-kit/api v0.0.9 h1:6qTN7aFHVMIonEvdETzkePng/O2ffCPXUeNBMoru0E4=
@@ -388,6 +392,8 @@ github.com/liujitcn/kratos-kit/tracer v0.0.4 h1:CyOxvz5JZ+49Djij446S+jk3wDqTSyjo
 github.com/liujitcn/kratos-kit/tracer v0.0.4/go.mod h1:QpMNZHgCmvsEnCwJ2yGUC4wtA+oOaoG0vsDPs3veQ1g=
 github.com/liujitcn/kratos-kit/utils v0.0.4 h1:ER45Vm0AZO0oP5e6rgFV59tOiQ5ekFXNmrPWMTGwZRc=
 github.com/liujitcn/kratos-kit/utils v0.0.4/go.mod h1:e3De+xxjTF6+FkPQj5uW3gX7SNoT2ydAts+tewc0PP8=
+github.com/liujitcn/shop-gorm-gen v0.0.5 h1:n8MpVjf7h/vObN7rOO6BzpgdnkVq41rHhCZFCm5AsoY=
+github.com/liujitcn/shop-gorm-gen v0.0.5/go.mod h1:F1ezkI0zEF1MdsVMMiH8SpCGu9L7WCtZKtq6B4GixvM=
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/lufia/plan9stats v0.0.0-20230326075908-cb1d2100619a h1:N9zuLhTvBSRt0gWSiJswwQ2HqDmtX/ZCDJURnKUt1Ik=
 github.com/lufia/plan9stats v0.0.0-20230326075908-cb1d2100619a/go.mod h1:JKx41uQRwqlTZabZc+kILPrO/3jlKnQ2Z8b7YiVw5cE=

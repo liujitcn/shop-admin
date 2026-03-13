@@ -2,30 +2,30 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type BaseDeptCondition struct {
-	Id       int64  `query:"type:eq;column:id"`
-	ParentId *int64 `query:"type:eq;column:parent_id"`
-	Status   int32  `query:"type:eq;column:status"`
+	Id       int64  `search:"type:eq;column:id"`
+	ParentId *int64 `search:"type:eq;column:parent_id"`
+	Status   int32  `search:"type:eq;column:status"`
 }
 
 type BaseDeptRepo interface {
-	genRepo.BaseRepo[models.BaseDept, BaseDeptCondition]
+	baseRepo.BaseRepo[models.BaseDept, BaseDeptCondition]
 }
 
 type baseDeptRepo struct {
-	genRepo.BaseRepo[models.BaseDept, BaseDeptCondition]
+	baseRepo.BaseRepo[models.BaseDept, BaseDeptCondition]
 	data *genData.Data
 }
 
 func NewBaseDeptRepo(data *genData.Data) BaseDeptRepo {
-	base := genRepo.NewBaseRepo[models.BaseDept, BaseDeptCondition](
+	base := baseRepo.NewBaseRepo[models.BaseDept, BaseDeptCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseDept.WithContext(ctx).DO)
 		},
@@ -36,7 +36,6 @@ func NewBaseDeptRepo(data *genData.Data) BaseDeptRepo {
 			return entity.ID
 		},
 		new(models.BaseDept),
-		100,
 	)
 	return &baseDeptRepo{
 		BaseRepo: base,

@@ -2,31 +2,31 @@ package data
 
 import (
 	"context"
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type OrderPaymentCondition struct {
-	OrderId     int64 `query:"type:eq;column:order_id"`
-	Status      int32 `query:"type:eq;column:status"`
+	OrderId     int64 `search:"type:eq;column:order_id"`
+	Status      int32 `search:"type:eq;column:status"`
 	SuccessTime string
 }
 
 type OrderPaymentRepo interface {
-	genRepo.BaseRepo[models.OrderPayment, OrderPaymentCondition]
+	baseRepo.BaseRepo[models.OrderPayment, OrderPaymentCondition]
 	DeleteByOrderIds(ctx context.Context, orderIds []int64) error
 }
 
 type orderPaymentRepo struct {
-	genRepo.BaseRepo[models.OrderPayment, OrderPaymentCondition]
+	baseRepo.BaseRepo[models.OrderPayment, OrderPaymentCondition]
 	data *genData.Data
 }
 
 func NewOrderPaymentRepo(data *genData.Data) OrderPaymentRepo {
-	base := genRepo.NewBaseRepo[models.OrderPayment, OrderPaymentCondition](
+	base := baseRepo.NewBaseRepo[models.OrderPayment, OrderPaymentCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderPayment.WithContext(ctx).DO)
 		},
@@ -37,7 +37,6 @@ func NewOrderPaymentRepo(data *genData.Data) OrderPaymentRepo {
 			return entity.ID
 		},
 		new(models.OrderPayment),
-		100,
 	)
 	return &orderPaymentRepo{
 		BaseRepo: base,

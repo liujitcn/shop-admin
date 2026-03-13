@@ -19,7 +19,7 @@ func NewGoodsSkuCase(goodsSkuRepo data.GoodsSkuRepo) *GoodsSkuCase {
 		GoodsSkuRepo: goodsSkuRepo,
 	}
 }
-func (c *GoodsSkuCase) GetFromID(ctx context.Context, id int64) (*models.GoodsSku, error) {
+func (c *GoodsSkuCase) GetFromID(ctx context.Context, id int64) (*models.GoodsSKU, error) {
 	return c.Find(ctx, &data.GoodsSkuCondition{
 		Id: id,
 	})
@@ -62,7 +62,7 @@ func (c *GoodsSkuCase) BatchCreate(ctx context.Context, goodsId int64, sku []*ad
 		oldSkuIdMap[oldSku.SkuCode] = oldSku.ID
 	}
 
-	skuList := make([]*models.GoodsSku, 0)
+	skuList := make([]*models.GoodsSKU, 0)
 	for _, item := range sku {
 		if id, ok := oldSkuIdMap[item.SkuCode]; ok {
 			item.Id = id
@@ -107,7 +107,7 @@ func (c *GoodsSkuCase) ListByGoodsId(ctx context.Context, goodsId int64) ([]*adm
 	return list, nil
 }
 
-func (c *GoodsSkuCase) ConvertToProto(item *models.GoodsSku) *admin.GoodsSku {
+func (c *GoodsSkuCase) ConvertToProto(item *models.GoodsSKU) *admin.GoodsSku {
 	res := &admin.GoodsSku{
 		Id:            item.ID,
 		GoodsId:       item.GoodsID,
@@ -123,8 +123,8 @@ func (c *GoodsSkuCase) ConvertToProto(item *models.GoodsSku) *admin.GoodsSku {
 	return res
 }
 
-func (c *GoodsSkuCase) ConvertToModel(item *admin.GoodsSku) *models.GoodsSku {
-	res := &models.GoodsSku{
+func (c *GoodsSkuCase) ConvertToModel(item *admin.GoodsSku) *models.GoodsSKU {
+	res := &models.GoodsSKU{
 		ID:            item.GetId(),
 		GoodsID:       item.GetGoodsId(),
 		Picture:       item.GetPicture(),

@@ -3,13 +3,13 @@ package data
 import (
 	"context"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 )
 
 type ShopHotGoodsCondition struct {
-	HotItemId int64 `query:"type:eq;column:hot_item_id"`
+	HotItemId int64 `search:"type:eq;column:hot_item_id"`
 }
 
 type ShopHotGoodsRepo interface {
@@ -72,7 +72,7 @@ func (r *shopHotGoodsRepo) ListPage(ctx context.Context, page, size int64, condi
 		q = q.Where(m.HotItemID.Eq(condition.HotItemId))
 	}
 	q = q.Order(m.Sort.Asc())
-	offset, limit := genRepo.PageOffsetLimit(page, size)
+	offset, limit := baseRepo.PageOffsetLimit(page, size)
 	list, count, err := q.FindByPage(int(offset), int(limit))
 	if err != nil {
 		return nil, 0, err

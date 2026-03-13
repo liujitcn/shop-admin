@@ -4,33 +4,33 @@ import (
 	"context"
 	"errors"
 
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
 	genData "github.com/liujitcn/shop-gorm-gen/data"
 	"github.com/liujitcn/shop-gorm-gen/models"
-	genRepo "github.com/liujitcn/shop-gorm-gen/repo"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 )
 
 type UserStoreCondition struct {
-	Id     int64  `query:"type:eq;column:id"`
-	Name   string `query:"type:contains;column:name"`
-	UserId int64  `query:"type:eq;column:user_id"`
-	Status int32  `query:"type:eq;column:status"`
+	Id     int64  `search:"type:eq;column:id"`
+	Name   string `search:"type:contains;column:name"`
+	UserId int64  `search:"type:eq;column:user_id"`
+	Status int32  `search:"type:eq;column:status"`
 }
 
 type UserStoreRepo interface {
-	genRepo.BaseRepo[models.UserStore, UserStoreCondition]
+	baseRepo.BaseRepo[models.UserStore, UserStoreCondition]
 	DeleteByUserIdAndIds(ctx context.Context, userID int64, ids []int64) error
 	UpdateByUserIdAndId(ctx context.Context, userID int64, userStore *models.UserStore) error
 }
 
 type userStoreRepo struct {
-	genRepo.BaseRepo[models.UserStore, UserStoreCondition]
+	baseRepo.BaseRepo[models.UserStore, UserStoreCondition]
 	data *genData.Data
 }
 
 func NewUserStoreRepo(data *genData.Data) UserStoreRepo {
-	base := genRepo.NewBaseRepo[models.UserStore, UserStoreCondition](
+	base := baseRepo.NewBaseRepo[models.UserStore, UserStoreCondition](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).UserStore.WithContext(ctx).DO)
 		},
@@ -41,7 +41,6 @@ func NewUserStoreRepo(data *genData.Data) UserStoreRepo {
 			return entity.ID
 		},
 		new(models.UserStore),
-		100,
 	)
 	return &userStoreRepo{
 		BaseRepo: base,
