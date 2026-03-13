@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/golang/protobuf/jsonpb"
 	_string "github.com/liujitcn/go-utils/string"
 	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/go-utils/trans"
@@ -22,6 +21,7 @@ import (
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/h5"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
 )
@@ -197,7 +197,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 	if strings.HasPrefix(request.EventType, pay.ResourceType_TRANSACTION.String()) {
 		// 转换
 		var paymentResource pay.PaymentResource
-		err = jsonpb.UnmarshalString(resource.Plaintext, &paymentResource)
+		err = protojson.Unmarshal([]byte(resource.Plaintext), &paymentResource)
 		if err != nil {
 			return err
 		}
@@ -265,7 +265,7 @@ func (c *PayCase) PayNotify(ctx context.Context, req *emptypb.Empty) error {
 	} else if strings.HasPrefix(request.EventType, pay.ResourceType_REFUND.String()) {
 		// 转换
 		var refundResource pay.RefundResource
-		err = jsonpb.UnmarshalString(resource.Plaintext, &refundResource)
+		err = protojson.Unmarshal([]byte(resource.Plaintext), &refundResource)
 		if err != nil {
 			return err
 		}

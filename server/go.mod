@@ -5,7 +5,6 @@ go 1.26.0
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-sql-driver/mysql v1.9.3
-	github.com/golang/protobuf v1.5.4
 	github.com/google/gnostic v0.7.1
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
@@ -15,7 +14,7 @@ require (
 	github.com/liujitcn/gorm-kit v0.0.4
 	github.com/liujitcn/kratos-kit v0.0.5
 	github.com/liujitcn/kratos-kit/api v0.0.9
-	github.com/liujitcn/kratos-kit/auth v0.0.2
+	github.com/liujitcn/kratos-kit/auth v0.0.3
 	github.com/liujitcn/kratos-kit/auth/authn v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authn/engine/jwt v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authz v0.0.4
@@ -81,6 +80,7 @@ require (
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/subcommands v1.2.0 // indirect

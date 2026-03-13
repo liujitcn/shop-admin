@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-sql-driver/mysql"
-	"github.com/golang/protobuf/ptypes/empty"
 	_string "github.com/liujitcn/go-utils/string"
 	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
@@ -202,5 +201,5 @@ func (s *BaseConfigService) SetBaseConfigStatus(ctx context.Context, req *common
 			return nil, errors.New("刷新缓存失败")
 		}
 	}
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }

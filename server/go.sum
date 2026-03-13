@@ -340,8 +340,8 @@ github.com/liujitcn/kratos-kit v0.0.5 h1:nNsKNy2zzVrUSazGnELxIGOvK+5CFag4bcpwS0u
 github.com/liujitcn/kratos-kit v0.0.5/go.mod h1:OmcgdFgDnK+MToZm+nU06Y8EVL6KJwimDjUVyHnTsiM=
 github.com/liujitcn/kratos-kit/api v0.0.9 h1:6qTN7aFHVMIonEvdETzkePng/O2ffCPXUeNBMoru0E4=
 github.com/liujitcn/kratos-kit/api v0.0.9/go.mod h1:vEdhTflQEXTq8F7hzC1UxENeJXAQ8ws1IwCNTwsGNMU=
-github.com/liujitcn/kratos-kit/auth v0.0.2 h1:F2MI/DsnGvuYx/mfmhfBPOorrAiGjgGeDhFoJWK5uTo=
-github.com/liujitcn/kratos-kit/auth v0.0.2/go.mod h1:N50gy3QtyhizjU2KL37bKeBEb+mdI3sLNaqv2AxAw+M=
+github.com/liujitcn/kratos-kit/auth v0.0.3 h1:ySU2bQwLUZIv9x5Bs1HjHJjNsJix/z2ZbQD/4bL2Y4M=
+github.com/liujitcn/kratos-kit/auth v0.0.3/go.mod h1:N50gy3QtyhizjU2KL37bKeBEb+mdI3sLNaqv2AxAw+M=
 github.com/liujitcn/kratos-kit/auth/authn v0.0.4 h1:I8sTLRDaWiGsZxlR2UvlavvQxbm2n5zi6TvUnsV146s=
 github.com/liujitcn/kratos-kit/auth/authn v0.0.4/go.mod h1:bZ/k8Ohm/FIq1kX9KMUjwwEjWFyH673W0KPu/Ho2G8c=
 github.com/liujitcn/kratos-kit/auth/authn/engine/jwt v0.0.4 h1:tC/yyR/64PJElgRuLYgzHH6fDO4kNxp+LOG93j124Tg=
