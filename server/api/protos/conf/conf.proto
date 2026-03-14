@@ -11,22 +11,7 @@ message ShopAdminServerConfigWrapper {
 
 // ShopAdminServerConfig
 message ShopAdminServerConfig {
-  Jwt jwt = 1; // jwt 扩展配置
   WxPay wxPay = 2; // 微信支付参数
-}
-
-// JWT白名单列表
-message WhiteList {
-  repeated string prefix = 1;
-  repeated string regex = 2;
-  repeated string path = 3;
-  repeated string match = 4;
-}
-// JWT
-message Jwt {
-  google.protobuf.Duration accessTokenExpires = 1; // token 过期时间
-  google.protobuf.Duration refreshTokenExpires = 2; // 刷新token 时间
-  WhiteList whiteList = 3;
 }
 
 message WxPay {

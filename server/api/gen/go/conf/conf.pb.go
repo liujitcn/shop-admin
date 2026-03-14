@@ -9,7 +9,7 @@ package conf
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/structpb"
 	reflect "reflect"
 	sync "sync"
@@ -70,7 +70,6 @@ func (x *ShopAdminServerConfigWrapper) GetShopAdminServer() *ShopAdminServerConf
 // ShopAdminServerConfig
 type ShopAdminServerConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Jwt           *Jwt                   `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`     // jwt 扩展配置
 	WxPay         *WxPay                 `protobuf:"bytes,2,opt,name=wxPay,proto3" json:"wxPay,omitempty"` // 微信支付参数
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -106,146 +105,9 @@ func (*ShopAdminServerConfig) Descriptor() ([]byte, []int) {
 	return file_conf_conf_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ShopAdminServerConfig) GetJwt() *Jwt {
-	if x != nil {
-		return x.Jwt
-	}
-	return nil
-}
-
 func (x *ShopAdminServerConfig) GetWxPay() *WxPay {
 	if x != nil {
 		return x.WxPay
-	}
-	return nil
-}
-
-// JWT白名单列表
-type WhiteList struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Prefix        []string               `protobuf:"bytes,1,rep,name=prefix,proto3" json:"prefix,omitempty"`
-	Regex         []string               `protobuf:"bytes,2,rep,name=regex,proto3" json:"regex,omitempty"`
-	Path          []string               `protobuf:"bytes,3,rep,name=path,proto3" json:"path,omitempty"`
-	Match         []string               `protobuf:"bytes,4,rep,name=match,proto3" json:"match,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *WhiteList) Reset() {
-	*x = WhiteList{}
-	mi := &file_conf_conf_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *WhiteList) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*WhiteList) ProtoMessage() {}
-
-func (x *WhiteList) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use WhiteList.ProtoReflect.Descriptor instead.
-func (*WhiteList) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *WhiteList) GetPrefix() []string {
-	if x != nil {
-		return x.Prefix
-	}
-	return nil
-}
-
-func (x *WhiteList) GetRegex() []string {
-	if x != nil {
-		return x.Regex
-	}
-	return nil
-}
-
-func (x *WhiteList) GetPath() []string {
-	if x != nil {
-		return x.Path
-	}
-	return nil
-}
-
-func (x *WhiteList) GetMatch() []string {
-	if x != nil {
-		return x.Match
-	}
-	return nil
-}
-
-// JWT
-type Jwt struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	AccessTokenExpires  *durationpb.Duration   `protobuf:"bytes,1,opt,name=accessTokenExpires,proto3" json:"accessTokenExpires,omitempty"`   // token 过期时间
-	RefreshTokenExpires *durationpb.Duration   `protobuf:"bytes,2,opt,name=refreshTokenExpires,proto3" json:"refreshTokenExpires,omitempty"` // 刷新token 时间
-	WhiteList           *WhiteList             `protobuf:"bytes,3,opt,name=whiteList,proto3" json:"whiteList,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
-}
-
-func (x *Jwt) Reset() {
-	*x = Jwt{}
-	mi := &file_conf_conf_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Jwt) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Jwt) ProtoMessage() {}
-
-func (x *Jwt) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Jwt.ProtoReflect.Descriptor instead.
-func (*Jwt) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *Jwt) GetAccessTokenExpires() *durationpb.Duration {
-	if x != nil {
-		return x.AccessTokenExpires
-	}
-	return nil
-}
-
-func (x *Jwt) GetRefreshTokenExpires() *durationpb.Duration {
-	if x != nil {
-		return x.RefreshTokenExpires
-	}
-	return nil
-}
-
-func (x *Jwt) GetWhiteList() *WhiteList {
-	if x != nil {
-		return x.WhiteList
 	}
 	return nil
 }
@@ -264,7 +126,7 @@ type WxPay struct {
 
 func (x *WxPay) Reset() {
 	*x = WxPay{}
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -276,7 +138,7 @@ func (x *WxPay) String() string {
 func (*WxPay) ProtoMessage() {}
 
 func (x *WxPay) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -289,7 +151,7 @@ func (x *WxPay) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WxPay.ProtoReflect.Descriptor instead.
 func (*WxPay) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{4}
+	return file_conf_conf_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *WxPay) GetAppid() string {
@@ -340,19 +202,9 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"\x0fconf/conf.proto\x12\x04conf\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\"g\n" +
 	"\x1cShopAdminServerConfigWrapper\x12G\n" +
-	"\x11shop_admin_server\x18\x01 \x01(\v2\x1b.conf.ShopAdminServerConfigR\x0fshopAdminServer\"W\n" +
-	"\x15ShopAdminServerConfig\x12\x1b\n" +
-	"\x03jwt\x18\x01 \x01(\v2\t.conf.JwtR\x03jwt\x12!\n" +
-	"\x05wxPay\x18\x02 \x01(\v2\v.conf.WxPayR\x05wxPay\"c\n" +
-	"\tWhiteList\x12\x16\n" +
-	"\x06prefix\x18\x01 \x03(\tR\x06prefix\x12\x14\n" +
-	"\x05regex\x18\x02 \x03(\tR\x05regex\x12\x12\n" +
-	"\x04path\x18\x03 \x03(\tR\x04path\x12\x14\n" +
-	"\x05match\x18\x04 \x03(\tR\x05match\"\xcc\x01\n" +
-	"\x03Jwt\x12I\n" +
-	"\x12accessTokenExpires\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\x12accessTokenExpires\x12K\n" +
-	"\x13refreshTokenExpires\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x13refreshTokenExpires\x12-\n" +
-	"\twhiteList\x18\x03 \x01(\v2\x0f.conf.WhiteListR\twhiteList\"\xb3\x01\n" +
+	"\x11shop_admin_server\x18\x01 \x01(\v2\x1b.conf.ShopAdminServerConfigR\x0fshopAdminServer\":\n" +
+	"\x15ShopAdminServerConfig\x12!\n" +
+	"\x05wxPay\x18\x02 \x01(\v2\v.conf.WxPayR\x05wxPay\"\xb3\x01\n" +
 	"\x05WxPay\x12\x14\n" +
 	"\x05appid\x18\x01 \x01(\tR\x05appid\x12\x14\n" +
 	"\x05mchId\x18\x02 \x01(\tR\x05mchId\x12\x1c\n" +
@@ -374,27 +226,20 @@ func file_conf_conf_proto_rawDescGZIP() []byte {
 	return file_conf_conf_proto_rawDescData
 }
 
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_conf_conf_proto_goTypes = []any{
 	(*ShopAdminServerConfigWrapper)(nil), // 0: conf.ShopAdminServerConfigWrapper
 	(*ShopAdminServerConfig)(nil),        // 1: conf.ShopAdminServerConfig
-	(*WhiteList)(nil),                    // 2: conf.WhiteList
-	(*Jwt)(nil),                          // 3: conf.Jwt
-	(*WxPay)(nil),                        // 4: conf.WxPay
-	(*durationpb.Duration)(nil),          // 5: google.protobuf.Duration
+	(*WxPay)(nil),                        // 2: conf.WxPay
 }
 var file_conf_conf_proto_depIdxs = []int32{
 	1, // 0: conf.ShopAdminServerConfigWrapper.shop_admin_server:type_name -> conf.ShopAdminServerConfig
-	3, // 1: conf.ShopAdminServerConfig.jwt:type_name -> conf.Jwt
-	4, // 2: conf.ShopAdminServerConfig.wxPay:type_name -> conf.WxPay
-	5, // 3: conf.Jwt.accessTokenExpires:type_name -> google.protobuf.Duration
-	5, // 4: conf.Jwt.refreshTokenExpires:type_name -> google.protobuf.Duration
-	2, // 5: conf.Jwt.whiteList:type_name -> conf.WhiteList
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	2, // 1: conf.ShopAdminServerConfig.wxPay:type_name -> conf.WxPay
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_conf_conf_proto_init() }
@@ -408,7 +253,7 @@ func file_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

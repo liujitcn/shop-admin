@@ -1,9 +1,4 @@
 shop_admin_server:
-  whiteList:
-    match:
-      - "/config.ConfigService/GetConfig"
-      - "/login.LoginService/Captcha"
-      - "/admin.AuthService/Login"
   wxPay:
     appid: xxx
     mchId: 'xxxx'
