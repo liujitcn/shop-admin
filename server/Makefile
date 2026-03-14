@@ -1,5 +1,5 @@
-# Makefile 常用目标：初始化工具、生成代码、启动服务、
-.PHONY: help init plugin cli wire api openapi ts run
+# Makefile 常用目标：初始化工具、生成代码、构建前端、启动服务、查看帮助
+.PHONY: help init plugin cli wire api openapi ts web_build run
 
 # 初始化开发环境
 init: plugin cli
@@ -47,9 +47,14 @@ ts:
 # 一键生成全部接口产物（Go 代码 + OpenAPI 文档 + TypeScript 代码）
 gen: api openapi ts
 
+# 构建管理端前端静态资源（产物输出到 server/cmd/server/assets/web）
+web_build:
+	@cd ../web && \
+	npm run build
+
 # 启动应用
 run: api openapi
-	@go run ./cmd/server -conf ./configs
+	@go run ./cmd/server
 
 # 显示帮助
 help:

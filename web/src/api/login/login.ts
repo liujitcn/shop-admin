@@ -24,7 +24,8 @@ export class LoginServiceImpl implements LoginService {
   /** 登录 */
   Login(request: LoginRequest): Promise<LoginResponse> {
     return service<LoginRequest, LoginResponse>({
-      url: `${LOGIN_URL}/login`,
+      // 基础登录接口已迁移为 /api/login
+      url: `${LOGIN_URL}`,
       method: "post",
       data: request,
     });

@@ -27,7 +27,8 @@ export const useUserStore = defineStore("user", () => {
    */
   function login(request: LoginRequest) {
     return new Promise<void>((resolve, reject) => {
-      defAuthService
+      // 登录能力已迁移到 @liujitcn/shop-base 的 LoginService
+      defLoginService
         .Login(request)
         .then((data) => {
           const { tokenType, accessToken, refreshToken, expiresIn } = data;
