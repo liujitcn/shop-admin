@@ -14,23 +14,24 @@ import (
 	"github.com/liujitcn/kratos-kit/oss"
 	"github.com/liujitcn/kratos-kit/pprof"
 	"github.com/liujitcn/kratos-kit/queue"
-	"github.com/liujitcn/shop-admin/server/internal/configs"
-	data2 "github.com/liujitcn/shop-admin/server/internal/data"
-	"github.com/liujitcn/shop-admin/server/internal/middleware"
+	configs2 "github.com/liujitcn/shop-admin/server/internal/configs"
+	data3 "github.com/liujitcn/shop-admin/server/internal/data"
 	"github.com/liujitcn/shop-admin/server/internal/server"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
-	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	biz2 "github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
-	biz2 "github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
-	configs2 "github.com/liujitcn/shop-base/server/configs"
+	biz3 "github.com/liujitcn/shop-admin/server/internal/service/pay/biz"
+	"github.com/liujitcn/shop-base/server/configs"
 	"github.com/liujitcn/shop-base/server/core"
-	data3 "github.com/liujitcn/shop-base/server/data"
+	data2 "github.com/liujitcn/shop-base/server/data"
+	"github.com/liujitcn/shop-base/server/middleware"
 	"github.com/liujitcn/shop-base/server/service/config"
-	biz3 "github.com/liujitcn/shop-base/server/service/config/biz"
+	biz4 "github.com/liujitcn/shop-base/server/service/config/biz"
 	"github.com/liujitcn/shop-base/server/service/file"
-	biz4 "github.com/liujitcn/shop-base/server/service/file/biz"
+	biz5 "github.com/liujitcn/shop-base/server/service/file/biz"
 	"github.com/liujitcn/shop-base/server/service/login"
+	"github.com/liujitcn/shop-base/server/service/login/biz"
 	"github.com/liujitcn/shop-gorm-gen/data"
 )
 
@@ -45,25 +46,24 @@ import (
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	authentication_Jwt := configs.ParseAuthnJwt(context)
 	authenticator := middleware.NewAuthenticator(authentication_Jwt)
-	confData, err := configs2.ParseData(context)
+	confData, err := configs.ParseData(context)
 	if err != nil {
 		return nil, nil, err
 	}
-	data_Database := configs2.ParseDatabase(confData)
+	data_Database := configs.ParseDatabase(confData)
 	client, cleanup, err := gorm.NewGormClient(data_Database)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(client)
 	baseUserRepo := data2.NewBaseUserRepo(dataData)
-	baseDeptRepo := data2.NewBaseDeptRepo(dataData)
-	baseUserCase := biz.NewBaseUserCase(baseUserRepo, baseDeptRepo)
+	baseUserCase := biz.NewBaseUserCase(baseUserRepo)
 	engine, err := middleware.NewAuthzEngine()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	data_Redis := configs2.ParseRedis(confData)
+	data_Redis := configs.ParseRedis(confData)
 	cacheCache, cleanup2, err := cache.NewCache(data_Redis)
 	if err != nil {
 		cleanup()
@@ -71,14 +71,14 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	}
 	userToken := middleware.NewUserToken(authentication_Jwt, cacheCache, authenticator)
 	grpcMiddlewares := server.NewGrpcMiddleware(context, authenticator, baseUserCase, engine, userToken, authentication_Jwt)
-	data_Queue := configs2.ParseQueue(confData)
+	data_Queue := configs.ParseQueue(confData)
 	queueQueue, cleanup3, err := queue.NewQueue(data_Redis, data_Queue)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	confPprof, err := configs2.ParsePprof(context)
+	confPprof, err := configs.ParsePprof(context)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -99,13 +99,16 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	dataBaseUserRepo := data3.NewBaseUserRepo(dataData)
+	baseDeptRepo := data3.NewBaseDeptRepo(dataData)
+	bizBaseUserCase := biz2.NewBaseUserCase(dataBaseUserRepo, baseDeptRepo)
 	transaction := data.NewTransaction(dataData)
-	baseRoleRepo := data2.NewBaseRoleRepo(dataData)
-	casbinRuleRepo := data2.NewCasbinRuleRepo(dataData)
-	baseMenuRepo := data2.NewBaseMenuRepo(dataData)
-	baseApiRepo := data2.NewBaseApiRepo(dataData)
-	baseApiCase := biz.NewBaseApiCase(baseApiRepo)
-	casbinRuleCase, err := biz.NewCasbinRuleCase(casbinRuleRepo, baseMenuRepo, baseRoleRepo, baseApiCase, engine)
+	baseRoleRepo := data3.NewBaseRoleRepo(dataData)
+	casbinRuleRepo := data3.NewCasbinRuleRepo(dataData)
+	baseMenuRepo := data3.NewBaseMenuRepo(dataData)
+	baseApiRepo := data3.NewBaseApiRepo(dataData)
+	baseApiCase := biz2.NewBaseApiCase(baseApiRepo)
+	casbinRuleCase, err := biz2.NewCasbinRuleCase(casbinRuleRepo, baseMenuRepo, baseRoleRepo, baseApiCase, engine)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -113,10 +116,10 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	baseRoleCase := biz.NewBaseRoleCase(transaction, baseRoleRepo, casbinRuleCase)
-	baseDeptCase := biz.NewBaseDeptCase(baseDeptRepo)
-	baseMenuCase := biz.NewBaseMenuCase(transaction, baseMenuRepo, casbinRuleCase)
-	authService := admin.NewAuthService(shopCore, baseUserCase, baseRoleCase, baseDeptCase, baseMenuCase)
+	baseRoleCase := biz2.NewBaseRoleCase(transaction, baseRoleRepo, casbinRuleCase)
+	baseDeptCase := biz2.NewBaseDeptCase(baseDeptRepo)
+	baseMenuCase := biz2.NewBaseMenuCase(transaction, baseMenuRepo, casbinRuleCase)
+	authService := admin.NewAuthService(shopCore, bizBaseUserCase, baseRoleCase, baseDeptCase, baseMenuCase)
 	baseApiService, err := admin.NewBaseApiService(shopCore, baseApiCase)
 	if err != nil {
 		cleanup4()
@@ -125,8 +128,8 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	baseConfigRepo := data2.NewBaseConfigRepo(dataData)
-	baseConfigCase := biz.NewBaseConfigCase(baseConfigRepo)
+	baseConfigRepo := data3.NewBaseConfigRepo(dataData)
+	baseConfigCase := biz2.NewBaseConfigCase(baseConfigRepo)
 	baseConfigService, err := admin.NewBaseConfigService(shopCore, baseConfigCase)
 	if err != nil {
 		cleanup4()
@@ -136,13 +139,13 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	baseDeptService := admin.NewBaseDeptService(shopCore, baseDeptCase)
-	baseDictRepo := data2.NewBaseDictRepo(dataData)
-	baseDictCase := biz.NewBaseDictCase(baseDictRepo)
-	baseDictItemRepo := data2.NewBaseDictItemRepo(dataData)
-	baseDictItemCase := biz.NewBaseDictItemCase(baseDictRepo, baseDictItemRepo)
+	baseDictRepo := data3.NewBaseDictRepo(dataData)
+	baseDictCase := biz2.NewBaseDictCase(baseDictRepo)
+	baseDictItemRepo := data3.NewBaseDictItemRepo(dataData)
+	baseDictItemCase := biz2.NewBaseDictItemCase(baseDictRepo, baseDictItemRepo)
 	baseDictService := admin.NewBaseDictService(shopCore, baseDictCase, baseDictItemCase)
-	baseJobRepo := data2.NewBaseJobRepo(dataData)
-	confOSS, err := configs2.ParseOss(context)
+	baseJobRepo := data3.NewBaseJobRepo(dataData)
+	confOSS, err := configs.ParseOss(context)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -151,8 +154,8 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		return nil, nil, err
 	}
 	ossOSS := oss.NewOSS(confOSS)
-	shopAdminServerConfig := configs.NewShopAdminServerConfig(context)
-	wxPay, err := configs.ParseWxPay(shopAdminServerConfig)
+	shopAdminServerConfig := configs2.NewShopAdminServerConfig(context)
+	wxPay, err := configs2.ParseWxPay(shopAdminServerConfig)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -160,7 +163,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	wxPayCase, err := biz2.NewWxPayCase(wxPay)
+	wxPayCase, err := biz3.NewWxPayCase(wxPay)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -168,45 +171,45 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	payBillRepo := data2.NewPayBillRepo(dataData)
-	payBillCase := biz2.NewPayBillCase(payBillRepo)
-	orderPaymentRepo := data2.NewOrderPaymentRepo(dataData)
-	orderRefundRepo := data2.NewOrderRefundRepo(dataData)
+	payBillRepo := data3.NewPayBillRepo(dataData)
+	payBillCase := biz3.NewPayBillCase(payBillRepo)
+	orderPaymentRepo := data3.NewOrderPaymentRepo(dataData)
+	orderRefundRepo := data3.NewOrderRefundRepo(dataData)
 	tradeBill := task.NewTradeBill(ossOSS, transaction, wxPayCase, payBillCase, orderPaymentRepo, orderRefundRepo)
 	v := task.NewTaskList(tradeBill)
-	baseJobCase := biz.NewBaseJobCase(baseJobRepo, v)
-	baseJobLogRepo := data2.NewBaseJobLogRepo(dataData)
-	baseJobLogCase := biz.NewBaseJobLogCase(baseJobLogRepo)
+	baseJobCase := biz2.NewBaseJobCase(baseJobRepo, v)
+	baseJobLogRepo := data3.NewBaseJobLogRepo(dataData)
+	baseJobLogCase := biz2.NewBaseJobLogCase(baseJobLogRepo)
 	baseJobService := admin.NewBaseJobService(shopCore, baseJobCase, baseJobLogCase)
-	baseLogRepo := data2.NewBaseLogRepo(dataData)
-	baseLogCase := biz.NewBaseLogCase(baseLogRepo)
+	baseLogRepo := data3.NewBaseLogRepo(dataData)
+	baseLogCase := biz2.NewBaseLogCase(baseLogRepo)
 	baseLogService := admin.NewBaseLogService(shopCore, baseLogCase)
 	baseMenuService := admin.NewBaseMenuService(shopCore, baseMenuCase, casbinRuleCase)
 	baseRoleService := admin.NewBaseRoleService(shopCore, baseRoleCase)
-	baseUserService := admin.NewBaseUserService(shopCore, baseUserCase)
-	goodsRepo := data2.NewGoodsRepo(dataData)
-	goodsCategoryRepo := data2.NewGoodsCategoryRepo(dataData)
-	goodsPropRepo := data2.NewGoodsPropRepo(dataData)
-	goodsPropCase := biz.NewGoodsPropCase(goodsPropRepo)
-	goodsSpecRepo := data2.NewGoodsSpecRepo(dataData)
-	goodsSpecCase := biz.NewGoodsSpecCase(goodsSpecRepo)
-	goodsSkuRepo := data2.NewGoodsSkuRepo(dataData)
-	goodsSkuCase := biz.NewGoodsSkuCase(goodsSkuRepo)
-	goodsCase := biz.NewGoodsCase(transaction, goodsRepo, goodsCategoryRepo, goodsPropCase, goodsSpecCase, goodsSkuCase)
-	goodsCategoryCase := biz.NewGoodsCategoryCase(goodsCategoryRepo)
-	orderAddressRepo := data2.NewOrderAddressRepo(dataData)
-	orderAddressCase := biz.NewOrderAddressCase(orderAddressRepo)
-	orderRepo := data2.NewOrderRepo(dataData)
-	orderCancelRepo := data2.NewOrderCancelRepo(dataData)
-	orderCancelCase := biz.NewOrderCancelCase(orderCancelRepo)
-	orderGoodsRepo := data2.NewOrderGoodsRepo(dataData)
-	orderGoodsCase := biz.NewOrderGoodsCase(orderGoodsRepo)
-	orderLogisticsRepo := data2.NewOrderLogisticsRepo(dataData)
-	orderLogisticsCase := biz.NewOrderLogisticsCase(orderLogisticsRepo)
-	orderPaymentCase := biz.NewOrderPaymentCase(orderPaymentRepo)
-	orderRefundCase := biz.NewOrderRefundCase(orderRefundRepo)
-	orderCase := biz.NewOrderCase(transaction, orderAddressCase, orderRepo, orderCancelCase, orderGoodsCase, orderLogisticsCase, orderPaymentCase, orderRefundCase, baseUserCase, baseDictItemCase, wxPayCase)
-	dashboardCase := biz.NewDashboardCase(baseUserCase, goodsCase, goodsCategoryCase, orderCase, orderGoodsCase, baseDictCase, baseDictItemCase)
+	baseUserService := admin.NewBaseUserService(shopCore, bizBaseUserCase)
+	goodsRepo := data3.NewGoodsRepo(dataData)
+	goodsCategoryRepo := data3.NewGoodsCategoryRepo(dataData)
+	goodsPropRepo := data3.NewGoodsPropRepo(dataData)
+	goodsPropCase := biz2.NewGoodsPropCase(goodsPropRepo)
+	goodsSpecRepo := data3.NewGoodsSpecRepo(dataData)
+	goodsSpecCase := biz2.NewGoodsSpecCase(goodsSpecRepo)
+	goodsSkuRepo := data3.NewGoodsSkuRepo(dataData)
+	goodsSkuCase := biz2.NewGoodsSkuCase(goodsSkuRepo)
+	goodsCase := biz2.NewGoodsCase(transaction, goodsRepo, goodsCategoryRepo, goodsPropCase, goodsSpecCase, goodsSkuCase)
+	goodsCategoryCase := biz2.NewGoodsCategoryCase(goodsCategoryRepo)
+	orderAddressRepo := data3.NewOrderAddressRepo(dataData)
+	orderAddressCase := biz2.NewOrderAddressCase(orderAddressRepo)
+	orderRepo := data3.NewOrderRepo(dataData)
+	orderCancelRepo := data3.NewOrderCancelRepo(dataData)
+	orderCancelCase := biz2.NewOrderCancelCase(orderCancelRepo)
+	orderGoodsRepo := data3.NewOrderGoodsRepo(dataData)
+	orderGoodsCase := biz2.NewOrderGoodsCase(orderGoodsRepo)
+	orderLogisticsRepo := data3.NewOrderLogisticsRepo(dataData)
+	orderLogisticsCase := biz2.NewOrderLogisticsCase(orderLogisticsRepo)
+	orderPaymentCase := biz2.NewOrderPaymentCase(orderPaymentRepo)
+	orderRefundCase := biz2.NewOrderRefundCase(orderRefundRepo)
+	orderCase := biz2.NewOrderCase(transaction, orderAddressCase, orderRepo, orderCancelCase, orderGoodsCase, orderLogisticsCase, orderPaymentCase, orderRefundCase, bizBaseUserCase, baseDictItemCase, wxPayCase)
+	dashboardCase := biz2.NewDashboardCase(bizBaseUserCase, goodsCase, goodsCategoryCase, orderCase, orderGoodsCase, baseDictCase, baseDictItemCase)
 	dashboardService := admin.NewDashboardService(shopCore, dashboardCase)
 	goodsCategoryService := admin.NewGoodsCategoryService(shopCore, goodsCategoryCase)
 	goodsService := admin.NewGoodsService(shopCore, goodsCase, goodsCategoryCase)
@@ -214,33 +217,37 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	goodsSkuService := admin.NewGoodsSkuService(shopCore, goodsSkuCase)
 	goodsSpecService := admin.NewGoodsSpecService(shopCore, goodsSpecCase)
 	orderService := admin.NewOrderService(shopCore, orderCase)
-	bizPayBillCase := biz.NewPayBillCase(payBillRepo)
+	bizPayBillCase := biz2.NewPayBillCase(payBillRepo)
 	payBillService := admin.NewPayBillService(shopCore, bizPayBillCase)
-	shopBannerRepo := data2.NewShopBannerRepo(dataData)
-	shopBannerCase := biz.NewShopBannerCase(shopBannerRepo)
+	shopBannerRepo := data3.NewShopBannerRepo(dataData)
+	shopBannerCase := biz2.NewShopBannerCase(shopBannerRepo)
 	shopBannerService := admin.NewShopBannerService(shopCore, shopBannerCase)
-	shopHotRepo := data2.NewShopHotRepo(dataData)
-	shopHotCase := biz.NewShopHotCase(shopHotRepo)
-	shopHotItemRepo := data2.NewShopHotItemRepo(dataData)
-	shopHotGoodsRepo := data2.NewShopHotGoodsRepo(dataData)
-	shopHotItemCase := biz.NewShopHotItemCase(transaction, shopHotRepo, shopHotItemRepo, shopHotGoodsRepo)
+	shopHotRepo := data3.NewShopHotRepo(dataData)
+	shopHotCase := biz2.NewShopHotCase(shopHotRepo)
+	shopHotItemRepo := data3.NewShopHotItemRepo(dataData)
+	shopHotGoodsRepo := data3.NewShopHotGoodsRepo(dataData)
+	shopHotItemCase := biz2.NewShopHotItemCase(transaction, shopHotRepo, shopHotItemRepo, shopHotGoodsRepo)
 	shopHotService := admin.NewShopHotService(shopCore, shopHotCase, shopHotItemCase)
-	shopServiceRepo := data2.NewShopServiceRepo(dataData)
-	shopServiceCase := biz.NewShopServiceCase(shopServiceRepo)
+	shopServiceRepo := data3.NewShopServiceRepo(dataData)
+	shopServiceCase := biz2.NewShopServiceCase(shopServiceRepo)
 	shopServiceService := admin.NewShopServiceService(shopCore, shopServiceCase)
-	userStoreRepo := data2.NewUserStoreRepo(dataData)
-	baseAreaRepo := data2.NewBaseAreaRepo(dataData)
-	baseAreaCase := biz.NewBaseAreaCase(baseAreaRepo)
-	userStoreCase := biz.NewUserStoreCase(transaction, userStoreRepo, baseAreaCase, baseUserCase, baseRoleCase)
+	userStoreRepo := data3.NewUserStoreRepo(dataData)
+	baseAreaRepo := data3.NewBaseAreaRepo(dataData)
+	baseAreaCase := biz2.NewBaseAreaCase(baseAreaRepo)
+	userStoreCase := biz2.NewUserStoreCase(transaction, userStoreRepo, baseAreaCase, bizBaseUserCase, baseRoleCase)
 	userStoreService := admin.NewUserStoreService(shopCore, userStoreCase)
-	dataBaseConfigRepo := data3.NewBaseConfigRepo(dataData)
-	configCase := biz3.NewConfigCase(dataBaseConfigRepo)
+	dataBaseConfigRepo := data2.NewBaseConfigRepo(dataData)
+	configCase := biz4.NewConfigCase(dataBaseConfigRepo)
 	configService := config.NewConfigService(shopCore, configCase)
-	fileCase := biz4.NewFileCase(ossOSS)
+	fileCase := biz5.NewFileCase(ossOSS)
 	fileService := file.NewFileService(shopCore, fileCase)
-	loginService := login.NewLoginService(shopCore)
-	orderSchedulerCase := biz2.NewOrderSchedulerCase()
-	payCase := biz2.NewPayCase(transaction, orderRepo, orderGoodsRepo, orderPaymentRepo, orderRefundRepo, orderSchedulerCase, wxPayCase)
+	dataBaseRoleRepo := data2.NewBaseRoleRepo(dataData)
+	bizBaseRoleCase := biz.NewBaseRoleCase(transaction, dataBaseRoleRepo)
+	dataBaseDeptRepo := data2.NewBaseDeptRepo(dataData)
+	bizBaseDeptCase := biz.NewBaseDeptCase(dataBaseDeptRepo)
+	loginService := login.NewLoginService(shopCore, baseUserCase, bizBaseRoleCase, bizBaseDeptCase)
+	orderSchedulerCase := biz3.NewOrderSchedulerCase()
+	payCase := biz3.NewPayCase(transaction, orderRepo, orderGoodsRepo, orderPaymentRepo, orderRefundRepo, orderSchedulerCase, wxPayCase)
 	payService := pay.NewPayService(shopCore, payCase)
 	grpcServer, err := server.NewGRPCServer(context, grpcMiddlewares, authService, baseApiService, baseConfigService, baseDeptService, baseDictService, baseJobService, baseLogService, baseMenuService, baseRoleService, baseUserService, dashboardService, goodsCategoryService, goodsService, goodsPropService, goodsSkuService, goodsSpecService, orderService, payBillService, shopBannerService, shopHotService, shopServiceService, userStoreService, configService, fileService, loginService, payService)
 	if err != nil {

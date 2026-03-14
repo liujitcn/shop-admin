@@ -30,10 +30,6 @@ func (c *BaseUserCase) GetFromID(ctx context.Context, id int64) (*models.BaseUse
 	return c.Find(ctx, &data.BaseUserCondition{Id: id})
 }
 
-func (c *BaseUserCase) GetFromUserName(ctx context.Context, userName string) (*models.BaseUser, error) {
-	return c.Find(ctx, &data.BaseUserCondition{UserName: userName})
-}
-
 func (c *BaseUserCase) List(ctx context.Context) ([]*models.BaseUser, error) {
 	condition := &data.BaseUserCondition{}
 	list, err := c.FindAll(ctx, condition)

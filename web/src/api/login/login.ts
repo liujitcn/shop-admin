@@ -3,6 +3,8 @@ import type { Login } from "@liujitcn/shop-base";
 import type { Empty } from "@/rpc/google/protobuf/empty";
 
 type CaptchaResponse = Login.CaptchaResponse;
+type LoginRequest = Login.LoginRequest;
+type LoginResponse = Login.LoginResponse;
 type RefreshTokenRequest = Login.RefreshTokenRequest;
 type RefreshTokenResponse = Login.RefreshTokenResponse;
 type LoginService = Login.LoginService;
@@ -17,6 +19,14 @@ export class LoginServiceImpl implements LoginService {
       url: `${LOGIN_URL}/captcha`,
       method: "get",
       params: request,
+    });
+  }
+  /** 登录 */
+  Login(request: LoginRequest): Promise<LoginResponse> {
+    return service<LoginRequest, LoginResponse>({
+      url: `${LOGIN_URL}/login`,
+      method: "post",
+      data: request,
     });
   }
   /** 登出 */

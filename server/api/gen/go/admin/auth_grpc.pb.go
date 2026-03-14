@@ -20,7 +20,6 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName               = "/admin.AuthService/Login"
 	AuthService_GetUserInfo_FullMethodName         = "/admin.AuthService/GetUserInfo"
 	AuthService_GetUserMenu_FullMethodName         = "/admin.AuthService/GetUserMenu"
 	AuthService_GetUserProfile_FullMethodName      = "/admin.AuthService/GetUserProfile"
@@ -36,8 +35,6 @@ const (
 //
 // Admin用户登录认证服务
 type AuthServiceClient interface {
-	// 登录
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	// 获取已经登录的用户的数据
 	GetUserInfo(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UserInfo, error)
 	// 获取已经登录的用户菜单
@@ -60,16 +57,6 @@ type authServiceClient struct {
 
 func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
-}
-
-func (c *authServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, AuthService_Login_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *authServiceClient) GetUserInfo(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*UserInfo, error) {
@@ -148,8 +135,6 @@ func (c *authServiceClient) UpdateUserPwd(ctx context.Context, in *UpdatePwdForm
 //
 // Admin用户登录认证服务
 type AuthServiceServer interface {
-	// 登录
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	// 获取已经登录的用户的数据
 	GetUserInfo(context.Context, *emptypb.Empty) (*UserInfo, error)
 	// 获取已经登录的用户菜单
@@ -174,9 +159,6 @@ type AuthServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAuthServiceServer struct{}
 
-func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
-}
 func (UnimplementedAuthServiceServer) GetUserInfo(context.Context, *emptypb.Empty) (*UserInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserInfo not implemented")
 }
@@ -217,24 +199,6 @@ func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&AuthService_ServiceDesc, srv)
-}
-
-func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Login(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_Login_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _AuthService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -370,10 +334,6 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "admin.AuthService",
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Login",
-			Handler:    _AuthService_Login_Handler,
-		},
 		{
 			MethodName: "GetUserInfo",
 			Handler:    _AuthService_GetUserInfo_Handler,

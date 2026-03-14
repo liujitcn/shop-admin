@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
-	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
+	baseConst "github.com/liujitcn/shop-base/server/const"
 	baseCore "github.com/liujitcn/shop-base/server/core"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -38,7 +38,7 @@ func NewBaseLogService(
 		ShopCore:    sc,
 		baseLogCase: logCase}
 	// 注册日志队列
-	ss.Queue.Register(string(_const.Log), ss.baseLogCase.SaveLog)
+	ss.Queue.Register(string(baseConst.Log), ss.baseLogCase.SaveLog)
 	log.Debug("NewBaseLogService.")
 	return &ss
 }

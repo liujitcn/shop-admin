@@ -1,8 +1,6 @@
 import service from "@/utils/request";
 import {
   type AuthService,
-  type LoginRequest,
-  type LoginResponse,
   type TreeRouteResponse,
   type UserInfo,
   type UserProfileForm,
@@ -10,7 +8,11 @@ import {
   type UpdatePhoneForm,
   type UpdatePwdForm,
 } from "@/rpc/admin/auth";
+import type { Login } from "@liujitcn/shop-base";
 import type { Empty } from "@/rpc/google/protobuf/empty";
+
+type LoginRequest = Login.LoginRequest;
+type LoginResponse = Login.LoginResponse;
 
 const AUTH_URL = "/admin/auth";
 

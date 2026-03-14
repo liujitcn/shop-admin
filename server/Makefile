@@ -44,6 +44,8 @@ ts:
 	@cd api && \
 	buf generate --template buf.typescript.gen.yaml --exclude-path protos/conf
 
+# 一键生成全部接口产物（Go 代码 + OpenAPI 文档 + TypeScript 代码）
+gen: api openapi ts
 
 # 启动应用
 run: api openapi

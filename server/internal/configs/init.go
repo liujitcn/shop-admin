@@ -8,5 +8,4 @@ import (
 var ProviderSet = wire.NewSet(
 	NewShopAdminServerConfig,
 	ParseWxPay,
-	ParseAuthnJwt,
 )

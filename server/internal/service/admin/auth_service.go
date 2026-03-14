@@ -17,9 +17,6 @@ import (
 	_string "github.com/liujitcn/go-utils/string"
 	_time "github.com/liujitcn/go-utils/time"
 	"github.com/liujitcn/kratos-kit/auth"
-	"github.com/liujitcn/kratos-kit/auth/authn/engine"
-	authData "github.com/liujitcn/kratos-kit/auth/data"
-	"github.com/liujitcn/kratos-kit/captcha"
 	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
@@ -63,69 +60,6 @@ func NewAuthService(
 	}
 	log.Debug("NewAuthService.")
 	return &ss
-}
-
-// Login
-// 登录
-func (s *AuthService) Login(ctx context.Context, req *admin.LoginRequest) (*admin.LoginResponse, error) {
-	if req.GetCaptchaId() == "" || req.GetCaptchaCode() == "" {
-		return nil, errors.New("验证码不存在")
-	}
-	if !captcha.Verify(req.GetCaptchaId(), req.GetCaptchaCode(), true) {
-		return nil, errors.New("验证码错误")
-	}
-
-	user, err := s.baseUserCase.GetFromUserName(ctx, req.GetUserName())
-	if err != nil {
-		return nil, errors.New("用户不存在")
-	}
-	if user.Status != int32(common.Status_ENABLE) {
-		return nil, errors.New("用户状态错误")
-	}
-	err = crypto.Verify(req.GetPassword(), user.Password)
-	if err != nil {
-		log.Errorf("verify pwd err: %s", err.Error())
-		return nil, errors.New("密码错误")
-	}
-
-	// 查询角色信息
-	var role *models.BaseRole
-	role, err = s.baseRoleCase.GetFromID(ctx, user.RoleID)
-	if err != nil {
-		return nil, errors.New("角色不存在")
-	}
-
-	// 查询部门信息
-	var dept *models.BaseDept
-	dept, err = s.baseDeptCase.GetFromID(ctx, user.DeptID)
-	if err != nil {
-		return nil, errors.New("部门不存在")
-	}
-
-	// 生成访问令牌
-	var accessToken, refreshToken string
-	accessToken, refreshToken, err = s.UserToken.GenerateToken(&authData.UserTokenPayload{
-		UserId:   user.ID,
-		UserName: user.UserName,
-		RoleId:   user.RoleID,
-		RoleCode: role.Code,
-		RoleName: role.Name,
-		DeptId:   user.DeptID,
-		DeptName: dept.Name,
-	})
-	if err != nil {
-		return nil, errors.New("登录失败")
-	}
-
-	// Token 有效期
-	expiresIn := s.UserToken.GetAccessTokenExpires()
-
-	return &admin.LoginResponse{
-		TokenType:    engine.BearerWord,
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-		ExpiresIn:    expiresIn,
-	}, nil
 }
 
 // GetUserInfo

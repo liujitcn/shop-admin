@@ -326,8 +326,8 @@ github.com/lithammer/shortuuid/v4 v4.2.0 h1:LMFOzVB3996a7b8aBuEXxqOBflbfPQAiVzkI
 github.com/lithammer/shortuuid/v4 v4.2.0/go.mod h1:D5noHZ2oFw/YaKCfGy0YxyE7M0wMbezmMjPdhyEFe6Y=
 github.com/liujitcn/go-utils v0.0.11 h1:nDi64wafYlEDJhgpWtLNLOrdn/eOeY2Z+RFBVdDLCgs=
 github.com/liujitcn/go-utils v0.0.11/go.mod h1:rOfBz6k8RoBP8/W0eQvMCw8NL33VXUJhfYrJ+Dcl1nw=
-github.com/liujitcn/go-utils/crypto v0.0.5 h1:vUJxiAfhXups1biIxzyM0mpuIAHMUr69vL1NX53Khvc=
-github.com/liujitcn/go-utils/crypto v0.0.5/go.mod h1:/crQqoUHEiX7kHxfQnGq7GQRwK6dfPfXcpWbTWUPK8E=
+github.com/liujitcn/go-utils/crypto v0.0.6 h1:Cv26h8JazduKDFUO9D16Q9z+HtGALSEU51whcJCZEtI=
+github.com/liujitcn/go-utils/crypto v0.0.6/go.mod h1:/crQqoUHEiX7kHxfQnGq7GQRwK6dfPfXcpWbTWUPK8E=
 github.com/liujitcn/go-utils/geoip v0.0.1 h1:Vqv+x03Yesn4/AR2OJvmbKaHhLifdXpMHskw2RFBlvo=
 github.com/liujitcn/go-utils/geoip v0.0.1/go.mod h1:m8vD01rqR+3H3aK6taD/pFCLYx5dv50Rqz663yb/UmE=
 github.com/liujitcn/go-utils/jwt v0.0.1 h1:ymO+Eo3Kk+I3ALHRqbEvvclc95YrwQWKmLTGILbsCE8=
@@ -392,8 +392,8 @@ github.com/liujitcn/kratos-kit/tracer v0.0.4 h1:CyOxvz5JZ+49Djij446S+jk3wDqTSyjo
 github.com/liujitcn/kratos-kit/tracer v0.0.4/go.mod h1:QpMNZHgCmvsEnCwJ2yGUC4wtA+oOaoG0vsDPs3veQ1g=
 github.com/liujitcn/kratos-kit/utils v0.0.4 h1:ER45Vm0AZO0oP5e6rgFV59tOiQ5ekFXNmrPWMTGwZRc=
 github.com/liujitcn/kratos-kit/utils v0.0.4/go.mod h1:e3De+xxjTF6+FkPQj5uW3gX7SNoT2ydAts+tewc0PP8=
-github.com/liujitcn/shop-base/server v0.0.3 h1:1E5Thia60scFWcjPuWgfIpQPS2bfW6Xx5wSDeISxTwM=
-github.com/liujitcn/shop-base/server v0.0.3/go.mod h1:R9HRer+5Enjx10cCdgDu9efFvU41iCsA6u2F/Wnrpbk=
+github.com/liujitcn/shop-base/server v0.0.5 h1:2ufkmhhcgXLWry7OBRmyo6hYGHubseYTg5yULYtGF7o=
+github.com/liujitcn/shop-base/server v0.0.5/go.mod h1:BgeewQn9LXTtxBHDwOkHd0plO3O9S9CW4rXNoYF6fXY=
 github.com/liujitcn/shop-gorm-gen v0.0.5 h1:n8MpVjf7h/vObN7rOO6BzpgdnkVq41rHhCZFCm5AsoY=
 github.com/liujitcn/shop-gorm-gen v0.0.5/go.mod h1:F1ezkI0zEF1MdsVMMiH8SpCGu9L7WCtZKtq6B4GixvM=
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=

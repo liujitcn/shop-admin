@@ -13,7 +13,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/cmd/server/assets"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/data"
-	"github.com/liujitcn/shop-admin/server/internal/utils"
+	"github.com/liujitcn/shop-base/server/utils"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"gopkg.in/yaml.v3"
 )

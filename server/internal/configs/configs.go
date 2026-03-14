@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	bootstrapConf "github.com/liujitcn/kratos-kit/api/gen/go/conf"
 	"github.com/liujitcn/kratos-kit/bootstrap"
 	"github.com/liujitcn/kratos-kit/sdk"
 	"github.com/liujitcn/shop-admin/server/api/gen/go/conf"
@@ -23,17 +22,6 @@ func NewShopAdminServerConfig(ctx *bootstrap.Context) *conf.ShopAdminServerConfi
 		return wrapperCfg.GetShopAdminServer()
 	}
 	return &conf.ShopAdminServerConfig{}
-}
-
-func ParseAuthnJwt(ctx *bootstrap.Context) *bootstrapConf.Authentication_Jwt {
-	cfg := ctx.GetConfig()
-	if cfg == nil || cfg.GetAuthn() == nil || cfg.GetAuthn().GetJwt() == nil {
-		return &bootstrapConf.Authentication_Jwt{
-			Method: "HS256",
-			Secret: "shop-admin",
-		}
-	}
-	return cfg.GetAuthn().GetJwt()
 }
 
 func ParseWxPay(cfg *conf.ShopAdminServerConfig) (*conf.WxPay, error) {

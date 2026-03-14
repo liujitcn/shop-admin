@@ -13,16 +13,16 @@ import (
 	adminApi "github.com/liujitcn/shop-admin/server/api/gen/go/admin"
 	payApi "github.com/liujitcn/shop-admin/server/api/gen/go/pay"
 	"github.com/liujitcn/shop-admin/server/cmd/server/assets"
-	"github.com/liujitcn/shop-admin/server/internal/middleware/logging"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin"
-	"github.com/liujitcn/shop-admin/server/internal/service/admin/biz"
 	"github.com/liujitcn/shop-admin/server/internal/service/pay"
 	baseConfigApi "github.com/liujitcn/shop-base/server/api/gen/go/config"
 	baseFileApi "github.com/liujitcn/shop-base/server/api/gen/go/file"
 	baseLoginApi "github.com/liujitcn/shop-base/server/api/gen/go/login"
+	baseLogging "github.com/liujitcn/shop-base/server/middleware/logging"
 	baseConfig "github.com/liujitcn/shop-base/server/service/config"
 	baseFile "github.com/liujitcn/shop-base/server/service/file"
 	baseLogin "github.com/liujitcn/shop-base/server/service/login"
+	baseLoginBiz "github.com/liujitcn/shop-base/server/service/login/biz"
 
 	bootstrapConf "github.com/liujitcn/kratos-kit/api/gen/go/conf"
 	swaggerUI "github.com/liujitcn/kratos-kit/swagger-ui"
@@ -39,7 +39,7 @@ type HttpMiddlewares []middleware.Middleware
 func NewHttpMiddleware(
 	ctx *bootstrap.Context,
 	authenticator authnEngine.Authenticator,
-	userCase *biz.BaseUserCase,
+	userCase *baseLoginBiz.BaseUserCase,
 	authorizer authzEngine.Engine,
 	userToken *authData.UserToken,
 	jwtCfg *bootstrapConf.Authentication_Jwt,
@@ -47,7 +47,7 @@ func NewHttpMiddleware(
 	var ms HttpMiddlewares
 	cfg := ctx.GetConfig()
 	if cfg != nil && cfg.Server != nil && cfg.Server.Http != nil && cfg.Server.Http.Middleware != nil && cfg.Server.Http.Middleware.EnableLogging {
-		ms = append(ms, logging.Server(ctx.GetLogger(), userCase, authenticator))
+		ms = append(ms, baseLogging.Server(ctx.GetLogger(), userCase, authenticator))
 	}
 	ms = append(ms, auth.NewAuthMiddleware(authenticator, authorizer, userToken, jwtCfg))
 	return ms

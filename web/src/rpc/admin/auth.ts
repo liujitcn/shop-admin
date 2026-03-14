@@ -7,30 +7,6 @@
 /* eslint-disable */
 import { type Empty } from "../google/protobuf/empty";
 
-/** 用户后台登录 - 请求 */
-export interface LoginRequest {
-  /** 用户名，必选项。 */
-  userName: string;
-  /** 用户的密码，必选项。 */
-  password: string;
-  /** 验证码 */
-  captchaCode: string;
-  /** 验证码Id */
-  captchaId: string;
-}
-
-/** 用户后台登录 - 回应 */
-export interface LoginResponse {
-  /** 访问令牌，必选项。 */
-  accessToken: string;
-  /** 更新令牌，用来获取下一次的访问令牌，可选项。 */
-  refreshToken: string;
-  /** 令牌类型，该值大小写不敏感，必选项，可以是bearer类型或mac类型。 */
-  tokenType: string;
-  /** 令牌有效时间，单位为秒。如果访问令牌过期，服务器应回复授予访问令牌的持续时间。如果省略该参数，必须其他方式设置过期时间。 */
-  expiresIn: number;
-}
-
 export interface UserInfo {
   /** 用户账号 */
   userName: string;
@@ -155,8 +131,6 @@ export interface UpdatePhoneForm {
 
 /** Admin用户登录认证服务 */
 export interface AuthService {
-  /** 登录 */
-  Login(request: LoginRequest): Promise<LoginResponse>;
   /** 获取已经登录的用户的数据 */
   GetUserInfo(request: Empty): Promise<UserInfo>;
   /** 获取已经登录的用户菜单 */

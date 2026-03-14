@@ -6,25 +6,6 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /api/admin/auth/login:
-        post:
-            tags:
-                - AuthService
-            description: 登录
-            operationId: AuthService_Login
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/LoginRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LoginResponse'
     /api/admin/auth/menu:
         get:
             tags:
@@ -4323,39 +4304,6 @@ components:
                     items:
                         $ref: '#/components/schemas/GoodsSpec'
                     description: 分页数据
-        LoginRequest:
-            type: object
-            properties:
-                userName:
-                    type: string
-                    description: 用户名
-                password:
-                    type: string
-                    description: 用户密码
-                captchaCode:
-                    type: string
-                    description: 验证码
-                captchaId:
-                    type: string
-                    description: 验证码Id
-            description: 用户后台登录 - 请求
-        LoginResponse:
-            type: object
-            properties:
-                accessToken:
-                    type: string
-                    description: 访问令牌，必选项。授权服务器颁发的访问令牌字符串。
-                refreshToken:
-                    type: string
-                    description: 更新令牌，用来获取下一次的访问令牌，可选项。如果访问令牌将过期，则返回刷新令牌很有用，应用程序可以使用该刷新令牌来获取另一个访问令牌。但是，通过隐式授予颁发的令牌不能颁发刷新令牌。
-                tokenType:
-                    type: string
-                    default: Bearer
-                    description: 令牌的类型，该值大小写不敏感，必选项，可以是bearer类型或mac类型，通常只是字符串“Bearer”。
-                expiresIn:
-                    type: string
-                    description: 令牌有效时间，单位为秒。如果访问令牌过期，服务器应回复授予访问令牌的持续时间。如果省略该参数，必须其他方式设置过期时间。
-            description: 用户后台登录 - 回应
         Order:
             type: object
             properties:

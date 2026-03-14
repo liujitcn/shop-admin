@@ -101,7 +101,7 @@
 import { LocationQuery, useRoute } from "vue-router";
 
 import { defLoginService } from "@/api/login/login";
-import type { LoginRequest } from "@/rpc/admin/auth";
+import type { Login } from "@liujitcn/shop-base";
 import router from "@/router";
 
 import defaultSettings from "@/settings";
@@ -121,6 +121,7 @@ const loading = ref(false); // 按钮 loading 状态
 const isCapslock = ref(false); // 是否大写锁定
 const captchaBase64 = ref(); // 验证码图片Base64字符串
 
+type LoginRequest = Login.LoginRequest;
 const loginData = ref<LoginRequest>({
   userName: "",
   password: "",

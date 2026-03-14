@@ -8,30 +8,23 @@ require (
 	github.com/google/gnostic v0.7.1
 	github.com/google/wire v0.7.0
 	github.com/liujitcn/go-utils v0.0.11
-	github.com/liujitcn/go-utils/crypto v0.0.5
-	github.com/liujitcn/go-utils/geoip v0.0.1
+	github.com/liujitcn/go-utils/crypto v0.0.6
 	github.com/liujitcn/gorm-kit v0.0.4
 	github.com/liujitcn/kratos-kit v0.0.5
 	github.com/liujitcn/kratos-kit/api v0.0.9
 	github.com/liujitcn/kratos-kit/auth v0.0.3
 	github.com/liujitcn/kratos-kit/auth/authn v0.0.4
-	github.com/liujitcn/kratos-kit/auth/authn/engine/jwt v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authz v0.0.4
 	github.com/liujitcn/kratos-kit/auth/authz/engine/casbin v0.0.4
 	github.com/liujitcn/kratos-kit/bootstrap v0.0.3
-	github.com/liujitcn/kratos-kit/cache v0.0.4
-	github.com/liujitcn/kratos-kit/captcha v0.0.1
-	github.com/liujitcn/kratos-kit/database/gorm v0.0.6
 	github.com/liujitcn/kratos-kit/database/gorm/driver/mysql v0.0.3
 	github.com/liujitcn/kratos-kit/logger/zap v0.0.2
 	github.com/liujitcn/kratos-kit/oss v0.0.4
-	github.com/liujitcn/kratos-kit/pprof v0.0.1
 	github.com/liujitcn/kratos-kit/queue v0.0.4
 	github.com/liujitcn/kratos-kit/rpc v0.0.1
 	github.com/liujitcn/kratos-kit/swagger-ui v0.0.1
-	github.com/liujitcn/shop-base/server v0.0.3
+	github.com/liujitcn/shop-base/server v0.0.5
 	github.com/liujitcn/shop-gorm-gen v0.0.5
-	github.com/mileusna/useragent v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.21
 	google.golang.org/genproto/googleapis/api v0.0.0-20260226221140-a57be14db171
@@ -105,14 +98,20 @@ require (
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/lithammer/shortuuid/v4 v4.2.0 // indirect
+	github.com/liujitcn/go-utils/geoip v0.0.1 // indirect
 	github.com/liujitcn/go-utils/jwt v0.0.1 // indirect
 	github.com/liujitcn/gorm-kit/api v0.0.2 // indirect
+	github.com/liujitcn/kratos-kit/auth/authn/engine/jwt v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/auth/authn/middleware v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/auth/authz/middleware v0.0.4 // indirect
+	github.com/liujitcn/kratos-kit/cache v0.0.4 // indirect
+	github.com/liujitcn/kratos-kit/captcha v0.0.1 // indirect
 	github.com/liujitcn/kratos-kit/config v0.0.4 // indirect
+	github.com/liujitcn/kratos-kit/database/gorm v0.0.6 // indirect
 	github.com/liujitcn/kratos-kit/database/gorm/driver v0.0.6 // indirect
 	github.com/liujitcn/kratos-kit/locker v0.0.1 // indirect
 	github.com/liujitcn/kratos-kit/logger v0.0.4 // indirect
+	github.com/liujitcn/kratos-kit/pprof v0.0.1 // indirect
 	github.com/liujitcn/kratos-kit/queue/redisqueue v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/registry v0.0.4 // indirect
 	github.com/liujitcn/kratos-kit/tracer v0.0.4 // indirect
@@ -122,6 +121,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
+	github.com/mileusna/useragent v1.3.5 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/minio-go/v7 v7.0.80 // indirect
 	github.com/mojocn/base64Captcha v1.3.8 // indirect

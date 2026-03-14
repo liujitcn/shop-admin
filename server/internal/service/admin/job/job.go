@@ -8,7 +8,7 @@ import (
 	"github.com/liujitcn/shop-admin/server/api/gen/go/common"
 	_const "github.com/liujitcn/shop-admin/server/internal/const"
 	"github.com/liujitcn/shop-admin/server/internal/service/admin/task"
-	"github.com/liujitcn/shop-admin/server/internal/utils"
+	"github.com/liujitcn/shop-base/server/utils"
 	"github.com/liujitcn/shop-gorm-gen/models"
 )
 
