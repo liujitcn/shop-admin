@@ -11,3 +11,4 @@ authn:
         - "/config.ConfigService/GetConfig"
         - "/login.LoginService/Captcha"
         - "/login.LoginService/Login"
+        - "/pay.PayService/PayNotify"
