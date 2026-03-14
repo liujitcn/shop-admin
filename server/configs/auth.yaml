@@ -10,4 +10,4 @@ authn:
       match:
         - "/config.ConfigService/GetConfig"
         - "/login.LoginService/Captcha"
-        - "/admin.AuthService/Login"
+        - "/login.LoginService/Login"
